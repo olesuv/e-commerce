@@ -9,8 +9,8 @@ import (
 
 
 func main(){
-	configs.ConnectDB()
 	configs.LoadEnv()
+	configs.ConnectDB()
 
 	http.ListenAndServe(":8090", nil)
 }
