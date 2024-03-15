@@ -46,8 +46,6 @@ func ConnectDB() *mongo.Client{
 	return client
 }
 
-var db *mongo.Client = ConnectDB()
-
 func GetCollection(client *mongo.Client, collectionName string) *mongo.Collection {
 	dbName := os.Getenv("dbName")
 	collection := client.Database(dbName).Collection(collectionName)
