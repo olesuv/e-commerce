@@ -2,25 +2,45 @@
 
 package model
 
+import (
+	"time"
+)
+
+type CreateOrderInput struct {
+	Products        []string  `json:"products"`
+	OrderDate       time.Time `json:"orderDate"`
+	ShippingAddress *string   `json:"shippingAddress,omitempty"`
+	Status          *string   `json:"status,omitempty"`
+	CustomerEmail   string    `json:"customerEmail"`
+	PaymentStatus   *string   `json:"paymentStatus,omitempty"`
+}
+
+type CreateUserInput struct {
+	Name  *string `json:"name,omitempty"`
+	Email string  `json:"email"`
+	Phone *string `json:"phone,omitempty"`
+}
+
 type Mutation struct {
 }
 
-type NewTodo struct {
-	Text   string `json:"text"`
-	UserID string `json:"userId"`
+type Order struct {
+	ID              string    `json:"id"`
+	Products        []string  `json:"products"`
+	OrderDate       time.Time `json:"orderDate"`
+	ShippingAddress *string   `json:"shippingAddress,omitempty"`
+	Status          *string   `json:"status,omitempty"`
+	CustomerEmail   string    `json:"customerEmail"`
+	PaymentStatus   *string   `json:"paymentStatus,omitempty"`
 }
 
 type Query struct {
 }
 
-type Todo struct {
-	ID   string `json:"id"`
-	Text string `json:"text"`
-	Done bool   `json:"done"`
-	User *User  `json:"user"`
-}
-
 type User struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID     string   `json:"id"`
+	Name   *string  `json:"name,omitempty"`
+	Email  string   `json:"email"`
+	Phone  *string  `json:"phone,omitempty"`
+	Orders []*Order `json:"orders,omitempty"`
 }

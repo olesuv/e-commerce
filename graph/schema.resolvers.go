@@ -11,14 +11,24 @@ import (
 	"server.go/graph/model"
 )
 
-// CreateTodo is the resolver for the createTodo field.
-func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: CreateTodo - createTodo"))
+// CreateOrder is the resolver for the createOrder field.
+func (r *mutationResolver) CreateOrder(ctx context.Context, input model.CreateOrderInput) (*model.Order, error) {
+	panic(fmt.Errorf("not implemented: CreateOrder - createOrder"))
 }
 
-// Todos is the resolver for the todos field.
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: Todos - todos"))
+// CreateUser is the resolver for the createUser field.
+func (r *mutationResolver) CreateUser(ctx context.Context, input model.CreateUserInput) (*model.User, error) {
+	panic(fmt.Errorf("not implemented: CreateUser - createUser"))
+}
+
+// GetOrder is the resolver for the getOrder field.
+func (r *queryResolver) GetOrder(ctx context.Context, id string) (*model.Order, error) {
+	panic(fmt.Errorf("not implemented: GetOrder - getOrder"))
+}
+
+// GetUser is the resolver for the getUser field.
+func (r *queryResolver) GetUser(ctx context.Context, id string) (*model.User, error) {
+	panic(fmt.Errorf("not implemented: GetUser - getUser"))
 }
 
 // Mutation returns MutationResolver implementation.
