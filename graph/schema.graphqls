@@ -1,4 +1,13 @@
-# Order represents an order placed by a user.
+scalar Time
+
+type User {
+  id: ID!
+  name: String
+  email: String!
+  phone: String
+  orders: [Order]
+}
+
 type Order {
   id: ID!
   products: [String!]!
@@ -9,30 +18,29 @@ type Order {
   paymentStatus: String
 }
 
-# User represents a user of the system.
-type User {
+type Product {
   id: ID!
-  name: String
-  email: String!
-  phone: String
-  orders: [Order]
+  title: String!
+  description: String!
+  amount: Int!
+  price: Float!
+  images: [String!]!
+  category: String!
 }
 
-# Time represents a specific point in time.
-scalar Time
-
 type Query {
-  # Get an order by its ID.
   getOrder(id: ID!): Order
-  # Get a user by their ID.
+  getOrders: [Order!]!
   getUser(id: ID!): User
+  getUsers: [User!]!
+  getProduct(id: ID!): Product
+  getProducts: [Product!]!
 }
 
 type Mutation {
-  # Create a new order.
   createOrder(input: CreateOrderInput!): Order!
-  # Create a new user.
   createUser(input: CreateUserInput!): User!
+  createProduct(input: CreateProductInput!): Product!
 }
 
 input CreateOrderInput {
@@ -50,3 +58,11 @@ input CreateUserInput {
   phone: String
 }
 
+input CreateProductInput {
+  title: String!
+  description: String!
+  amount: Int!
+  price: Float!
+  images: [String!]!
+  category: String!
+}
