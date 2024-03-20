@@ -12,10 +12,10 @@ import (
 )
 
 var (
-	client     *mongo.Client
-	once       sync.Once
+	client           *mongo.Client
+	once             sync.Once
 	connectionString string
-	err							 error
+	err              error
 )
 
 func ConnectDB() *mongo.Client {
@@ -45,4 +45,3 @@ func GetCollection(client *mongo.Client, collectionName string) *mongo.Collectio
 	collection := client.Database(dbName).Collection(collectionName)
 	return collection
 }
-
