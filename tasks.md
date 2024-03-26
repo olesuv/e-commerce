@@ -3,6 +3,8 @@
 1. **Database**
 	- [ ] complete all models
 	- [x] make db singleton
+	- [ ] factory method for services
+	- [ ] [set all params auto mode](https://chat.openai.com/share/c1b67068-bcab-453e-8758-ca3d27a934f0)
 
 2. **Controllers/API**
 	- [ ] graphql server (milestone)
