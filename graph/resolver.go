@@ -1,7 +1,16 @@
 package graph
 
-// This file will not be regenerated automatically.
-//
-// It serves as dependency injection for your app, add any dependencies you require here.
+//go:generate go run github.com/99designs/gqlgen generate
 
-type Resolver struct{}
+import (
+	"server.go/services"
+)
+
+type Resolver struct {
+	userService *services.UserService
+}
+
+func NewResolver() *Resolver {
+	userService := services.NewUserService()
+	return &Resolver{userService: userService}
+}

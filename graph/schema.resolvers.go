@@ -9,58 +9,109 @@ import (
 	"fmt"
 
 	"server.go/graph/model"
+	"server.go/models"
 )
 
-// CreateOrder is the resolver for the createOrder field.
-func (r *mutationResolver) CreateOrder(ctx context.Context, input model.CreateOrderInput) (*model.Order, error) {
+func (r *mutationResolver) CreateOrder(ctx context.Context, input model.CreateOrderInput) (*models.Order, error) {
 	panic(fmt.Errorf("not implemented: CreateOrder - createOrder"))
 }
 
-// CreateUser is the resolver for the createUser field.
-func (r *mutationResolver) CreateUser(ctx context.Context, input model.CreateUserInput) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: CreateUser - createUser"))
+func (r *mutationResolver) CreateUser(ctx context.Context, input model.CreateUserInput) (*models.User, error) {
+	user, err := r.userService.CreateUser(&models.User{
+		Name:  *input.Name,
+		Email: input.Email,
+		Phone: *input.Phone,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
 }
 
-// CreateProduct is the resolver for the createProduct field.
-func (r *mutationResolver) CreateProduct(ctx context.Context, input model.CreateProductInput) (*model.Product, error) {
+func (r *mutationResolver) CreateProduct(ctx context.Context, input model.CreateProductInput) (*models.Product, error) {
 	panic(fmt.Errorf("not implemented: CreateProduct - createProduct"))
 }
 
+// ID is the resolver for the id field.
+func (r *orderResolver) ID(ctx context.Context, obj *models.Order) (string, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// ID is the resolver for the id field.
+func (r *productResolver) ID(ctx context.Context, obj *models.Product) (string, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
 // GetOrder is the resolver for the getOrder field.
-func (r *queryResolver) GetOrder(ctx context.Context, id string) (*model.Order, error) {
+func (r *queryResolver) GetOrder(ctx context.Context, id string) (*models.Order, error) {
 	panic(fmt.Errorf("not implemented: GetOrder - getOrder"))
 }
 
 // GetOrders is the resolver for the getOrders field.
-func (r *queryResolver) GetOrders(ctx context.Context) ([]*model.Order, error) {
+func (r *queryResolver) GetOrders(ctx context.Context) ([]*models.Order, error) {
 	panic(fmt.Errorf("not implemented: GetOrders - getOrders"))
 }
 
-// GetUser is the resolver for the getUser field.
-func (r *queryResolver) GetUser(ctx context.Context, id string) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: GetUser - getUser"))
+func (r *queryResolver) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
+	user, err := r.userService.GetUserByEmail(email)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
+func (r *queryResolver) GetUserById(ctx context.Context, id string) (*models.User, error) {
+	user, err := r.userService.GetUserById(id)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }
 
 // GetUsers is the resolver for the getUsers field.
-func (r *queryResolver) GetUsers(ctx context.Context) ([]*model.User, error) {
+func (r *queryResolver) GetUsers(ctx context.Context) ([]*models.User, error) {
 	panic(fmt.Errorf("not implemented: GetUsers - getUsers"))
 }
 
 // GetProduct is the resolver for the getProduct field.
-func (r *queryResolver) GetProduct(ctx context.Context, id string) (*model.Product, error) {
+func (r *queryResolver) GetProduct(ctx context.Context, id string) (*models.Product, error) {
 	panic(fmt.Errorf("not implemented: GetProduct - getProduct"))
 }
 
 // GetProducts is the resolver for the getProducts field.
-func (r *queryResolver) GetProducts(ctx context.Context) ([]*model.Product, error) {
+func (r *queryResolver) GetProducts(ctx context.Context) ([]*models.Product, error) {
 	panic(fmt.Errorf("not implemented: GetProducts - getProducts"))
+}
+
+// ID is the resolver for the id field.
+func (r *userResolver) ID(ctx context.Context, obj *models.User) (string, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// Orders is the resolver for the orders field.
+func (r *userResolver) Orders(ctx context.Context, obj *models.User) ([]*models.Order, error) {
+	panic(fmt.Errorf("not implemented: Orders - orders"))
 }
 
 // Mutation returns MutationResolver implementation.
 func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 
+// Order returns OrderResolver implementation.
+func (r *Resolver) Order() OrderResolver { return &orderResolver{r} }
+
+// Product returns ProductResolver implementation.
+func (r *Resolver) Product() ProductResolver { return &productResolver{r} }
+
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
+// User returns UserResolver implementation.
+func (r *Resolver) User() UserResolver { return &userResolver{r} }
+
 type mutationResolver struct{ *Resolver }
+type orderResolver struct{ *Resolver }
+type productResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+type userResolver struct{ *Resolver }
