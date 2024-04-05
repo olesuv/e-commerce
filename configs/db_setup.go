@@ -40,48 +40,8 @@ func ConnectDB() *mongo.Client {
 	return client
 }
 
-type Collection interface {
-	GetCollection(client *mongo.Client, collectionName string) *mongo.Collection
-
-	FindOne(context.Context, interface{}, ...*options.FindOneOptions) *mongo.SingleResult
-	InsertOne(context.Context, interface{}, ...*options.InsertOneOptions) (*mongo.InsertOneResult, error)
-	InsertMany(context.Context, []interface{}, ...*options.InsertManyOptions) (*mongo.InsertManyResult, error)
-	UpdateOne(context.Context, interface{}, interface{}, ...*options.UpdateOptions) (*mongo.UpdateResult, error)
-	UpdateMany(context.Context, interface{}, interface{}, ...*options.UpdateOptions) (*mongo.UpdateResult, error)
-	DeleteOne(context.Context, interface{}, ...*options.DeleteOptions) (*mongo.DeleteResult, error)
-	DeleteMany(context.Context, interface{}, ...*options.DeleteOptions) (*mongo.DeleteResult, error)
-}
-
 func GetCollection(client *mongo.Client, collectionName string) *mongo.Collection {
 	dbName := os.Getenv("dbName")
 	collection := client.Database(dbName).Collection(collectionName)
 	return collection
-}
-
-func FindOne(collection Collection, ctx context.Context, filter interface{}, opts ...*options.FindOneOptions) *mongo.SingleResult {
-	return collection.FindOne(ctx, filter, opts...)
-}
-
-func InsertOne(collection Collection, ctx context.Context, document interface{}, opts ...*options.InsertOneOptions) (*mongo.InsertOneResult, error) {
-	return collection.InsertOne(ctx, document, opts...)
-}
-
-func InsertMany(collection Collection, ctx context.Context, documents []interface{}, opts ...*options.InsertManyOptions) (*mongo.InsertManyResult, error) {
-	return collection.InsertMany(ctx, documents, opts...)
-}
-
-func UpdateOne(collection Collection, ctx context.Context, filter interface{}, update interface{}, opts ...*options.UpdateOptions) (*mongo.UpdateResult, error) {
-	return collection.UpdateOne(ctx, filter, update, opts...)
-}
-
-func UpdateMany(collection Collection, ctx context.Context, filter interface{}, update interface{}, opts ...*options.UpdateOptions) (*mongo.UpdateResult, error) {
-	return collection.UpdateMany(ctx, filter, update, opts...)
-}
-
-func DeleteOne(collection Collection, ctx context.Context, filter interface{}, opts ...*options.DeleteOptions) (*mongo.DeleteResult, error) {
-	return collection.DeleteOne(ctx, filter, opts...)
-}
-
-func DeleteMany(collection Collection, ctx context.Context, filter interface{}, opts ...*options.DeleteOptions) (*mongo.DeleteResult, error) {
-	return collection.DeleteMany(ctx, filter, opts...)
 }
