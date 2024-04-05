@@ -19,20 +19,35 @@ func NewUserService() *UserService {
 	collection := configs.GetCollection(client, "users")
 	return &UserService{client, collection}
 }
-
-func (us *UserService) CreateUser(user *models.User) error {
+func (us *UserService) CreateUser(user *models.User) (*models.User, error) {
 	_, err := us.collection.InsertOne(context.Background(), user)
-	return err
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+func (us *UserService) DeleteUserById(id string) (*models.User, error) {
+	user, err := us.GetUserById(id)
+	if err != nil {
+		return nil, err
+	}
+	_, err = us.collection.DeleteOne(context.Background(), bson.M{"_id": id})
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }
 
-func (us *UserService) DeleteUserById(id string) error {
-	_, err := us.collection.DeleteOne(context.Background(), bson.M{"_id": id})
-	return err
-}
-
-func (us *UserService) DeleteUserByEmail(email string) error {
-	_, err := us.collection.DeleteOne(context.Background(), bson.M{"email": email})
-	return err
+func (us *UserService) DeleteUserByEmail(email string) (*models.User, error) {
+	user, err := us.GetUserByEmail(email)
+	if err != nil {
+		return nil, err
+	}
+	_, err = us.collection.DeleteOne(context.Background(), bson.M{"email": email})
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }
 
 func (us *UserService) GetUserById(id string) (*models.User, error) {
@@ -47,12 +62,26 @@ func (us *UserService) GetUserByEmail(email string) (*models.User, error) {
 	return &user, err
 }
 
-func (us *UserService) UpdateUserById(id string, user *models.User) error {
+func (us *UserService) UpdateUserById(id string, user *models.User) (*models.User, error) {
 	_, err := us.collection.UpdateOne(context.Background(), bson.M{"_id": id}, bson.M{"$set": user})
-	return err
+	if err != nil {
+		return nil, err
+	}
+	updatedUser, err := us.GetUserById(id)
+	if err != nil {
+		return nil, err
+	}
+	return updatedUser, nil
 }
 
-func (us *UserService) UpdateUserByEmail(email string, user *models.User) error {
+func (us *UserService) UpdateUserByEmail(email string, user *models.User) (*models.User, error) {
 	_, err := us.collection.UpdateOne(context.Background(), bson.M{"email": email}, bson.M{"$set": user})
-	return err
+	if err != nil {
+		return nil, err
+	}
+	updatedUser, err := us.GetUserByEmail(email)
+	if err != nil {
+		return nil, err
+	}
+	return updatedUser, nil
 }
