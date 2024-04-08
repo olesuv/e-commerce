@@ -12,10 +12,12 @@ import (
 	"server.go/models"
 )
 
+// CreateOrder is the resolver for the createOrder field.
 func (r *mutationResolver) CreateOrder(ctx context.Context, input model.CreateOrderInput) (*models.Order, error) {
 	panic(fmt.Errorf("not implemented: CreateOrder - createOrder"))
 }
 
+// CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.CreateUserInput) (*models.User, error) {
 	user, err := r.userService.CreateUser(&models.User{
 		Name:  *input.Name,
@@ -30,6 +32,7 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.CreateUse
 	return user, nil
 }
 
+// CreateProduct is the resolver for the createProduct field.
 func (r *mutationResolver) CreateProduct(ctx context.Context, input model.CreateProductInput) (*models.Product, error) {
 	panic(fmt.Errorf("not implemented: CreateProduct - createProduct"))
 }
@@ -54,16 +57,9 @@ func (r *queryResolver) GetOrders(ctx context.Context) ([]*models.Order, error) 
 	panic(fmt.Errorf("not implemented: GetOrders - getOrders"))
 }
 
-func (r *queryResolver) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
+// GetUser is the resolver for the getUser field.
+func (r *queryResolver) GetUser(ctx context.Context, email string) (*models.User, error) {
 	user, err := r.userService.GetUserByEmail(email)
-	if err != nil {
-		return nil, err
-	}
-	return user, nil
-}
-
-func (r *queryResolver) GetUserById(ctx context.Context, id string) (*models.User, error) {
-	user, err := r.userService.GetUserById(id)
 	if err != nil {
 		return nil, err
 	}
