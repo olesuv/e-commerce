@@ -19,6 +19,7 @@ func NewUserService() *UserService {
 	collection := configs.GetCollection(client, "users")
 	return &UserService{client, collection}
 }
+
 func (us *UserService) CreateUser(user *models.User) (*models.User, error) {
 	_, err := us.collection.InsertOne(context.Background(), user)
 	if err != nil {
@@ -26,6 +27,7 @@ func (us *UserService) CreateUser(user *models.User) (*models.User, error) {
 	}
 	return user, nil
 }
+
 func (us *UserService) DeleteUserById(id string) (*models.User, error) {
 	user, err := us.GetUserById(id)
 	if err != nil {
