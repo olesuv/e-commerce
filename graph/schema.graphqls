@@ -31,7 +31,7 @@ type Product {
 type Query {
   getOrder(id: ID!): Order
   getOrders: [Order!]!
-  getUser(id: ID!): User
+  getUser(email: String!): User
   getUsers: [User!]!
   getProduct(id: ID!): Product
   getProducts: [Product!]!

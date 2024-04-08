@@ -83,7 +83,7 @@ type ComplexityRoot struct {
 		GetOrders   func(childComplexity int) int
 		GetProduct  func(childComplexity int, id string) int
 		GetProducts func(childComplexity int) int
-		GetUser     func(childComplexity int, id string) int
+		GetUser     func(childComplexity int, email string) int
 		GetUsers    func(childComplexity int) int
 	}
 
@@ -110,7 +110,7 @@ type ProductResolver interface {
 type QueryResolver interface {
 	GetOrder(ctx context.Context, id string) (*models.Order, error)
 	GetOrders(ctx context.Context) ([]*models.Order, error)
-	GetUser(ctx context.Context, id string) (*models.User, error)
+	GetUser(ctx context.Context, email string) (*models.User, error)
 	GetUsers(ctx context.Context) ([]*models.User, error)
 	GetProduct(ctx context.Context, id string) (*models.Product, error)
 	GetProducts(ctx context.Context) ([]*models.Product, error)
@@ -322,7 +322,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetUser(childComplexity, args["id"].(string)), true
+		return e.complexity.Query.GetUser(childComplexity, args["email"].(string)), true
 
 	case "Query.getUsers":
 		if e.complexity.Query.GetUsers == nil {
@@ -587,14 +587,14 @@ func (ec *executionContext) field_Query_getUser_args(ctx context.Context, rawArg
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+	if tmp, ok := rawArgs["email"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["id"] = arg0
+	args["email"] = arg0
 	return args, nil
 }
 
@@ -1594,7 +1594,7 @@ func (ec *executionContext) _Query_getUser(ctx context.Context, field graphql.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetUser(rctx, fc.Args["id"].(string))
+		return ec.resolvers.Query().GetUser(rctx, fc.Args["email"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
