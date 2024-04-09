@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"server.go/graph/model"
 	"server.go/models"
 	"server.go/services"
@@ -19,6 +20,7 @@ func NewUserResolver() *UserResolver {
 
 func (r *UserResolver) CreateUser(ctx context.Context, input model.CreateUserInput) (*models.User, error) {
 	user, err := r.userService.CreateUser(&models.User{
+		Id:    primitive.NewObjectID(),
 		Name:  *input.Name,
 		Email: input.Email,
 		Phone: *input.Phone,
