@@ -23,7 +23,9 @@ func main() {
 	}
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{
-		Resolvers:  &resolvers.Resolver{},
+		Resolvers: &resolvers.Resolver{
+			UserResolver: resolvers.NewUserResolver(),
+		},
 		Directives: generated.DirectiveRoot{},
 	}))
 

@@ -1,10 +1,11 @@
 package resolvers
 
 import (
-	"server.go/models"
-	"server.go/services"
+	"context"
 
 	"server.go/graph/model"
+	"server.go/models"
+	"server.go/services"
 )
 
 type UserResolver struct {
@@ -12,11 +13,10 @@ type UserResolver struct {
 }
 
 func NewUserResolver() *UserResolver {
-	userService := services.NewUserService()
-	return &UserResolver{userService}
+	return &UserResolver{services.NewUserService()}
 }
 
-func (r *UserResolver) CreateUser(input *model.CreateUserInput) (*models.User, error) {
+func (r *UserResolver) CreateUser(ctx context.Context, input model.CreateUserInput) (*models.User, error) {
 	user, err := r.userService.CreateUser(&models.User{
 		Name:  *input.Name,
 		Email: input.Email,

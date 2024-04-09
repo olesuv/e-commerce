@@ -19,9 +19,9 @@ func (r *mutationResolver) CreateOrder(ctx context.Context, input model.CreateOr
 }
 
 // CreateUser is the resolver for the createUser field.
-func (r *mutationResolver) CreateUser(ctx context.Context, input model.CreateUserInput) (*models.User, error) {
-	panic(fmt.Errorf("not implemented: CreateUser - createUser"))
-}
+// func (r *mutationResolver) CreateUser(ctx context.Context, input model.CreateUserInput) (*models.User, error) {
+// 	panic(fmt.Errorf("not implemented: CreateUser - createUser"))
+// }
 
 // CreateProduct is the resolver for the createProduct field.
 func (r *mutationResolver) CreateProduct(ctx context.Context, input model.CreateProductInput) (*models.Product, error) {
