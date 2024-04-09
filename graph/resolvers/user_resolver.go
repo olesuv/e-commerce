@@ -2,6 +2,7 @@ package resolvers
 
 import (
 	"context"
+	"fmt"
 
 	"server.go/graph/model"
 	"server.go/models"
@@ -39,7 +40,11 @@ func (r *UserResolver) DeleteUser(ctx context.Context, email string) (*models.Us
 	return user, nil
 }
 
-func (r *UserResolver) Users(ctx context.Context) ([]*models.User, error) {
+func (r *UserResolver) ID(ctx context.Context, obj *models.User) (string, error) {
+	return string(obj.Id.Hex()), nil
+}
+
+func (r *queryResolver) Users(ctx context.Context) ([]*models.User, error) {
 	users, err := r.userService.GetUsers()
 	if err != nil {
 		return nil, err
@@ -48,15 +53,16 @@ func (r *UserResolver) Users(ctx context.Context) ([]*models.User, error) {
 	return users, nil
 }
 
-func (r *UserResolver) ID(ctx context.Context, obj *models.User) (string, error) {
-	return string(obj.Id.Hex()), nil
-}
-
-func (r *UserResolver) User(ctx context.Context, email string) (*models.User, error) {
+func (r *queryResolver) User(ctx context.Context, email string) (*models.User, error) {
 	user, err := r.userService.GetUserByEmail(email)
 	if err != nil {
 		return nil, err
 	}
 
 	return user, nil
+}
+
+// Orders is the resolver for the orders field.
+func (r *UserResolver) Orders(ctx context.Context, obj *models.User) ([]*models.Order, error) {
+	panic(fmt.Errorf("not implemented: Orders - orders"))
 }
