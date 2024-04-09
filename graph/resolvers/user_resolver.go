@@ -30,8 +30,8 @@ func (r *UserResolver) CreateUser(ctx context.Context, input model.CreateUserInp
 	return user, nil
 }
 
-func (r *UserResolver) GetUser(email string) (*models.User, error) {
-	user, err := r.userService.GetUserByEmail(email)
+func (r *UserResolver) DeleteUser(ctx context.Context, email string) (*models.User, error) {
+	user, err := r.userService.DeleteUserByEmail(email)
 	if err != nil {
 		return nil, err
 	}
@@ -39,8 +39,21 @@ func (r *UserResolver) GetUser(email string) (*models.User, error) {
 	return user, nil
 }
 
-func (r *UserResolver) DeleteUser(email string) (*models.User, error) {
-	user, err := r.userService.DeleteUserByEmail(email)
+func (r *UserResolver) Users(ctx context.Context) ([]*models.User, error) {
+	users, err := r.userService.GetUsers()
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
+func (r *UserResolver) ID(ctx context.Context, obj *models.User) (string, error) {
+	return string(obj.Id.Hex()), nil
+}
+
+func (r *UserResolver) User(ctx context.Context, email string) (*models.User, error) {
+	user, err := r.userService.GetUserByEmail(email)
 	if err != nil {
 		return nil, err
 	}

@@ -1,7 +1,7 @@
 scalar Time
 
 type User {
-  id: ID!
+  id: String!
   name: String
   email: String!
   phone: String
@@ -9,7 +9,7 @@ type User {
 }
 
 type Order {
-  id: ID!
+  id: String!
   products: [String!]!
   orderDate: Time!
   shippingAddress: String
@@ -19,7 +19,7 @@ type Order {
 }
 
 type Product {
-  id: ID!
+  id: String!
   title: String!
   description: String!
   amount: Int!
@@ -28,19 +28,10 @@ type Product {
   category: String!
 }
 
-type Query {
-  getOrder(id: ID!): Order
-  getOrders: [Order!]!
-  getUser(email: String!): User
-  getUsers: [User!]!
-  getProduct(id: ID!): Product
-  getProducts: [Product!]!
-}
-
-type Mutation {
-  createOrder(input: CreateOrderInput!): Order!
-  createUser(input: CreateUserInput!): User!
-  createProduct(input: CreateProductInput!): Product!
+input CreateUserInput {
+  name: String
+  email: String!
+  phone: String
 }
 
 input CreateOrderInput {
@@ -52,12 +43,6 @@ input CreateOrderInput {
   paymentStatus: String
 }
 
-input CreateUserInput {
-  name: String
-  email: String!
-  phone: String
-}
-
 input CreateProductInput {
   title: String!
   description: String!
@@ -65,4 +50,14 @@ input CreateProductInput {
   price: Float!
   images: [String!]!
   category: String!
+}
+
+type Query {
+  users: [User!]!
+  user(email: String!): User!
+}
+
+type Mutation {
+  createUser(input: CreateUserInput!): User!
+  deleteUser(email: String!): User!
 }

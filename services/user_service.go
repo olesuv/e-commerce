@@ -87,3 +87,20 @@ func (us *UserService) UpdateUserByEmail(email string, user *models.User) (*mode
 	}
 	return updatedUser, nil
 }
+
+func (us *UserService) GetUsers() ([]*models.User, error) {
+	cursor, err := us.collection.Find(context.Background(), bson.M{})
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.Background())
+
+	var users []*models.User
+	for cursor.Next(context.Background()) {
+		var user models.User
+		cursor.Decode(&user)
+		users = append(users, &user)
+	}
+
+	return users, nil
+}
