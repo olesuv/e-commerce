@@ -1,0 +1,68 @@
+scalar Time
+
+type User {
+  id: ID!
+  name: String
+  email: String!
+  phone: String
+  orders: [Order]
+}
+
+type Order {
+  id: ID!
+  products: [String!]!
+  orderDate: Time!
+  shippingAddress: String
+  status: String
+  customerEmail: String!
+  paymentStatus: String
+}
+
+type Product {
+  id: ID!
+  title: String!
+  description: String!
+  amount: Int!
+  price: Float!
+  images: [String!]!
+  category: String!
+}
+
+type Query {
+  getOrder(id: ID!): Order
+  getOrders: [Order!]!
+  getUser(email: String!): User
+  getUsers: [User!]!
+  getProduct(id: ID!): Product
+  getProducts: [Product!]!
+}
+
+type Mutation {
+  createOrder(input: CreateOrderInput!): Order!
+  createUser(input: CreateUserInput!): User!
+  createProduct(input: CreateProductInput!): Product!
+}
+
+input CreateOrderInput {
+  products: [String!]!
+  orderDate: Time!
+  shippingAddress: String
+  status: String
+  customerEmail: String!
+  paymentStatus: String
+}
+
+input CreateUserInput {
+  name: String
+  email: String!
+  phone: String
+}
+
+input CreateProductInput {
+  title: String!
+  description: String!
+  amount: Int!
+  price: Float!
+  images: [String!]!
+  category: String!
+}
