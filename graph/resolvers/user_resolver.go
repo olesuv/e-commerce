@@ -6,6 +6,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"server.go/graph/model"
+	"server.go/libs"
 	"server.go/models"
 	"server.go/services"
 )
@@ -19,15 +20,35 @@ func NewUserResolver() *UserResolver {
 }
 
 func (r *UserResolver) CreateUser(ctx context.Context, input model.CreateUserInput) (*models.User, error) {
-	user, err := r.userService.CreateUser(&models.User{
-		Id:    primitive.NewObjectID(),
-		Name:  *input.Name,
-		Email: input.Email,
-		Phone: *input.Phone,
-	})
+	if input.Name == nil || *input.Email == "" {
+		return nil, fmt.Errorf("email is required")
+	}
 
-	if err != nil {
-		return nil, err
+	user, err := r.userService.GetUserByEmail(*input.Email)
+
+	if user != nil {
+		return nil, fmt.Errorf("email already exists")
+	}
+
+	if err.Error() == "mongo: no documents in result" {
+		defaultName := "New User"
+		if input.Name == nil || *input.Name == "" {
+			input.Name = &defaultName
+		}
+
+		hashedPassword := libs.HashPassword(*input.Password)
+
+		user, err = r.userService.CreateUser(&models.User{
+			Id:       primitive.NewObjectID(),
+			Name:     *input.Name,
+			Email:    *input.Email,
+			Phone:    *input.Phone,
+			Password: hashedPassword,
+			Image:    *input.Image,
+		})
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return user, nil
