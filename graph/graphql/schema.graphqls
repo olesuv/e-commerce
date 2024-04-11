@@ -1,7 +1,8 @@
 scalar Time
+scalar Id
 
 type User {
-  id: String!
+  id: Id!
   name: String
   email: String!
   phone: String
