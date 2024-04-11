@@ -25,12 +25,10 @@ func (r *UserResolver) CreateUser(ctx context.Context, input model.CreateUserInp
 	}
 
 	user, err := r.userService.GetUserByEmail(*input.Email)
-
-	if user != nil {
-		return nil, fmt.Errorf("email already exists")
+	if err != nil && err.Error() != "mongo: no documents in result" {
+		return nil, fmt.Errorf("server: get user by email, details: %w", err)
 	}
-
-	if err.Error() == "mongo: no documents in result" {
+	if err != nil && err.Error() == "mongo: no documents in result" {
 		defaultName := "New User"
 		if input.Name == nil || *input.Name == "" {
 			input.Name = &defaultName
@@ -47,7 +45,7 @@ func (r *UserResolver) CreateUser(ctx context.Context, input model.CreateUserInp
 			Image:    *input.Image,
 		})
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("server: create user details: %w", err)
 		}
 	}
 
@@ -64,10 +62,10 @@ func (r *UserResolver) DeleteUser(ctx context.Context, email string) (*models.Us
 }
 
 func (r *UserResolver) ID(ctx context.Context, obj *models.User) (string, error) {
-	return string(obj.Id.Hex()), nil
+	return obj.Id.Hex(), nil
 }
 
-func (r *queryResolver) Users(ctx context.Context) ([]*models.User, error) {
+func (r *UserResolver) Users(ctx context.Context) ([]*models.User, error) {
 	users, err := r.userService.GetUsers()
 	if err != nil {
 		return nil, err
@@ -76,8 +74,15 @@ func (r *queryResolver) Users(ctx context.Context) ([]*models.User, error) {
 	return users, nil
 }
 
-func (r *queryResolver) User(ctx context.Context, email string) (*models.User, error) {
+func (r *UserResolver) User(ctx context.Context, email string) (*models.User, error) {
+	if email == "" {
+		return nil, fmt.Errorf("server: email is required")
+	}
+
 	user, err := r.userService.GetUserByEmail(email)
+	if user == nil {
+		return nil, fmt.Errorf("server: email already exists")
+	}
 	if err != nil {
 		return nil, err
 	}
