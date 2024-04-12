@@ -34,9 +34,7 @@ type Product {
 input CreateUserInput {
   name: String
   email: String
-  phone: String
   password: String
-  image: String
 }
 
 input CreateOrderInput {
