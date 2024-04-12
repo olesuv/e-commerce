@@ -20,11 +20,18 @@ func NewUserResolver() *UserResolver {
 }
 
 func (r *UserResolver) CreateUser(ctx context.Context, input model.CreateUserInput) (*models.User, error) {
-	if input.Name == nil || *input.Email == "" {
+	if input.Email == nil || *input.Email == "" {
 		return nil, fmt.Errorf("email is required")
 	}
 
+	if input.Password == nil || *input.Password == "" {
+		return nil, fmt.Errorf("password is required")
+	}
+
 	user, err := r.userService.GetUserByEmail(*input.Email)
+	if err == nil && user != nil {
+		return nil, fmt.Errorf("email already exists")
+	}
 	if err != nil && err.Error() != "mongo: no documents in result" {
 		return nil, fmt.Errorf("server: get user by email, details: %w", err)
 	}
@@ -40,9 +47,7 @@ func (r *UserResolver) CreateUser(ctx context.Context, input model.CreateUserInp
 			Id:       primitive.NewObjectID(),
 			Name:     *input.Name,
 			Email:    *input.Email,
-			Phone:    *input.Phone,
 			Password: hashedPassword,
-			Image:    *input.Image,
 		})
 		if err != nil {
 			return nil, fmt.Errorf("server: create user details: %w", err)
