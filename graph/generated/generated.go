@@ -82,13 +82,14 @@ type ComplexityRoot struct {
 	}
 
 	User struct {
-		Email    func(childComplexity int) int
-		ID       func(childComplexity int) int
-		Image    func(childComplexity int) int
-		Name     func(childComplexity int) int
-		Orders   func(childComplexity int) int
-		Password func(childComplexity int) int
-		Phone    func(childComplexity int) int
+		Email         func(childComplexity int) int
+		EmailIsActive func(childComplexity int) int
+		ID            func(childComplexity int) int
+		Image         func(childComplexity int) int
+		Name          func(childComplexity int) int
+		Orders        func(childComplexity int) int
+		Password      func(childComplexity int) int
+		Phone         func(childComplexity int) int
 	}
 }
 
@@ -279,6 +280,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.Email(childComplexity), true
 
+	case "User.emailIsActive":
+		if e.complexity.User.EmailIsActive == nil {
+			break
+		}
+
+		return e.complexity.User.EmailIsActive(childComplexity), true
+
 	case "User.id":
 		if e.complexity.User.ID == nil {
 			break
@@ -436,6 +444,7 @@ type User {
   id: Id!
   name: String
   email: String!
+  emailIsActive: Boolean
   phone: String
   password: String!
   image: String
@@ -646,6 +655,8 @@ func (ec *executionContext) fieldContext_Mutation_createUser(ctx context.Context
 				return ec.fieldContext_User_name(ctx, field)
 			case "email":
 				return ec.fieldContext_User_email(ctx, field)
+			case "emailIsActive":
+				return ec.fieldContext_User_emailIsActive(ctx, field)
 			case "phone":
 				return ec.fieldContext_User_phone(ctx, field)
 			case "password":
@@ -717,6 +728,8 @@ func (ec *executionContext) fieldContext_Mutation_deleteUser(ctx context.Context
 				return ec.fieldContext_User_name(ctx, field)
 			case "email":
 				return ec.fieldContext_User_email(ctx, field)
+			case "emailIsActive":
+				return ec.fieldContext_User_emailIsActive(ctx, field)
 			case "phone":
 				return ec.fieldContext_User_phone(ctx, field)
 			case "password":
@@ -1395,6 +1408,8 @@ func (ec *executionContext) fieldContext_Query_users(ctx context.Context, field 
 				return ec.fieldContext_User_name(ctx, field)
 			case "email":
 				return ec.fieldContext_User_email(ctx, field)
+			case "emailIsActive":
+				return ec.fieldContext_User_emailIsActive(ctx, field)
 			case "phone":
 				return ec.fieldContext_User_phone(ctx, field)
 			case "password":
@@ -1455,6 +1470,8 @@ func (ec *executionContext) fieldContext_Query_user(ctx context.Context, field g
 				return ec.fieldContext_User_name(ctx, field)
 			case "email":
 				return ec.fieldContext_User_email(ctx, field)
+			case "emailIsActive":
+				return ec.fieldContext_User_emailIsActive(ctx, field)
 			case "phone":
 				return ec.fieldContext_User_phone(ctx, field)
 			case "password":
@@ -1734,6 +1751,47 @@ func (ec *executionContext) fieldContext_User_email(ctx context.Context, field g
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _User_emailIsActive(ctx context.Context, field graphql.CollectedField, obj *models.User) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_User_emailIsActive(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.EmailIsActive, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalOBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_User_emailIsActive(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "User",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
 		},
 	}
 	return fc, nil
@@ -4263,6 +4321,8 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
+		case "emailIsActive":
+			out.Values[i] = ec._User_emailIsActive(ctx, field, obj)
 		case "phone":
 			out.Values[i] = ec._User_phone(ctx, field, obj)
 		case "password":

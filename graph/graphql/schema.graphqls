@@ -5,6 +5,7 @@ type User {
   id: Id!
   name: String
   email: String!
+  emailIsActive: Boolean
   phone: String
   password: String!
   image: String
