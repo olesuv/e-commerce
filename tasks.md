@@ -10,9 +10,8 @@
 
    - [ ] graphql server (milestone)
    - [ ] user resolver:
+     - [ ] email verification
      - [ ] user create validation / error handling
-   - [ ] order controller
-   - [ ] product controller (xz)
 
 3. **Tests**
 

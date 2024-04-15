@@ -3,6 +3,7 @@ package resolvers
 import (
 	"context"
 	"fmt"
+	"net/mail"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"server.go/graph/model"
@@ -26,6 +27,11 @@ func (r *UserResolver) CreateUser(ctx context.Context, input model.CreateUserInp
 
 	if input.Password == nil || *input.Password == "" {
 		return nil, fmt.Errorf("password is required")
+	}
+
+	_, err := mail.ParseAddress(*input.Email)
+	if err != nil {
+		return nil, fmt.Errorf("invalid email address")
 	}
 
 	user, err := r.userService.GetUserByEmail(*input.Email)
