@@ -21,8 +21,8 @@ func (r *mutationResolver) DeleteUser(ctx context.Context, email string) (*model
 	return r.UserResolver.DeleteUser(ctx, email)
 }
 
-func (r *mutationResolver) VerifyUser(ctx context.Context, email string) (*models.User, error) {
-	return r.UserResolver.VerifyUser(ctx, email)
+func (r *mutationResolver) VerifyUser(ctx context.Context, token string) (*models.User, error) {
+	return r.UserResolver.VerifyUser(ctx, token)
 }
 
 // ID is the resolver for the id field.

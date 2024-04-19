@@ -54,7 +54,7 @@ type ComplexityRoot struct {
 	Mutation struct {
 		CreateUser func(childComplexity int, input model.CreateUserInput) int
 		DeleteUser func(childComplexity int, email string) int
-		VerifyUser func(childComplexity int, email string) int
+		VerifyUser func(childComplexity int, token string) int
 	}
 
 	Order struct {
@@ -97,7 +97,7 @@ type ComplexityRoot struct {
 type MutationResolver interface {
 	CreateUser(ctx context.Context, input model.CreateUserInput) (*models.User, error)
 	DeleteUser(ctx context.Context, email string) (*models.User, error)
-	VerifyUser(ctx context.Context, email string) (*models.User, error)
+	VerifyUser(ctx context.Context, token string) (*models.User, error)
 }
 type OrderResolver interface {
 	ID(ctx context.Context, obj *models.Order) (string, error)
@@ -168,7 +168,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.VerifyUser(childComplexity, args["email"].(string)), true
+		return e.complexity.Mutation.VerifyUser(childComplexity, args["token"].(string)), true
 
 	case "Order.customerEmail":
 		if e.complexity.Order.CustomerEmail == nil {
@@ -517,7 +517,7 @@ type Query {
 type Mutation {
   createUser(input: CreateUserInput!): User!
   deleteUser(email: String!): User!
-  verifyUser(email: String!): User!
+  verifyUser(token: String!): User!
 }
 `, BuiltIn: false},
 }
@@ -561,14 +561,14 @@ func (ec *executionContext) field_Mutation_verifyUser_args(ctx context.Context, 
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["email"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
+	if tmp, ok := rawArgs["token"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("token"))
 		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["email"] = arg0
+	args["token"] = arg0
 	return args, nil
 }
 
@@ -800,7 +800,7 @@ func (ec *executionContext) _Mutation_verifyUser(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().VerifyUser(rctx, fc.Args["email"].(string))
+		return ec.resolvers.Mutation().VerifyUser(rctx, fc.Args["token"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
