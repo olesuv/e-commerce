@@ -1,14 +1,23 @@
 package libs
 
 import (
+	"context"
+	"fmt"
+
 	"github.com/go-gomail/gomail"
 	"github.com/google/uuid"
+	"github.com/redis/go-redis/v9"
 )
 
-func GenerateVerificationToken(email string) (string, error) {
+func GenerateVerificationToken(ctx context.Context, email string, rdb *redis.Client) error {
 	token := uuid.New().String()
-	// implement redis logic
-	return token, nil
+
+	err := rdb.Set(ctx, token, email, 0).Err()
+	if err != nil {
+		return fmt.Errorf("server: redis set, details: %w", err)
+	}
+
+	return nil
 }
 
 func SendVerificationEmail(email string, token string) {
