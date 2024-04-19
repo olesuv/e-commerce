@@ -10,8 +10,12 @@
 
    - [ ] graphql server (milestone)
    - [ ] user resolver:
+     - [x] user create validation / error handling
+     - [x] email verification link reciever mutation
+   - [ ] email server:
      - [ ] email verification
-     - [ ] user create validation / error handling
+     - [x] code generator
+     - [x] code saver
 
 3. **Tests**
 
