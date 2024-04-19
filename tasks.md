@@ -23,4 +23,4 @@
    - [ ] user resolver tests
 
 4. **Refactoring**
-   - [ ] implement patterns (2/5)
+   - [ ] implement patterns (3/5)
