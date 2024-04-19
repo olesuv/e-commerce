@@ -7,6 +7,7 @@ import (
 
 func GenerateVerificationToken(email string) (string, error) {
 	token := uuid.New().String()
+	// implement redis logic
 	return token, nil
 }
 

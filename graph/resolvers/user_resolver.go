@@ -144,6 +144,8 @@ func (r *UserResolver) VerifyUser(ctx context.Context, token string) (*models.Us
 		return nil, fmt.Errorf("server: verify user by email, details: %w", err)
 	}
 
+	r.rdb.Del(ctx, token)
+
 	return user, nil
 }
 
