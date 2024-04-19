@@ -21,6 +21,10 @@ func (r *mutationResolver) DeleteUser(ctx context.Context, email string) (*model
 	return r.UserResolver.DeleteUser(ctx, email)
 }
 
+func (r *mutationResolver) VerifyUser(ctx context.Context, email string) (*models.User, error) {
+	return r.UserResolver.VerifyUser(ctx, email)
+}
+
 // ID is the resolver for the id field.
 func (r *orderResolver) ID(ctx context.Context, obj *models.Order) (string, error) {
 	panic(fmt.Errorf("not implemented: ID - id"))

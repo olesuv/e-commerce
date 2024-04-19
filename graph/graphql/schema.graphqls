@@ -64,4 +64,5 @@ type Query {
 type Mutation {
   createUser(input: CreateUserInput!): User!
   deleteUser(email: String!): User!
+  verifyUser(email: String!): User!
 }

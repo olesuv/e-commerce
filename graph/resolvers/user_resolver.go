@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"net/mail"
 
+	"github.com/redis/go-redis/v9"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"server.go/configs"
 	"server.go/graph/model"
 	"server.go/libs"
 	"server.go/models"
@@ -14,10 +16,14 @@ import (
 
 type UserResolver struct {
 	userService *services.UserService
+	rdb         *redis.Client
 }
 
 func NewUserResolver() *UserResolver {
-	return &UserResolver{services.NewUserService()}
+	return &UserResolver{
+		userService: services.NewUserService(),
+		rdb:         configs.NewRedisClient(),
+	}
 }
 
 func (r *UserResolver) CreateUser(ctx context.Context, input model.CreateUserInput) (*models.User, error) {
@@ -104,6 +110,27 @@ func (r *UserResolver) User(ctx context.Context, email string) (*models.User, er
 	user, err := r.userService.GetUserByEmail(email)
 	if err != nil {
 		return nil, err
+	}
+
+	return user, nil
+}
+
+func (r *UserResolver) VerifyUser(ctx context.Context, email string) (*models.User, error) {
+	if email == "" {
+		return nil, fmt.Errorf("server: email is required")
+	}
+
+	token, err := r.rdb.Get(ctx, email).Result()
+	if err != nil {
+		return nil, fmt.Errorf("server: verify user by email, details: %w", err)
+	}
+	if token == "" {
+		return nil, fmt.Errorf("server: no token found")
+	}
+
+	user, err := r.userService.GetUserByEmail(email)
+	if err != nil {
+		return nil, fmt.Errorf("server: get user by email, details: %w", err)
 	}
 
 	return user, nil
