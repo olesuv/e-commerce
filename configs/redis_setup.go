@@ -9,22 +9,46 @@ import (
 
 const defaultRedisPort = "6379"
 
-func NewRedisClient() *redis.Client {
-	redisPort := os.Getenv("REDIS_PORT")
-	redisPassword := os.Getenv("REDIS_PASSWORD")
+type RedisClientBuilder struct {
+	addr     string
+	password string
+}
 
+func NewRedisClientBuilder() *RedisClientBuilder {
+	return &RedisClientBuilder{}
+}
+
+func (b *RedisClientBuilder) WithAddr(addr string) *RedisClientBuilder {
+	b.addr = addr
+	return b
+}
+
+func (b *RedisClientBuilder) WithPassword(password string) *RedisClientBuilder {
+	b.password = password
+	return b
+}
+
+func (b *RedisClientBuilder) Build() (*redis.Client, error) {
+	redisPort := os.Getenv("REDIS_PORT")
 	if redisPort == "" {
 		redisPort = defaultRedisPort
 	}
-	if redisPassword == "" {
+
+	if b.addr == "" {
+		b.addr = "localhost:" + redisPort
+	}
+
+	if b.password == "" {
 		log.Printf("server: redis password is required")
 	}
 
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "localhost:" + redisPort,
-		Password: os.Getenv("REDIS_PASSWORD"),
+		Addr:     b.addr,
+		Password: b.password,
 		DB:       0,
 	})
 
-	return rdb
+	log.Printf("connect to redis: http://%s/", b.addr)
+
+	return rdb, nil
 }

@@ -3,7 +3,9 @@ package resolvers
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/mail"
+	"os"
 
 	"github.com/redis/go-redis/v9"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -20,9 +22,18 @@ type UserResolver struct {
 }
 
 func NewUserResolver() *UserResolver {
+	builder := configs.NewRedisClientBuilder()
+
+	builder.WithAddr("localhost:" + os.Getenv("REDIS_PORT")).WithPassword(os.Getenv("REDIS_PASSWORD"))
+
+	rdb, err := builder.Build()
+	if err != nil {
+		log.Fatal("server: redis connection failed, details: ", err)
+	}
+
 	return &UserResolver{
 		userService: services.NewUserService(),
-		rdb:         configs.NewRedisClient(),
+		rdb:         rdb,
 	}
 }
 
@@ -115,22 +126,22 @@ func (r *UserResolver) User(ctx context.Context, email string) (*models.User, er
 	return user, nil
 }
 
-func (r *UserResolver) VerifyUser(ctx context.Context, email string) (*models.User, error) {
-	if email == "" {
-		return nil, fmt.Errorf("server: email is required")
+func (r *UserResolver) VerifyUser(ctx context.Context, token string) (*models.User, error) {
+	if token == "" {
+		return nil, fmt.Errorf("server: token is required")
 	}
 
-	token, err := r.rdb.Get(ctx, email).Result()
+	email, err := r.rdb.Get(ctx, token).Result()
 	if err != nil {
 		return nil, fmt.Errorf("server: verify user by email, details: %w", err)
 	}
-	if token == "" {
-		return nil, fmt.Errorf("server: no token found")
+	if email == "" {
+		return nil, fmt.Errorf("server: invalid token")
 	}
 
-	user, err := r.userService.GetUserByEmail(email)
+	user, err := r.userService.VerifyUser(email)
 	if err != nil {
-		return nil, fmt.Errorf("server: get user by email, details: %w", err)
+		return nil, fmt.Errorf("server: verify user by email, details: %w", err)
 	}
 
 	return user, nil
