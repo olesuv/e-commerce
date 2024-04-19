@@ -2,7 +2,7 @@ package configs
 
 import (
 	"context"
-	"fmt"
+	"log"
 	"os"
 	"sync"
 
@@ -34,7 +34,7 @@ func ConnectDB() *mongo.Client {
 			panic(err)
 		}
 
-		fmt.Println("mongodb connected")
+		log.Printf("connected to mongodb")
 	})
 
 	return client
