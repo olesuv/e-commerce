@@ -3,31 +3,58 @@ package libs
 import (
 	"context"
 	"fmt"
+	"os"
+	"strconv"
 
 	"github.com/go-gomail/gomail"
 	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
+	"server.go/constants"
 )
 
-func GenerateVerificationToken(ctx context.Context, email string, rdb *redis.Client) error {
+func GenerateVerificationToken(ctx context.Context, email string, rdb *redis.Client) (string, error) {
 	token := uuid.New().String()
 
 	err := rdb.Set(ctx, token, email, 0).Err()
 	if err != nil {
-		return fmt.Errorf("server: redis set, details: %w", err)
+		return "", fmt.Errorf("server: redis set, details: %w", err)
 	}
 
-	return nil
+	return token, nil
 }
 
-func SendVerificationEmail(email string, token string) {
-	m := gomail.NewMessage()
-	m.SetHeader("From", "your@email.com")
-	m.SetHeader("To", email)
-	m.SetHeader("Subject", "Email Verification")
-	m.SetBody("text/plain", "Please click on this link to verify your email: http://yourwebsite.com/verifyuser="+token)
+func SendVerificationEmail(emailUser string, token string) {
+	emailSender := os.Getenv("EMAIL_SENDER")
+	if emailSender == "" {
+		panic("server: email sender is required")
+	}
 
-	d := gomail.NewDialer("smtp.yourserver.com", 587, "your_username", "your_password")
+	m := gomail.NewMessage()
+	m.SetHeader("From", emailSender)
+	m.SetHeader("To", emailUser)
+	m.SetHeader("Subject", constants.EMAIL_HEADER)
+	m.SetBody("text/plain", constants.EMAIL_BODY+constants.VERIFICATION_LINK+token)
+
+	smtpLink := os.Getenv("SMTP_LINK")
+	smtpPortStr := os.Getenv("SMTP_PORT")
+	smtpUsername := os.Getenv("SMTP_USERNAME")
+	smtpPassword := os.Getenv("SMTP_PASSWORD")
+
+	if smtpLink == "" {
+		panic("server: smtp link is required")
+	}
+	smtpPort, err := strconv.Atoi(smtpPortStr)
+	if err != nil {
+		panic("server: smtp port is required")
+	}
+	if smtpUsername == "" {
+		panic("server: smtp username is required")
+	}
+	if smtpPassword == "" {
+		panic("server: smtp password is required")
+	}
+
+	d := gomail.NewDialer(smtpLink, smtpPort, smtpUsername, smtpPassword)
 
 	if err := d.DialAndSend(m); err != nil {
 		panic(err)
