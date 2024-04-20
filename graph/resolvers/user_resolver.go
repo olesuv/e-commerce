@@ -173,7 +173,15 @@ func (r *UserResolver) LoginUser(ctx context.Context, input model.LoginUserInput
 		return nil, fmt.Errorf("user not found")
 	}
 
-	// impelemnt user login with using middleware
+	userHash := user.Password
+	comapre := libs.VerifyPassword(*input.Password, userHash)
+
+	if !comapre {
+		return nil, fmt.Errorf("invalid password")
+	}
+
+	// TODO: impement middleware
+	// TODO: impelemnt user login with using middleware
 
 	return nil, nil
 }
