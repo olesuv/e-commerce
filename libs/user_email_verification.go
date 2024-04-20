@@ -59,4 +59,6 @@ func SendVerificationEmail(emailUser string, token string) {
 	if err := d.DialAndSend(m); err != nil {
 		panic(err)
 	}
+
+	fmt.Println("server: successfully sended to: ", emailUser)
 }

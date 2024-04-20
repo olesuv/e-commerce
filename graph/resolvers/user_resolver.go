@@ -77,6 +77,16 @@ func (r *UserResolver) CreateUser(ctx context.Context, input model.CreateUserInp
 		if err != nil {
 			return nil, fmt.Errorf("server: create user, details: %w", err)
 		}
+
+		verificationToken, err := libs.GenerateVerificationToken(ctx, *input.Email, r.rdb)
+		if err != nil {
+			// handle delete user possible error
+			r.userService.DeleteUserByEmail(*input.Email)
+
+			return nil, fmt.Errorf(err.Error())
+		}
+
+		libs.SendVerificationEmail(*input.Email, verificationToken)
 	}
 
 	return user, nil
