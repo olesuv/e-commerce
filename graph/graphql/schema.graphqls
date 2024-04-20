@@ -56,6 +56,11 @@ input CreateProductInput {
   category: String!
 }
 
+input LoginUserInput {
+  email: String
+  password: String
+}
+
 type Query {
   users: [User!]!
   user(email: String!): User!
@@ -63,6 +68,7 @@ type Query {
 
 type Mutation {
   createUser(input: CreateUserInput!): User!
+  loginUser(input: LoginUserInput!): User!
   deleteUser(email: String!): User!
   verifyUser(token: String!): User!
 }

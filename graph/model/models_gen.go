@@ -30,6 +30,11 @@ type CreateUserInput struct {
 	Password *string `json:"password,omitempty"`
 }
 
+type LoginUserInput struct {
+	Email    *string `json:"email,omitempty"`
+	Password *string `json:"password,omitempty"`
+}
+
 type Mutation struct {
 }
 
