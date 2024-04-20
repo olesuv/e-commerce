@@ -5,6 +5,7 @@
    - [x] complete all models
    - [x] make db singleton
    - [x] service approach for db
+   - [ ] redis server
 
 2. **Controllers/API**
 
@@ -12,6 +13,9 @@
    - [ ] user resolver:
      - [x] user create validation / error handling
      - [x] email verification link reciever mutation
+     - [ ] login user mutation
+   - [ ] middleware
+     - [ ] login user mutation
    - [ ] email server:
      - [ ] email verification
      - [x] code generator

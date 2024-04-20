@@ -159,7 +159,25 @@ func (r *UserResolver) VerifyUser(ctx context.Context, token string) (*models.Us
 	return user, nil
 }
 
-// Orders is the resolver for the orders field.
+func (r *UserResolver) LoginUser(ctx context.Context, input model.LoginUserInput) (*models.User, error) {
+	if *input.Email == "" || *input.Password == "" {
+		return nil, fmt.Errorf("email and password are required")
+	}
+
+	user, err := r.userService.GetUserByEmail(*input.Email)
+	if err != nil {
+		return nil, fmt.Errorf("server: get user by email, details: %w", err)
+	}
+
+	if user == nil {
+		return nil, fmt.Errorf("user not found")
+	}
+
+	// impelemnt user login with using middleware
+
+	return nil, nil
+}
+
 func (r *UserResolver) Orders(ctx context.Context, obj *models.User) ([]*models.Order, error) {
 	panic(fmt.Errorf("not implemented: Orders - orders"))
 }

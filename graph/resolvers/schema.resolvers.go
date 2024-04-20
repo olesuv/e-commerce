@@ -18,7 +18,7 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.CreateUse
 }
 
 func (r *mutationResolver) LoginUser(ctx context.Context, input model.LoginUserInput) (*models.User, error) {
-	panic(fmt.Errorf("not implemented: LoginUser - loginUser"))
+	return r.UserResolver.LoginUser(ctx, input)
 }
 
 func (r *mutationResolver) DeleteUser(ctx context.Context, email string) (*models.User, error) {
