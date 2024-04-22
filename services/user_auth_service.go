@@ -14,7 +14,7 @@ type UserAuthService struct {
 	collection *mongo.Collection
 }
 
-func NewUserVerficicationService() *UserAuthService {
+func NewUserAuthService() *UserAuthService {
 	client := configs.ConnectDB()
 	collection := configs.GetCollection(client, "sessions")
 	return &UserAuthService{client, collection}

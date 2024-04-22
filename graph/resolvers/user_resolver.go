@@ -80,7 +80,7 @@ func (r *UserResolver) CreateUser(ctx context.Context, input model.CreateUserInp
 
 		verificationToken, err := libs.GenerateVerificationToken(ctx, *input.Email, r.rdb)
 		if err != nil {
-			// handle delete user possible error
+			// TODO: handle delete user possible error
 			r.userService.DeleteUserByEmail(*input.Email)
 
 			return nil, fmt.Errorf(err.Error())
@@ -156,6 +156,11 @@ func (r *UserResolver) VerifyUser(ctx context.Context, token string) (*models.Us
 
 	r.rdb.Del(ctx, token)
 
+	_, err = libs.GenearteJwtToken(email)
+	if err != nil {
+		return nil, fmt.Errorf(err.Error())
+	}
+
 	return user, nil
 }
 
@@ -180,8 +185,10 @@ func (r *UserResolver) LoginUser(ctx context.Context, input model.LoginUserInput
 		return nil, fmt.Errorf("invalid password")
 	}
 
-	// TODO: impement middleware
-	// TODO: impelemnt user login with using middleware
+	_, err = libs.GenearteJwtToken(*input.Email)
+	if err != nil {
+		return nil, fmt.Errorf(err.Error())
+	}
 
 	return nil, nil
 }

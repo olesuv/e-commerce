@@ -2,23 +2,16 @@ package middleware
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
-	"server.go/services"
+	"github.com/99designs/gqlgen/graphql"
+	"github.com/vektah/gqlparser/v2/gqlerror"
+	"server.go/libs"
 )
 
 type AuthTokenKey string
 
-type AuthMiddleware struct {
-	UserAuthService *services.UserAuthService
-}
-
-func NewAuthMiddleware(uvs *services.UserAuthService) *AuthMiddleware {
-	return &AuthMiddleware{UserAuthService: uvs}
-}
-
-func (am *AuthMiddleware) Authenticate(next http.Handler) http.Handler {
+func Authenticate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		token := r.Header.Get("Authorization")
 		if token == "" {
@@ -26,8 +19,8 @@ func (am *AuthMiddleware) Authenticate(next http.Handler) http.Handler {
 			return
 		}
 
-		isValid, err := am.isValidToken(token)
-		if err != nil || !isValid {
+		email, err := libs.ValidateJwtToken(token)
+		if err != nil || email == "" {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
 			return
 		}
@@ -39,15 +32,18 @@ func (am *AuthMiddleware) Authenticate(next http.Handler) http.Handler {
 	})
 }
 
-func (am *AuthMiddleware) isValidToken(token string) (bool, error) {
-	session, err := am.UserAuthService.GetSessionByToken(token)
-	if err != nil {
-		return false, fmt.Errorf("middleware: get session by token, details: %w", err)
+func CtxValue(ctx context.Context) string {
+	raw, _ := ctx.Value(AuthTokenKey("token")).(string)
+	return raw
+}
+
+func Auth(ctx context.Context, obj interface{}, next graphql.Resolver) (interface{}, error) {
+	token := CtxValue(ctx)
+	if token == "" {
+		return nil, &gqlerror.Error{
+			Message: "Unauthorized",
+		}
 	}
 
-	if session.Token != token {
-		return false, fmt.Errorf("middleware: invalid token")
-	}
-
-	return true, nil
+	return next(ctx)
 }

@@ -6,11 +6,9 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"server.go/models"
-	"server.go/services"
 )
 
-func GenearteJwtToken(email string, uas *services.UserAuthService) (string, error) {
+func GenearteJwtToken(email string) (string, error) {
 	claims := jwt.MapClaims{
 		"email": email,
 		"exp":   time.Now().Add(time.Hour * 24 * 40).Unix(),
@@ -28,19 +26,10 @@ func GenearteJwtToken(email string, uas *services.UserAuthService) (string, erro
 		return "", fmt.Errorf("libs: signed string, details: %w", err)
 	}
 
-	_, err = uas.CreateSession(&models.Session{
-		UserEmail:   email,
-		DateExpired: time.Now().Add(time.Hour * 24 * 40).String(),
-		Token:       tokenString,
-	})
-	if err != nil {
-		return "", fmt.Errorf("server: create session, details: %w", err)
-	}
-
 	return tokenString, nil
 }
 
-func ValidateJwtToken(tokenString string, uas *services.UserAuthService) (string, error) {
+func ValidateJwtToken(tokenString string) (string, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		jwtSecret := os.Getenv("JWT_SECRET")
 		if jwtSecret == "" {
@@ -62,12 +51,6 @@ func ValidateJwtToken(tokenString string, uas *services.UserAuthService) (string
 	if !ok {
 		return "", fmt.Errorf("libs: invalid email claim")
 	}
-	session, err := uas.GetSessionByToken(tokenString)
-	if err != nil {
-		return "", fmt.Errorf("server: get session by token, details: %w", err)
-	}
-	if session == nil || session.UserEmail != email {
-		return "", fmt.Errorf("server: invalid session")
-	}
+
 	return email, nil
 }

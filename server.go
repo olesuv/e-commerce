@@ -10,6 +10,7 @@ import (
 	"server.go/configs"
 	"server.go/graph/generated"
 	"server.go/graph/resolvers"
+	"server.go/middleware"
 )
 
 const defaultPort = "8080"
@@ -29,8 +30,10 @@ func main() {
 		Directives: generated.DirectiveRoot{},
 	}))
 
+	authHandler := middleware.Authenticate(srv)
+
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", srv)
+	http.Handle("/query", authHandler)
 
 	log.Printf("connect to graphql: http://localhost:%s/", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
