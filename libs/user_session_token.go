@@ -39,3 +39,35 @@ func GenearteJwtToken(email string, uas *services.UserAuthService) (string, erro
 
 	return tokenString, nil
 }
+
+func ValidateJwtToken(tokenString string, uas *services.UserAuthService) (string, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		jwtSecret := os.Getenv("JWT_SECRET")
+		if jwtSecret == "" {
+			return nil, fmt.Errorf("libs: jwt secret is required")
+		}
+		return []byte(jwtSecret), nil
+	})
+	if err != nil {
+		return "", fmt.Errorf("libs: parse token, details: %w", err)
+	}
+	if !token.Valid {
+		return "", fmt.Errorf("libs: invalid token")
+	}
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return "", fmt.Errorf("libs: invalid claims")
+	}
+	email, ok := claims["email"].(string)
+	if !ok {
+		return "", fmt.Errorf("libs: invalid email claim")
+	}
+	session, err := uas.GetSessionByToken(tokenString)
+	if err != nil {
+		return "", fmt.Errorf("server: get session by token, details: %w", err)
+	}
+	if session == nil || session.UserEmail != email {
+		return "", fmt.Errorf("server: invalid session")
+	}
+	return email, nil
+}
