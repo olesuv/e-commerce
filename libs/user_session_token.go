@@ -1,6 +1,7 @@
 package libs
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"time"
@@ -8,7 +9,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func GenearteJwtToken(email string) (string, error) {
+func GenearteJwtToken(ctx context.Context, email string) (string, error) {
 	claims := jwt.MapClaims{
 		"email": email,
 		"exp":   time.Now().Add(time.Hour * 24 * 40).Unix(),
@@ -29,7 +30,7 @@ func GenearteJwtToken(email string) (string, error) {
 	return tokenString, nil
 }
 
-func ValidateJwtToken(tokenString string) (string, error) {
+func ValidateJwtToken(ctx context.Context, tokenString string) (string, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		jwtSecret := os.Getenv("JWT_SECRET")
 		if jwtSecret == "" {

@@ -1,5 +1,13 @@
 scalar Time
 scalar Id
+scalar Any
+
+directive @goField(
+  forceResolver: Boolean
+  name: String
+) on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+
+directive @auth on FIELD_DEFINITION
 
 type User {
   id: Id!
@@ -66,9 +74,13 @@ type Query {
   user(email: String!): User!
 }
 
+type AuthOps {
+  loginUser(input: LoginUserInput!): Any! @goField(forceResolver: true)
+}
+
 type Mutation {
   createUser(input: CreateUserInput!): User!
-  loginUser(input: LoginUserInput!): User!
   deleteUser(email: String!): User!
   verifyUser(token: String!): User!
+  auth: AuthOps! @goField(forceResolver: true)
 }

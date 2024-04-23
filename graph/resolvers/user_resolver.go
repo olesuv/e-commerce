@@ -156,7 +156,7 @@ func (r *UserResolver) VerifyUser(ctx context.Context, token string) (*models.Us
 
 	r.rdb.Del(ctx, token)
 
-	_, err = libs.GenearteJwtToken(email)
+	_, err = libs.GenearteJwtToken(ctx, email)
 	if err != nil {
 		return nil, fmt.Errorf(err.Error())
 	}
@@ -164,33 +164,33 @@ func (r *UserResolver) VerifyUser(ctx context.Context, token string) (*models.Us
 	return user, nil
 }
 
-func (r *UserResolver) LoginUser(ctx context.Context, input model.LoginUserInput) (*models.User, error) {
+func (r *UserResolver) LoginUser(ctx context.Context, input model.LoginUserInput) (string, error) {
 	if *input.Email == "" || *input.Password == "" {
-		return nil, fmt.Errorf("email and password are required")
+		return "", fmt.Errorf("email and password are required")
 	}
 
 	user, err := r.userService.GetUserByEmail(*input.Email)
 	if err != nil {
-		return nil, fmt.Errorf("server: get user by email, details: %w", err)
+		return "", fmt.Errorf("server: get user by email, details: %w", err)
 	}
 
 	if user == nil {
-		return nil, fmt.Errorf("user not found")
+		return "", fmt.Errorf("user not found")
 	}
 
 	userHash := user.Password
 	comapre := libs.VerifyPassword(*input.Password, userHash)
 
 	if !comapre {
-		return nil, fmt.Errorf("invalid password")
+		return "", fmt.Errorf("invalid password")
 	}
 
-	_, err = libs.GenearteJwtToken(*input.Email)
+	auth, err := libs.GenearteJwtToken(ctx, *input.Email)
 	if err != nil {
-		return nil, fmt.Errorf(err.Error())
+		return "", fmt.Errorf(err.Error())
 	}
 
-	return nil, nil
+	return auth, nil
 }
 
 func (r *UserResolver) Orders(ctx context.Context, obj *models.User) ([]*models.Order, error) {

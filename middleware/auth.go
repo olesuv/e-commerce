@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/99designs/gqlgen/graphql"
@@ -13,19 +14,22 @@ type AuthTokenKey string
 
 func Authenticate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		token := r.Header.Get("Authorization")
-		if token == "" {
-			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		auth := r.Header.Get("Authorization")
+		if auth == "" {
+			next.ServeHTTP(w, r)
 			return
 		}
 
-		email, err := libs.ValidateJwtToken(token)
+		bearer := "Bearer "
+		auth = auth[len(bearer):]
+
+		email, err := libs.ValidateJwtToken(context.Background(), auth)
 		if err != nil || email == "" {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), AuthTokenKey("token"), token)
+		ctx := context.WithValue(r.Context(), AuthTokenKey("auth"), fmt.Sprintf("Bearer %s", auth))
 		r = r.WithContext(ctx)
 
 		next.ServeHTTP(w, r)
@@ -33,13 +37,13 @@ func Authenticate(next http.Handler) http.Handler {
 }
 
 func CtxValue(ctx context.Context) string {
-	raw, _ := ctx.Value(AuthTokenKey("token")).(string)
+	raw, _ := ctx.Value(AuthTokenKey("auth")).(string)
 	return raw
 }
 
 func Auth(ctx context.Context, obj interface{}, next graphql.Resolver) (interface{}, error) {
-	token := CtxValue(ctx)
-	if token == "" {
+	auth := CtxValue(ctx)
+	if auth == "" {
 		return nil, &gqlerror.Error{
 			Message: "Unauthorized",
 		}

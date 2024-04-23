@@ -6,6 +6,10 @@ import (
 	"time"
 )
 
+type AuthOps struct {
+	LoginUser interface{} `json:"loginUser"`
+}
+
 type CreateOrderInput struct {
 	Products        []string  `json:"products"`
 	OrderDate       time.Time `json:"orderDate"`
