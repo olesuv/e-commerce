@@ -112,10 +112,6 @@ func (r *UserResolver) DeleteUser(ctx context.Context, email string) (*models.Us
 }
 
 func (r *UserResolver) Users(ctx context.Context) ([]*models.User, error) {
-	if userEmail := middleware.CtxValue(ctx); userEmail == "" {
-		return nil, fmt.Errorf("server: access denied")
-	}
-
 	users, err := r.userService.GetUsers()
 	if err != nil {
 		return nil, fmt.Errorf("server: get users, details: %w", err)
@@ -170,6 +166,9 @@ func (r *UserResolver) VerifyUser(ctx context.Context, token string) (*models.Us
 }
 
 func (r *UserResolver) LoginUser(ctx context.Context, input model.LoginUserInput) (string, error) {
+	userEmailValue := ctx.Value(middleware.ContextKey("userEmail"))
+	*userEmailValue.(*string) = *input.Email
+
 	if *input.Email == "" || *input.Password == "" {
 		return "", fmt.Errorf("email and password are required")
 	}
@@ -192,8 +191,16 @@ func (r *UserResolver) LoginUser(ctx context.Context, input model.LoginUserInput
 
 	auth, err := libs.GenearteJwtToken(ctx, *input.Email)
 	if err != nil {
-		return "", fmt.Errorf(err.Error())
+		return "", err
 	}
+
+	// http.SetCookie(ca.Writer, &http.Cookie{
+	// 	Name:     "token",
+	// 	Value:    auth,
+	// 	Expires:  time.Now().Add(time.Hour * 24 * 40),
+	// 	HttpOnly: true,
+	// 	Path:     "/",
+	// })
 
 	return auth, nil
 }
