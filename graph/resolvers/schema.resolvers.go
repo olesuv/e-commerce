@@ -13,10 +13,6 @@ import (
 	"server.go/models"
 )
 
-func (r *authOpsResolver) LoginUser(ctx context.Context, obj *model.AuthOps, input model.LoginUserInput) (interface{}, error) {
-	return r.UserResolver.LoginUser(ctx, input)
-}
-
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.CreateUserInput) (*models.User, error) {
 	return r.UserResolver.CreateUser(ctx, input)
 }
@@ -29,8 +25,8 @@ func (r *mutationResolver) VerifyUser(ctx context.Context, token string) (*model
 	return r.UserResolver.VerifyUser(ctx, token)
 }
 
-func (r *mutationResolver) Auth(ctx context.Context) (*model.AuthOps, error) {
-	return &model.AuthOps{}, nil
+func (r *mutationResolver) LoginUser(ctx context.Context, input model.LoginUserInput) (interface{}, error) {
+	return r.UserResolver.LoginUser(ctx, input)
 }
 
 // ID is the resolver for the id field.
@@ -59,8 +55,6 @@ func (r *userResolver) Orders(ctx context.Context, obj *models.User) ([]*models.
 	panic(fmt.Errorf("not implemented: Orders - orders"))
 }
 
-func (r *Resolver) AuthOps() generated.AuthOpsResolver { return &authOpsResolver{r} }
-
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
 func (r *Resolver) Order() generated.OrderResolver { return &orderResolver{r} }
@@ -71,7 +65,6 @@ func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
 func (r *Resolver) User() generated.UserResolver { return &userResolver{r} }
 
-type authOpsResolver struct{ *Resolver }
 type mutationResolver struct{ *Resolver }
 type orderResolver struct{ *Resolver }
 type productResolver struct{ *Resolver }

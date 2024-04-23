@@ -7,7 +7,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/gorilla/mux"
+	"github.com/go-chi/chi/v5"
 	"server.go/configs"
 	"server.go/graph/generated"
 	"server.go/graph/resolvers"
@@ -24,11 +24,10 @@ func main() {
 		port = defaultPort
 	}
 
-	router := mux.NewRouter()
+	router := chi.NewRouter()
 	router.Use(middleware.Authenticate)
 
 	c := generated.Config{Resolvers: &resolvers.Resolver{UserResolver: resolvers.NewUserResolver()}}
-	c.Directives.Auth = middleware.Auth
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(c))
 

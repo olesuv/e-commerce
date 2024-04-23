@@ -12,6 +12,7 @@ import (
 	"server.go/configs"
 	"server.go/graph/model"
 	"server.go/libs"
+	"server.go/middleware"
 	"server.go/models"
 	"server.go/services"
 )
@@ -111,6 +112,10 @@ func (r *UserResolver) DeleteUser(ctx context.Context, email string) (*models.Us
 }
 
 func (r *UserResolver) Users(ctx context.Context) ([]*models.User, error) {
+	if userEmail := middleware.CtxValue(ctx); userEmail == "" {
+		return nil, fmt.Errorf("server: access denied")
+	}
+
 	users, err := r.userService.GetUsers()
 	if err != nil {
 		return nil, fmt.Errorf("server: get users, details: %w", err)

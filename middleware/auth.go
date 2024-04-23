@@ -2,11 +2,8 @@ package middleware
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
-	"github.com/99designs/gqlgen/graphql"
-	"github.com/vektah/gqlparser/v2/gqlerror"
 	"server.go/libs"
 )
 
@@ -14,24 +11,21 @@ type AuthTokenKey string
 
 func Authenticate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		auth := r.Header.Get("Authorization")
-		if auth == "" {
-			next.ServeHTTP(w, r)
+		c, err := r.Cookie("auth")
+		if err != nil || c == nil {
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
 		}
 
-		bearer := "Bearer "
-		auth = auth[len(bearer):]
-
-		email, err := libs.ValidateJwtToken(context.Background(), auth)
-		if err != nil || email == "" {
-			http.Error(w, err.Error(), http.StatusUnauthorized)
+		userEmail, err := libs.ValidateJwtToken(context.Background(), c.Value)
+		if err != nil || userEmail == "" {
+			http.Error(w, "Invalid cookie", http.StatusForbidden)
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), AuthTokenKey("auth"), fmt.Sprintf("Bearer %s", auth))
+		ctx := context.WithValue(r.Context(), AuthTokenKey("auth"), userEmail)
+
 		r = r.WithContext(ctx)
-
 		next.ServeHTTP(w, r)
 	})
 }
@@ -39,15 +33,4 @@ func Authenticate(next http.Handler) http.Handler {
 func CtxValue(ctx context.Context) string {
 	raw, _ := ctx.Value(AuthTokenKey("auth")).(string)
 	return raw
-}
-
-func Auth(ctx context.Context, obj interface{}, next graphql.Resolver) (interface{}, error) {
-	auth := CtxValue(ctx)
-	if auth == "" {
-		return nil, &gqlerror.Error{
-			Message: "Unauthorized",
-		}
-	}
-
-	return next(ctx)
 }
