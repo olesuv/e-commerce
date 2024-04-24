@@ -3,7 +3,7 @@ package configs
 import "github.com/lpernett/godotenv"
 
 func LoadEnv() error {
-	err := godotenv.Load("../.env")
+	err := godotenv.Load()
 	if err != nil {
 		return err
 	}
