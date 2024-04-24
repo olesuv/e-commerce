@@ -25,11 +25,14 @@ type UserResolver struct {
 func NewUserResolver() *UserResolver {
 	builder := configs.NewRedisClientBuilder()
 
-	builder.WithAddr("localhost:" + os.Getenv("REDIS_PORT")).WithPassword(os.Getenv("REDIS_PASSWORD"))
+	builder.WithAddr("redis:" + os.Getenv("REDIS_PORT")).WithPassword(os.Getenv("REDIS_PASSWORD"))
 
 	rdb, err := builder.Build()
 	if err != nil {
 		log.Fatal("server: redis connection failed, details: ", err)
+	}
+	if rdb.Ping(context.Background()).Err() != nil {
+		log.Fatal("server: redis ping failed")
 	}
 
 	return &UserResolver{
