@@ -27,14 +27,12 @@ func ConnectDB() *mongo.Client {
 
 		client, err = mongo.Connect(context.TODO(), opts)
 		if err != nil {
-			panic(err)
+			log.Fatalf("connect to mongodb: %v", err)
 		}
 
 		if err := client.Database("admin").RunCommand(context.TODO(), bson.D{{Key: "ping", Value: 1}}).Err(); err != nil {
-			panic(err)
+			log.Fatalf("ping to mongodb: %v", err)
 		}
-
-		log.Printf("connected to mongodb")
 	})
 
 	return client
