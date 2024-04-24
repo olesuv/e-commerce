@@ -19,7 +19,6 @@ func Middleware() func(http.Handler) http.Handler {
 			c, err := r.Cookie("auth")
 			if err != nil || c.Value == "" {
 				next.ServeHTTP(w, r)
-				// http.Error(w, "Forbidden", http.StatusForbidden)
 				return
 			}
 
