@@ -12,7 +12,6 @@ import (
 	"server.go/configs"
 	"server.go/graph/model"
 	"server.go/libs"
-	"server.go/middleware"
 	"server.go/models"
 	"server.go/services"
 )
@@ -112,6 +111,12 @@ func (r *UserResolver) DeleteUser(ctx context.Context, email string) (*models.Us
 }
 
 func (r *UserResolver) Users(ctx context.Context) ([]*models.User, error) {
+	// example of how to get cookie from context
+	userEmailCookie := ctx.Value("userEmail")
+	if userEmailCookie == nil {
+		return nil, fmt.Errorf("login first")
+	}
+
 	users, err := r.userService.GetUsers()
 	if err != nil {
 		return nil, fmt.Errorf("server: get users, details: %w", err)
@@ -166,8 +171,10 @@ func (r *UserResolver) VerifyUser(ctx context.Context, token string) (*models.Us
 }
 
 func (r *UserResolver) LoginUser(ctx context.Context, input model.LoginUserInput) (string, error) {
-	userEmailValue := ctx.Value(middleware.ContextKey("userEmail"))
-	*userEmailValue.(*string) = *input.Email
+	userEmailCookie := ctx.Value("userEmail")
+	if userEmailCookie != nil {
+		return "", fmt.Errorf("user already logged in")
+	}
 
 	if *input.Email == "" || *input.Password == "" {
 		return "", fmt.Errorf("email and password are required")
@@ -189,20 +196,12 @@ func (r *UserResolver) LoginUser(ctx context.Context, input model.LoginUserInput
 		return "", fmt.Errorf("invalid password")
 	}
 
-	auth, err := libs.GenearteJwtToken(ctx, *input.Email)
+	token, err := libs.GenearteJwtToken(ctx, *input.Email)
 	if err != nil {
 		return "", err
 	}
 
-	// http.SetCookie(ca.Writer, &http.Cookie{
-	// 	Name:     "token",
-	// 	Value:    auth,
-	// 	Expires:  time.Now().Add(time.Hour * 24 * 40),
-	// 	HttpOnly: true,
-	// 	Path:     "/",
-	// })
-
-	return auth, nil
+	return token, nil
 }
 
 func (r *UserResolver) Orders(ctx context.Context, obj *models.User) ([]*models.Order, error) {

@@ -34,23 +34,29 @@ func (w *authResponseWriter) Write(b []byte) (int, error) {
 	return w.ResponseWriter.Write(b)
 }
 
-func Authenticate(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+func Authenticate(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		arw := authResponseWriter{w, "", ""}
 		userEmailContextKey := ContextKey("userEmail")
 
 		c, err := r.Cookie("auth")
-		if err != nil || c.Value == "" {
-			http.Error(w, err.Error(), http.StatusForbidden)
+		if err != nil || c == nil {
+			next(&arw, r)
 			return
 		}
 
-		arw.userEmailFromCookie = c.Value
-		arw.userEmailToResolver = c.Value
+		userEmail, err := libs.ValidateJwtToken(context.Background(), c.Value)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusUnauthorized)
+			return
+		}
+
+		arw.userEmailFromCookie = userEmail
+		arw.userEmailToResolver = userEmail
 
 		ctx := context.WithValue(r.Context(), userEmailContextKey, &arw.userEmailToResolver)
 
 		r = r.WithContext(ctx)
-		next.ServeHTTP(&arw, r)
-	})
+		next(&arw, r)
+	}
 }
