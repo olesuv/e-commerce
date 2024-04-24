@@ -12,6 +12,7 @@ import (
 	"server.go/configs"
 	"server.go/graph/model"
 	"server.go/libs"
+	"server.go/middleware"
 	"server.go/models"
 	"server.go/services"
 )
@@ -112,8 +113,7 @@ func (r *UserResolver) DeleteUser(ctx context.Context, email string) (*models.Us
 
 func (r *UserResolver) Users(ctx context.Context) ([]*models.User, error) {
 	// example of how to get cookie from context
-	userEmailCookie := ctx.Value("userEmail")
-	if userEmailCookie == nil {
+	if userEmail := middleware.CtxValue(ctx); userEmail == "" {
 		return nil, fmt.Errorf("login first")
 	}
 
@@ -171,11 +171,6 @@ func (r *UserResolver) VerifyUser(ctx context.Context, token string) (*models.Us
 }
 
 func (r *UserResolver) LoginUser(ctx context.Context, input model.LoginUserInput) (string, error) {
-	userEmailCookie := ctx.Value("userEmail")
-	if userEmailCookie != nil {
-		return "", fmt.Errorf("user already logged in")
-	}
-
 	if *input.Email == "" || *input.Password == "" {
 		return "", fmt.Errorf("email and password are required")
 	}

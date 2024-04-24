@@ -3,60 +3,41 @@ package middleware
 import (
 	"context"
 	"net/http"
-	"time"
 
 	"server.go/libs"
 )
 
-type ContextKey string
+var userCtxKey = &contextKey{"user"}
 
-type authResponseWriter struct {
-	http.ResponseWriter
-	userEmailToResolver string
-	userEmailFromCookie string
+type contextKey struct {
+	name string
 }
 
-func (w *authResponseWriter) Write(b []byte) (int, error) {
-	if w.userEmailFromCookie != w.userEmailToResolver {
-		token, err := libs.GenearteJwtToken(context.Background(), w.userEmailToResolver)
-		if err != nil || token == "" {
-			return 0, err
-		}
+func Middleware() func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			c, err := r.Cookie("auth")
+			if err != nil || c.Value == "" {
+				next.ServeHTTP(w, r)
+				// http.Error(w, "Forbidden", http.StatusForbidden)
+				return
+			}
 
-		http.SetCookie(w, &http.Cookie{
-			Name:     "auth",
-			Value:    token,
-			Expires:  time.Now().Add(time.Hour * 24 * 40),
-			HttpOnly: true,
-			Path:     "/",
+			userEmail, err := libs.ValidateJwtToken(context.Background(), c.Value)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusUnauthorized)
+				return
+			}
+
+			ctx := context.WithValue(r.Context(), userCtxKey, userEmail)
+
+			r = r.WithContext(ctx)
+			next.ServeHTTP(w, r)
 		})
 	}
-	return w.ResponseWriter.Write(b)
 }
 
-func Authenticate(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		arw := authResponseWriter{w, "", ""}
-		userEmailContextKey := ContextKey("userEmail")
-
-		c, err := r.Cookie("auth")
-		if err != nil || c == nil {
-			next(&arw, r)
-			return
-		}
-
-		userEmail, err := libs.ValidateJwtToken(context.Background(), c.Value)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusUnauthorized)
-			return
-		}
-
-		arw.userEmailFromCookie = userEmail
-		arw.userEmailToResolver = userEmail
-
-		ctx := context.WithValue(r.Context(), userEmailContextKey, &arw.userEmailToResolver)
-
-		r = r.WithContext(ctx)
-		next(&arw, r)
-	}
+func CtxValue(ctx context.Context) string {
+	raw, _ := ctx.Value(userCtxKey).(string)
+	return raw
 }
