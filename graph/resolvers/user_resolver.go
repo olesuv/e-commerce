@@ -31,9 +31,9 @@ func NewUserResolver() *UserResolver {
 	if err != nil {
 		log.Fatal("server: redis connection failed, details: ", err)
 	}
-	if rdb.Ping(context.Background()).Err() != nil {
-		log.Fatal("server: redis ping failed")
-	}
+	// if rdb.Ping(context.Background()).Err() != nil {
+	// 	log.Fatal("server: redis ping failed")
+	// }
 
 	return &UserResolver{
 		userService: services.NewUserService(),

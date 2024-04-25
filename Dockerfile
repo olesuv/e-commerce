@@ -1,4 +1,4 @@
-FROM golang:1.22.2-alpine AS builder
+FROM golang:alpine AS builder
 
 RUN apk --no-cache add bash git gcc musl-dev
 
@@ -15,10 +15,10 @@ RUN go build -o ./bin/app ./server.go
 # Clean alpine image
 FROM alpine AS app
 
+RUN apk --no-cache add redis bash
+
 COPY --from=builder /usr/local/src/bin/app /
 COPY .env .env
 
-RUN apk --no-cache add redis
-
 # Run
-CMD ["/app", "redis-server"]
+CMD ["bash", "-c", "redis-server & ./app"]
