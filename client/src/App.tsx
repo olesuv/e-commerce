@@ -1,11 +1,10 @@
 import "./App.css";
 
-function App() {
+export default function App() {
   return (
-    <div className="App">
-      <h1>wassup React enjoyer</h1>
-    </div>
+    <>
+      <h1>wassup ladies</h1>
+      <h6>(i know u got no bitches)</h6>
+    </>
   );
 }
-
-export default App;
