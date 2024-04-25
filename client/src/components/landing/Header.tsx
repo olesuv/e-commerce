@@ -1,9 +1,5 @@
 import Cookies from "js-cookie";
-
-type Cookie = {
-  userEmail: string;
-  exp: string;
-};
+import LoginButton from "./LoginButton";
 
 function CheckCookies() {
   const cookies = Cookies.get("auth");
@@ -14,5 +10,5 @@ function CheckCookies() {
 }
 
 export default function Header() {
-  return <>{CheckCookies() ? <h1>Logged in</h1> : <h1>Not logged in</h1>}</>;
+  return <>{CheckCookies() ? <h1>Logged in</h1> : <LoginButton />}</>;
 }
