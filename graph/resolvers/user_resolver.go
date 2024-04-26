@@ -179,12 +179,11 @@ func (r *UserResolver) LoginUser(ctx context.Context, input model.LoginUserInput
 	}
 
 	user, err := r.userService.GetUserByEmail(*input.Email)
+	if err != nil && err.Error() == "mongo: no documents in result" {
+		return "", fmt.Errorf("user not found")
+	}
 	if err != nil {
 		return "", fmt.Errorf("server: get user by email, details: %w", err)
-	}
-
-	if user == nil {
-		return "", fmt.Errorf("user not found")
 	}
 
 	userHash := user.Password
