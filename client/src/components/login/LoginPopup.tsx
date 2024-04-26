@@ -30,7 +30,14 @@ export default function LoginPopup() {
   return (
     <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-60 flex justify-center items-center">
       <div className="bg-white p-8 rounded-lg">
-        <h1 className="text-2xl font-bold text-center">Login</h1>
+        <p className="text-2xl font-bold text-center">Welcome back!</p>
+        {error && (
+          <label className="flex flex-col bg-rose-500 w-full rounded-md my-2">
+            <p className="text-xl text-white text-center font-semibold p-5">
+              ooops, {error.message}
+            </p>
+          </label>
+        )}
         <form
           onSubmit={(e) => {
             e.preventDefault();
