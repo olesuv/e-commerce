@@ -29,7 +29,7 @@ func main() {
 	router.Use(middleware.Middleware())
 
 	router.Use(cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:5173"},
+		AllowedOrigins:   []string{"http://localhost:5173", "http://localhost:8080"},
 		AllowCredentials: true,
 		Debug:            true,
 	}).Handler)

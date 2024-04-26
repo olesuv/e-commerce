@@ -2,8 +2,8 @@ import { useState } from "react";
 import { gql, useMutation } from "@apollo/client";
 
 const LOGIN = gql`
-  mutation login($input: Any!) {
-    loginUser(input: input)
+  mutation login($input: LoginUserInput!) {
+    loginUser(input: $input)
   }
 `;
 
@@ -43,18 +43,18 @@ export default function LoginPopup() {
             placeholder="Email"
             value={userEmail}
             onChange={(e) => setEmail(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md"
+            className="p-2 border border-gray-200 rounded-md"
           />
           <input
             type="password"
             placeholder="Password"
             value={userPassword}
             onChange={(e) => setPassword(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md"
+            className="p-2 border border-gray-200 rounded-md"
           />
           <button
             type="submit"
-            className="p-2 bg-blue-500 text-white rounded-md"
+            className="p-2 bg-indigo-500 text-white rounded-md"
           >
             Login
           </button>
