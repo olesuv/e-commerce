@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import { useState } from "react";
 import { gql, useMutation } from "@apollo/client";
 
@@ -24,7 +25,7 @@ export default function LoginPopup() {
   if (error) console.error(error);
   if (data) {
     console.log(data.loginUser);
-    // Cookies.set("auth", data.login.token);
+    Cookies.set("auth", data.loginUser);
   }
 
   return (
