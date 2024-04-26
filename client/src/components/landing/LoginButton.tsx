@@ -1,7 +1,11 @@
 import { useState } from "react";
 import LoginPopup from "../login/LoginPopup";
 
-export default function LoginButton() {
+interface ILoginButtonProps {
+  setAuthenticated: (value: boolean) => void;
+}
+
+export default function LoginButton(props: ILoginButtonProps) {
   const [showPopup, setShowPopup] = useState(false);
 
   return (
@@ -12,7 +16,12 @@ export default function LoginButton() {
       >
         Sign In
       </button>
-      {showPopup && <LoginPopup />}
+      {showPopup && (
+        <LoginPopup
+          setAuthenticated={props.setAuthenticated}
+          setShowPopup={setShowPopup}
+        />
+      )}
     </>
   );
 }

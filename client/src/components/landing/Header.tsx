@@ -3,9 +3,19 @@ import LoginButton from "./LoginButton";
 import RegisterButton from "./RegisterButton";
 import LogoutButton from "./LogoutButton";
 import Logo from "./Logo";
+import { useEffect, useState } from "react";
 
 export default function Header() {
-  const authenticated = Cookies.get("auth");
+  const [authenticated, setAuthenticated] = useState(!!Cookies.get("auth"));
+
+  useEffect(() => {
+    const checkAuth = () => {
+      const isAuth = !!Cookies.get("auth");
+      setAuthenticated(isAuth);
+    };
+    checkAuth();
+    return () => {};
+  }, []);
 
   return (
     <div className="md:grid md:grid-cols-3 p-4 bg-gray-200 text-black">
@@ -14,11 +24,11 @@ export default function Header() {
         <Logo />
         <div>
           {authenticated ? (
-            <LogoutButton />
+            <LogoutButton setAuthenticated={setAuthenticated} />
           ) : (
             <>
               <RegisterButton />
-              <LoginButton />
+              <LoginButton setAuthenticated={setAuthenticated} />
             </>
           )}
         </div>

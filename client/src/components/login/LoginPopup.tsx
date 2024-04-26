@@ -2,13 +2,18 @@ import Cookies from "js-cookie";
 import { useState } from "react";
 import { gql, useMutation } from "@apollo/client";
 
+interface ILoginPopupProps {
+  setAuthenticated: (value: boolean) => void;
+  setShowPopup: (value: boolean) => void;
+}
+
 const LOGIN = gql`
   mutation login($input: LoginUserInput!) {
     loginUser(input: $input)
   }
 `;
 
-export default function LoginPopup() {
+export default function LoginPopup(props: ILoginPopupProps) {
   const [userEmail, setEmail] = useState("");
   const [userPassword, setPassword] = useState("");
 
@@ -23,6 +28,8 @@ export default function LoginPopup() {
 
   if (data) {
     Cookies.set("auth", data.loginUser);
+    props.setAuthenticated(true);
+    props.setShowPopup(false);
   }
 
   return (
@@ -32,7 +39,7 @@ export default function LoginPopup() {
         {error && (
           <label className="flex flex-col bg-rose-500 w-full rounded-md my-2">
             <p className="text-xl text-white text-center font-semibold p-5">
-              ooops, {error.message}
+              Oops, {error.message}
             </p>
           </label>
         )}
@@ -48,14 +55,14 @@ export default function LoginPopup() {
             placeholder="Email"
             value={userEmail}
             onChange={(e) => setEmail(e.target.value)}
-            className="p-2 border border-gray-200 rounded-md"
+            className="p-2 border border-gray-200 rounded-md outline-indigo-300"
           />
           <input
             type="password"
             placeholder="Password"
             value={userPassword}
             onChange={(e) => setPassword(e.target.value)}
-            className="p-2 border border-gray-200 rounded-md"
+            className="p-2 border border-gray-200 rounded-md outline-indigo-300"
           />
           {loading ? (
             <button
