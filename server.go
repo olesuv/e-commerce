@@ -28,10 +28,20 @@ func main() {
 	router := chi.NewRouter()
 	router.Use(middleware.Middleware())
 
+	debug := true
+
+	appEnv := os.Getenv("APP_ENV")
+	if appEnv == "" {
+		appEnv = "development"
+	}
+	if appEnv == "production" {
+		debug = false
+	}
+
 	router.Use(cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://localhost:5173", "http://localhost:8080"},
 		AllowCredentials: true,
-		Debug:            true,
+		Debug:            debug,
 	}).Handler)
 
 	c := generated.Config{Resolvers: &resolvers.Resolver{UserResolver: resolvers.NewUserResolver()}}
