@@ -21,10 +21,7 @@ export default function LoginPopup() {
     },
   });
 
-  if (loading) console.log("Loading...");
-  if (error) console.error(error);
   if (data) {
-    console.log(data.loginUser);
     Cookies.set("auth", data.loginUser);
   }
 
@@ -60,12 +57,21 @@ export default function LoginPopup() {
             onChange={(e) => setPassword(e.target.value)}
             className="p-2 border border-gray-200 rounded-md"
           />
-          <button
-            type="submit"
-            className="p-2 bg-indigo-500 text-white rounded-md"
-          >
-            Login
-          </button>
+          {loading ? (
+            <button
+              type="submit"
+              className="p-2 bg-indigo-400 text-white rounded-md"
+            >
+              Loading...
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="p-2 bg-indigo-500 text-white rounded-md"
+            >
+              Login
+            </button>
+          )}
         </form>
       </div>
     </div>
