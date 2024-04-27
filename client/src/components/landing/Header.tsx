@@ -27,7 +27,7 @@ export default function Header() {
             <LogoutButton setAuthenticated={setAuthenticated} />
           ) : (
             <>
-              <RegisterButton />
+              <RegisterButton setAuthenticated={setAuthenticated} />
               <LoginButton setAuthenticated={setAuthenticated} />
             </>
           )}

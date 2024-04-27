@@ -35,7 +35,9 @@ export default function LoginPopup(props: ILoginPopupProps) {
   return (
     <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-60 flex justify-center items-center">
       <div className="bg-white p-8 rounded-lg">
-        <p className="text-2xl font-bold text-center">Welcome back!</p>
+        <p className="text-2xl font-serif font-bold text-center mb-4">
+          Welcome back!
+        </p>
         {error && (
           <label className="flex flex-col bg-rose-500 w-full rounded-md my-2">
             <p className="text-xl text-white text-center font-semibold p-5">
@@ -67,14 +69,15 @@ export default function LoginPopup(props: ILoginPopupProps) {
           {loading ? (
             <button
               type="submit"
-              className="p-2 bg-indigo-400 text-white rounded-md"
+              className="p-2 bg-indigo-400 text-white rounded-md cursor-not-allowed"
+              disabled
             >
               Loading...
             </button>
           ) : (
             <button
               type="submit"
-              className="p-2 bg-indigo-500 text-white rounded-md"
+              className="p-2 bg-indigo-500 hover:bg-indigo-700 text-white rounded-md"
             >
               Login
             </button>
