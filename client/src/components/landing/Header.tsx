@@ -1,34 +1,26 @@
-import Cookies from "js-cookie";
 import LoginButton from "./LoginButton";
 import RegisterButton from "./RegisterButton";
 import LogoutButton from "./LogoutButton";
 import Logo from "./Logo";
-import { useEffect, useState } from "react";
 
-export default function Header() {
-  const [authenticated, setAuthenticated] = useState(!!Cookies.get("auth"));
+interface IHeaderProps {
+  authenticated: boolean;
+  setAuthenticated: (authenticated: boolean) => void;
+}
 
-  useEffect(() => {
-    const checkAuth = () => {
-      const isAuth = !!Cookies.get("auth");
-      setAuthenticated(isAuth);
-    };
-    checkAuth();
-    return () => {};
-  }, []);
-
+export default function Header(props: IHeaderProps) {
   return (
     <div className="md:grid md:grid-cols-3 p-4 bg-gray-200 text-black">
       <div className="hidden md:block"></div>
       <div className="flex justify-between md:items-center">
         <Logo />
         <div>
-          {authenticated ? (
-            <LogoutButton setAuthenticated={setAuthenticated} />
+          {props.authenticated ? (
+            <LogoutButton setAuthenticated={props.setAuthenticated} />
           ) : (
             <>
-              <RegisterButton setAuthenticated={setAuthenticated} />
-              <LoginButton setAuthenticated={setAuthenticated} />
+              <RegisterButton setAuthenticated={props.setAuthenticated} />
+              <LoginButton setAuthenticated={props.setAuthenticated} />
             </>
           )}
         </div>

@@ -3,7 +3,6 @@ import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 
-import Header from "./components/landing/Header.tsx";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev";
 
@@ -20,7 +19,6 @@ if (process.env.NODE_ENV === "development") {
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <Header />
       <App />
     </ApolloProvider>
   </React.StrictMode>
