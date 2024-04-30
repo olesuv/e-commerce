@@ -1,17 +1,25 @@
 package models
 
 import (
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
+
+type OrderStatus int
+
+const (
+	Available OrderStatus = iota
+	Buyed     OrderStatus = iota
 )
 
 type Order struct {
-    Id              primitive.ObjectID `bson:"_id"`
-    Products        []string           `bson:"products,omitempty" validate:"required,minlen=1"`
-    OrderDate       time.Time          `bson:"order_date,omitempty" validate:"required"`
-    ShippingAddress string             `bson:"shipping_address,omitempty"`
-    Status          string             `bson:"status,omitempty"`
-    CustomerEmail   string             `bson:"email,omitempty" validate:"required"`
-    PaymentStatus   string             `bson:"payment_status,omitempty"`
+	Id              primitive.ObjectID `bson:"_id"`
+	Title           []string           `bson:"order_title,omitempty" validate:"required,minlen=1"`
+	Description     string             `bson:"description,omitempty"`
+	Category        string             `bson:"category,omitempty"`
+	Date            time.Time          `bson:"order_date,omitempty" validate:"required"`
+	ShippingAddress string             `bson:"shipping_address,omitempty"`
+	Status          OrderStatus        `bson:"status,omitempty"`
+	CustomerEmail   string             `bson:"email,omitempty"`
 }
-
