@@ -3,6 +3,7 @@ package libs
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 
@@ -23,7 +24,7 @@ func GenerateVerificationToken(ctx context.Context, email string, rdb *redis.Cli
 	return token, nil
 }
 
-func SendVerificationEmail(emailUser string, token string) {
+func SendVerificationEmail(emailUser string, token string) error {
 	emailSender := os.Getenv("EMAIL_SENDER")
 	if emailSender == "" {
 		panic("server: email sender is required")
@@ -41,24 +42,25 @@ func SendVerificationEmail(emailUser string, token string) {
 	smtpPassword := os.Getenv("SMTP_PASSWORD")
 
 	if smtpLink == "" {
-		panic("server: smtp link is required")
+		log.Fatal("server: smtp link is required")
 	}
 	smtpPort, err := strconv.Atoi(smtpPortStr)
 	if err != nil {
-		panic("server: smtp port is required")
+		log.Fatal("server: smtp port is required")
 	}
 	if smtpUsername == "" {
-		panic("server: smtp username is required")
+		log.Fatal("server: smtp username is required")
 	}
 	if smtpPassword == "" {
-		panic("server: smtp password is required")
+		log.Fatal("server: smtp password is required")
 	}
 
 	d := gomail.NewDialer(smtpLink, smtpPort, smtpUsername, smtpPassword)
 
 	if err := d.DialAndSend(m); err != nil {
-		panic(err)
+		return err
 	}
 
-	fmt.Println("server: successfully sended to: ", emailUser)
+	log.Println("server: email sent to ", emailUser)
+	return nil
 }

@@ -12,7 +12,6 @@ import (
 	"server.go/configs"
 	"server.go/graph/model"
 	"server.go/libs"
-	"server.go/middleware"
 	"server.go/models"
 	"server.go/services"
 )
@@ -84,13 +83,23 @@ func (r *UserResolver) CreateUser(ctx context.Context, input model.CreateUserInp
 
 		verificationToken, err := libs.GenerateVerificationToken(ctx, *input.Email, r.rdb)
 		if err != nil {
-			// TODO: handle delete user possible error
-			r.userService.DeleteUserByEmail(*input.Email)
+			_, err = r.userService.DeleteUserByEmail(*input.Email)
+			if err != nil {
+				return nil, fmt.Errorf("server: delete user by email, details: %w", err)
+			}
 
-			return nil, fmt.Errorf(err.Error())
+			return nil, fmt.Errorf("server: generate verification token, details: %w", err)
 		}
 
-		libs.SendVerificationEmail(*input.Email, verificationToken)
+		err = libs.SendVerificationEmail(*input.Email, verificationToken)
+		if err != nil {
+			_, err := r.userService.DeleteUserByEmail(*input.Email)
+			if err != nil {
+				return nil, fmt.Errorf("server: delete user by email, details: %w", err)
+			}
+
+			return nil, fmt.Errorf("server: send verification email, details: %w", err)
+		}
 	}
 
 	return user, nil
@@ -116,9 +125,9 @@ func (r *UserResolver) DeleteUser(ctx context.Context, email string) (*models.Us
 
 func (r *UserResolver) Users(ctx context.Context) ([]*models.User, error) {
 	// example of how to get cookie from context
-	if userEmail := middleware.CtxValue(ctx); userEmail == "" {
-		return nil, fmt.Errorf("login first")
-	}
+	// if userEmail := middleware.CtxValue(ctx); userEmail == "" {
+	// 	return nil, fmt.Errorf("login first")
+	// }
 
 	users, err := r.userService.GetUsers()
 	if err != nil {
