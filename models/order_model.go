@@ -11,23 +11,23 @@ type OrderCategory int
 
 const (
 	Available OrderStatus = iota
-	Buyed     OrderStatus = iota
+	Buyed
 )
 
 const (
 	Electronics OrderCategory = iota
-	Fashion     OrderCategory = iota
-	Home        OrderCategory = iota
-	Sports      OrderCategory = iota
-	Books       OrderCategory = iota
-	Automotive  OrderCategory = iota
-	Other       OrderCategory = iota
+	Fashion
+	Home
+	Sports
+	Books
+	Automotive
+	Other
 )
 
 type Order struct {
 	Id              primitive.ObjectID `bson:"_id"`
-	Title           []string           `bson:"order_title,omitempty" validate:"required,minlen=1"`
-	Description     string             `bson:"description,omitempty"`
+	Title           string             `bson:"order_title,omitempty" validate:"required,minlen=3,maxlen=100"`
+	Description     string             `bson:"description,omitempty" validate:"required,minlen=3,maxlen=1000"`
 	Category        OrderCategory      `bson:"category,omitempty"`
 	Date            time.Time          `bson:"order_date,omitempty" validate:"required"`
 	ShippingAddress string             `bson:"shipping_address,omitempty"`

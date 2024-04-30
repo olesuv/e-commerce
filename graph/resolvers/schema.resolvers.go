@@ -33,21 +33,16 @@ func (r *mutationResolver) ArchiveOrder(ctx context.Context, id *string) (*model
 	panic(fmt.Errorf("not implemented: ArchiveOrder - archiveOrder"))
 }
 
-// ID is the resolver for the id field.
 func (r *orderResolver) ID(ctx context.Context, obj *models.Order) (string, error) {
-	panic(fmt.Errorf("not implemented: ID - id"))
-}
-
-func (r *orderResolver) Title(ctx context.Context, obj *models.Order) (string, error) {
-	panic(fmt.Errorf("not implemented: Title - title"))
+	return r.OrderResolver.ID(ctx, obj)
 }
 
 func (r *orderResolver) Category(ctx context.Context, obj *models.Order) (int, error) {
-	panic(fmt.Errorf("not implemented: Category - category"))
+	return r.OrderResolver.Category(ctx, obj)
 }
 
 func (r *orderResolver) Status(ctx context.Context, obj *models.Order) (int, error) {
-	panic(fmt.Errorf("not implemented: Status - status"))
+	return r.OrderResolver.Status(ctx, obj)
 }
 
 func (r *queryResolver) Users(ctx context.Context) ([]*models.User, error) {
@@ -59,7 +54,7 @@ func (r *queryResolver) User(ctx context.Context, email string) (*models.User, e
 }
 
 func (r *queryResolver) Orders(ctx context.Context) ([]*models.Order, error) {
-	panic(fmt.Errorf("not implemented: Orders - orders"))
+	return r.OrderResolver.Orders(ctx)
 }
 
 func (r *queryResolver) Order(ctx context.Context, id string) (*models.Order, error) {
@@ -86,3 +81,13 @@ type mutationResolver struct{ *Resolver }
 type orderResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
 type userResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//     it when you're done.
+//   - You have helper methods in this file. Move them out to keep these resolver files clean.
+func (r *orderResolver) Title(ctx context.Context, obj *models.Order) (string, error) {
+	panic(fmt.Errorf("not implemented: Title - title"))
+}
