@@ -24,13 +24,14 @@ func NewUserEmailVerificationHandler(rdb *redis.Client) *UserEmailVerificationHa
 func (evh *UserEmailVerificationHandler) VerifyUserEmailHandler(rw http.ResponseWriter, req *http.Request) {
 	token := req.URL.Query().Get("token")
 	if token == "" {
-		http.Error(rw, "redis: Token is required", http.StatusBadRequest)
+		http.Error(rw, "redis: token is required", http.StatusBadRequest)
 		return
 	}
 
 	email, err := evh.rdb.Get(context.Background(), token).Result()
+	// TODO: make normal error check if user already activated email
 	if err != nil {
-		http.Error(rw, fmt.Sprintf("redis: verifying user by email: %v", err), http.StatusInternalServerError)
+		http.Error(rw, fmt.Sprintf("Link already used.\nDetails: %v", err), http.StatusInternalServerError)
 		return
 	}
 	if email == "" {
