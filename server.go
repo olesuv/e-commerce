@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"os"
@@ -44,7 +45,18 @@ func main() {
 		Debug:            debug,
 	}).Handler)
 
-	c := generated.Config{Resolvers: &resolvers.Resolver{UserResolver: resolvers.NewUserResolver()}}
+	builder := configs.NewRedisClientBuilder()
+	builder.WithAddr("127.0.0.1:" + os.Getenv("REDIS_PORT")).WithPassword(os.Getenv("REDIS_PASSWORD"))
+
+	rdb, err := builder.Build()
+	if err != nil {
+		log.Fatal("server: redis connection failed, details: ", err)
+	}
+	if rdb.Ping(context.Background()).Err() != nil {
+		log.Fatal("server: redis ping failed")
+	}
+
+	c := generated.Config{Resolvers: &resolvers.Resolver{UserResolver: resolvers.NewUserResolver(rdb)}}
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(c))
 

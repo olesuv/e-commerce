@@ -3,13 +3,10 @@ package resolvers
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/mail"
-	"os"
 
 	"github.com/redis/go-redis/v9"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"server.go/configs"
 	"server.go/graph/model"
 	"server.go/libs"
 	"server.go/models"
@@ -21,19 +18,7 @@ type UserResolver struct {
 	rdb         *redis.Client
 }
 
-func NewUserResolver() *UserResolver {
-	builder := configs.NewRedisClientBuilder()
-
-	builder.WithAddr("127.0.0.1:" + os.Getenv("REDIS_PORT")).WithPassword(os.Getenv("REDIS_PASSWORD"))
-
-	rdb, err := builder.Build()
-	if err != nil {
-		log.Fatal("server: redis connection failed, details: ", err)
-	}
-	if rdb.Ping(context.Background()).Err() != nil {
-		log.Fatal("server: redis ping failed")
-	}
-
+func NewUserResolver(rdb *redis.Client) *UserResolver {
 	return &UserResolver{
 		userService: services.NewUserService(),
 		rdb:         rdb,
@@ -49,7 +34,9 @@ func (r *UserResolver) CreateUser(ctx context.Context, input model.CreateUserInp
 		return nil, fmt.Errorf("password is required")
 	}
 
-	_, err := mail.ParseAddress(*input.Email)
+	email := *input.Email
+
+	_, err := mail.ParseAddress(email)
 	if err != nil {
 		return nil, fmt.Errorf("invalid email address")
 	}
@@ -57,7 +44,7 @@ func (r *UserResolver) CreateUser(ctx context.Context, input model.CreateUserInp
 	user, err := r.userService.GetUserByEmail(*input.Email)
 
 	if err == nil && user != nil {
-		return nil, fmt.Errorf("email already exists")
+		return nil, fmt.Errorf("user with this email already exists")
 	}
 	if err != nil && err.Error() != "mongo: no documents in result" {
 		return nil, fmt.Errorf("server: get user by email, details: %w", err)
@@ -98,6 +85,7 @@ func (r *UserResolver) CreateUser(ctx context.Context, input model.CreateUserInp
 				return nil, fmt.Errorf("server: delete user by email, details: %w", err)
 			}
 
+			// FIX: Google email sending error
 			return nil, fmt.Errorf("server: send verification email, details: %w", err)
 		}
 	}
@@ -149,34 +137,6 @@ func (r *UserResolver) User(ctx context.Context, email string) (*models.User, er
 	user, err := r.userService.GetUserByEmail(email)
 	if err != nil {
 		return nil, err
-	}
-
-	return user, nil
-}
-
-func (r *UserResolver) VerifyUser(ctx context.Context, token string) (*models.User, error) {
-	if token == "" {
-		return nil, fmt.Errorf("server: token is required")
-	}
-
-	email, err := r.rdb.Get(ctx, token).Result()
-	if err != nil {
-		return nil, fmt.Errorf("server: verify user by email, details: %w", err)
-	}
-	if email == "" {
-		return nil, fmt.Errorf("server: invalid token")
-	}
-
-	user, err := r.userService.VerifyUser(email)
-	if err != nil {
-		return nil, fmt.Errorf("server: verify user by email, details: %w", err)
-	}
-
-	r.rdb.Del(ctx, token)
-
-	_, err = libs.GenearteJwtToken(ctx, email)
-	if err != nil {
-		return nil, fmt.Errorf(err.Error())
 	}
 
 	return user, nil

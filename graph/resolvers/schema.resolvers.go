@@ -21,10 +21,6 @@ func (r *mutationResolver) DeleteUser(ctx context.Context, email string) (*model
 	return r.UserResolver.DeleteUser(ctx, email)
 }
 
-func (r *mutationResolver) VerifyUser(ctx context.Context, token string) (*models.User, error) {
-	return r.UserResolver.VerifyUser(ctx, token)
-}
-
 func (r *mutationResolver) LoginUser(ctx context.Context, input model.LoginUserInput) (interface{}, error) {
 	return r.UserResolver.LoginUser(ctx, input)
 }
