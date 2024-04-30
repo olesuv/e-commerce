@@ -106,7 +106,10 @@ func (us *UserService) GetUsers() ([]*models.User, error) {
 }
 
 func (us *UserService) VerifyUserEmail(email string) (*models.User, error) {
-	_, err := us.collection.UpdateOne(context.Background(), bson.M{"email": email}, bson.M{"$set": bson.M{"verified": true}})
+	filter := bson.M{"email": email}
+	update := bson.M{"$set": bson.M{"email_is_active": true}}
+
+	_, err := us.collection.UpdateOne(context.Background(), filter, update)
 	if err != nil {
 		return nil, err
 	}
