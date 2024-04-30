@@ -1,5 +1,6 @@
 import LoginButton from "./LoginButton";
 import RegisterButton from "./RegisterButton";
+import SettingsButton from "./SettingsButton";
 import LogoutButton from "./LogoutButton";
 import Logo from "./Logo";
 
@@ -16,7 +17,10 @@ export default function Header(props: IHeaderProps) {
         <Logo />
         <div>
           {props.authenticated ? (
-            <LogoutButton setAuthenticated={props.setAuthenticated} />
+            <>
+              <SettingsButton />
+              <LogoutButton setAuthenticated={props.setAuthenticated} />
+            </>
           ) : (
             <>
               <RegisterButton setAuthenticated={props.setAuthenticated} />
