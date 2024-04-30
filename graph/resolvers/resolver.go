@@ -6,10 +6,12 @@ import "github.com/redis/go-redis/v9"
 
 type Resolver struct {
 	*UserResolver
+	*OrderResolver
 }
 
 func NewResolver() *Resolver {
 	return &Resolver{
-		UserResolver: NewUserResolver(&redis.Client{}),
+		UserResolver:  NewUserResolver(&redis.Client{}),
+		OrderResolver: NewOrderResolver(),
 	}
 }

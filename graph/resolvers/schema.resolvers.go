@@ -26,7 +26,7 @@ func (r *mutationResolver) LoginUser(ctx context.Context, input model.LoginUserI
 }
 
 func (r *mutationResolver) CreateOrder(ctx context.Context, input *model.CreateOrderInput) (*models.Order, error) {
-	panic(fmt.Errorf("not implemented: CreateOrder - createOrder"))
+	return r.OrderResolver.CreateOrder(ctx, *input)
 }
 
 func (r *mutationResolver) ArchiveOrder(ctx context.Context, id *string) (*models.Order, error) {

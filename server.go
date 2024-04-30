@@ -60,7 +60,10 @@ func main() {
 	verifyEmailHandler := handlers.NewUserEmailVerificationHandler(rdb)
 	router.HandleFunc("/verify", verifyEmailHandler.VerifyUserEmailHandler)
 
-	c := generated.Config{Resolvers: &resolvers.Resolver{UserResolver: resolvers.NewUserResolver(rdb)}}
+	c := generated.Config{Resolvers: &resolvers.Resolver{
+		UserResolver:  resolvers.NewUserResolver(rdb),
+		OrderResolver: resolvers.NewOrderResolver(),
+	}}
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(c))
 
