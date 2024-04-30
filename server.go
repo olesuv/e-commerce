@@ -13,6 +13,7 @@ import (
 	"server.go/configs"
 	"server.go/graph/generated"
 	"server.go/graph/resolvers"
+	"server.go/handlers"
 	"server.go/middleware"
 )
 
@@ -55,6 +56,9 @@ func main() {
 	if rdb.Ping(context.Background()).Err() != nil {
 		log.Fatal("server: redis ping failed")
 	}
+
+	verifyEmailHandler := handlers.NewUserEmailVerificationHandler(rdb)
+	router.HandleFunc("/verify", verifyEmailHandler.VerifyUserEmailHandler)
 
 	c := generated.Config{Resolvers: &resolvers.Resolver{UserResolver: resolvers.NewUserResolver(rdb)}}
 
