@@ -25,14 +25,29 @@ func (r *mutationResolver) LoginUser(ctx context.Context, input model.LoginUserI
 	return r.UserResolver.LoginUser(ctx, input)
 }
 
+func (r *mutationResolver) CreateOrder(ctx context.Context, input *model.CreateOrderInput) (*models.Order, error) {
+	panic(fmt.Errorf("not implemented: CreateOrder - createOrder"))
+}
+
+func (r *mutationResolver) ArchiveOrder(ctx context.Context, id *string) (*models.Order, error) {
+	panic(fmt.Errorf("not implemented: ArchiveOrder - archiveOrder"))
+}
+
 // ID is the resolver for the id field.
 func (r *orderResolver) ID(ctx context.Context, obj *models.Order) (string, error) {
 	panic(fmt.Errorf("not implemented: ID - id"))
 }
 
-// ID is the resolver for the id field.
-func (r *productResolver) ID(ctx context.Context, obj *models.Product) (string, error) {
-	panic(fmt.Errorf("not implemented: ID - id"))
+func (r *orderResolver) Title(ctx context.Context, obj *models.Order) (string, error) {
+	panic(fmt.Errorf("not implemented: Title - title"))
+}
+
+func (r *orderResolver) Category(ctx context.Context, obj *models.Order) (int, error) {
+	panic(fmt.Errorf("not implemented: Category - category"))
+}
+
+func (r *orderResolver) Status(ctx context.Context, obj *models.Order) (int, error) {
+	panic(fmt.Errorf("not implemented: Status - status"))
 }
 
 func (r *queryResolver) Users(ctx context.Context) ([]*models.User, error) {
@@ -41,6 +56,14 @@ func (r *queryResolver) Users(ctx context.Context) ([]*models.User, error) {
 
 func (r *queryResolver) User(ctx context.Context, email string) (*models.User, error) {
 	return r.UserResolver.User(ctx, email)
+}
+
+func (r *queryResolver) Orders(ctx context.Context) ([]*models.Order, error) {
+	panic(fmt.Errorf("not implemented: Orders - orders"))
+}
+
+func (r *queryResolver) Order(ctx context.Context, id string) (*models.Order, error) {
+	panic(fmt.Errorf("not implemented: Order - order"))
 }
 
 func (r *userResolver) ID(ctx context.Context, obj *models.User) (string, error) {
@@ -55,14 +78,11 @@ func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResol
 
 func (r *Resolver) Order() generated.OrderResolver { return &orderResolver{r} }
 
-func (r *Resolver) Product() generated.ProductResolver { return &productResolver{r} }
-
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
 func (r *Resolver) User() generated.UserResolver { return &userResolver{r} }
 
 type mutationResolver struct{ *Resolver }
 type orderResolver struct{ *Resolver }
-type productResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
 type userResolver struct{ *Resolver }

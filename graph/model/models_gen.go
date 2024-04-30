@@ -2,26 +2,10 @@
 
 package model
 
-import (
-	"time"
-)
-
 type CreateOrderInput struct {
-	Products        []string  `json:"products"`
-	OrderDate       time.Time `json:"orderDate"`
-	ShippingAddress *string   `json:"shippingAddress,omitempty"`
-	Status          *string   `json:"status,omitempty"`
-	CustomerEmail   string    `json:"customerEmail"`
-	PaymentStatus   *string   `json:"paymentStatus,omitempty"`
-}
-
-type CreateProductInput struct {
-	Title       string   `json:"title"`
-	Description string   `json:"description"`
-	Amount      int      `json:"amount"`
-	Price       float64  `json:"price"`
-	Images      []string `json:"images"`
-	Category    string   `json:"category"`
+	Title       *string `json:"title,omitempty"`
+	Description *string `json:"description,omitempty"`
+	Category    *int    `json:"category,omitempty"`
 }
 
 type CreateUserInput struct {

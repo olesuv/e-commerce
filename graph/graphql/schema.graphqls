@@ -14,23 +14,14 @@ type User {
 }
 
 type Order {
-  id: String!
-  products: [String!]!
-  orderDate: Time!
-  shippingAddress: String
-  status: String
-  customerEmail: String!
-  paymentStatus: String
-}
-
-type Product {
-  id: String!
+  id: Id!
   title: String!
-  description: String!
-  amount: Int!
-  price: Float!
-  images: [String!]!
-  category: String!
+  description: String
+  category: Int!
+  date: Time!
+  shippingAddress: String
+  status: Int!
+  customerEmail: String
 }
 
 input CreateUserInput {
@@ -39,36 +30,30 @@ input CreateUserInput {
   password: String
 }
 
-input CreateOrderInput {
-  products: [String!]!
-  orderDate: Time!
-  shippingAddress: String
-  status: String
-  customerEmail: String!
-  paymentStatus: String
-}
-
-input CreateProductInput {
-  title: String!
-  description: String!
-  amount: Int!
-  price: Float!
-  images: [String!]!
-  category: String!
-}
-
 input LoginUserInput {
   email: String
   password: String
 }
 
+input CreateOrderInput {
+  title: String
+  description: String
+  category: Int
+}
+
 type Query {
   users: [User!]!
   user(email: String!): User!
+
+  orders: [Order!]!
+  order(id: String!): Order!
 }
 
 type Mutation {
   createUser(input: CreateUserInput!): User!
   deleteUser(email: String!): User!
   loginUser(input: LoginUserInput!): Any!
+
+  createOrder(input: CreateOrderInput): Order!
+  archiveOrder(id: String): Order!
 }
