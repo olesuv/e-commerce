@@ -8,6 +8,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/gridfs"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -42,4 +43,16 @@ func GetCollection(client *mongo.Client, collectionName string) *mongo.Collectio
 	dbName := os.Getenv("dbName")
 	collection := client.Database(dbName).Collection(collectionName)
 	return collection
+}
+
+func GetGridfsBucket(client *mongo.Client) (*gridfs.Bucket, error) {
+	dbName := os.Getenv("dbName")
+	db := client.Database(dbName)
+
+	bucket, err := gridfs.NewBucket(db, options.GridFSBucket().SetName("images"))
+	if err != nil {
+		log.Fatalf("mongo: create gridfs bucket. details: %v", err)
+	}
+
+	return bucket, err
 }
