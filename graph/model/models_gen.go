@@ -2,10 +2,15 @@
 
 package model
 
+import (
+	"github.com/99designs/gqlgen/graphql"
+)
+
 type CreateOrderInput struct {
-	Title       *string `json:"title,omitempty"`
-	Description *string `json:"description,omitempty"`
-	Category    *int    `json:"category,omitempty"`
+	Title       *string           `json:"title,omitempty"`
+	Description *string           `json:"description,omitempty"`
+	Category    *int              `json:"category,omitempty"`
+	Images      []*graphql.Upload `json:"images,omitempty"`
 }
 
 type CreateUserInput struct {

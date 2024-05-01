@@ -64,6 +64,7 @@ type ComplexityRoot struct {
 		Date            func(childComplexity int) int
 		Description     func(childComplexity int) int
 		ID              func(childComplexity int) int
+		Images          func(childComplexity int) int
 		ShippingAddress func(childComplexity int) int
 		Status          func(childComplexity int) int
 		Title           func(childComplexity int) int
@@ -98,6 +99,7 @@ type MutationResolver interface {
 type OrderResolver interface {
 	ID(ctx context.Context, obj *models.Order) (string, error)
 
+	Images(ctx context.Context, obj *models.Order) ([]string, error)
 	Category(ctx context.Context, obj *models.Order) (int, error)
 
 	Status(ctx context.Context, obj *models.Order) (int, error)
@@ -227,6 +229,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Order.ID(childComplexity), true
+
+	case "Order.images":
+		if e.complexity.Order.Images == nil {
+			break
+		}
+
+		return e.complexity.Order.Images(childComplexity), true
 
 	case "Order.shippingAddress":
 		if e.complexity.Order.ShippingAddress == nil {
@@ -454,6 +463,7 @@ var sources = []*ast.Source{
 	{Name: "../graphql/schema.graphqls", Input: `scalar Time
 scalar Id
 scalar Any
+scalar Upload
 
 type User {
   id: Id!
@@ -470,6 +480,7 @@ type Order {
   id: Id!
   title: String!
   description: String
+  images: [String!]
   category: Int!
   date: Time!
   shippingAddress: String
@@ -492,6 +503,7 @@ input CreateOrderInput {
   title: String
   description: String
   category: Int
+  images: [Upload!]
 }
 
 type Query {
@@ -922,6 +934,8 @@ func (ec *executionContext) fieldContext_Mutation_createOrder(ctx context.Contex
 				return ec.fieldContext_Order_title(ctx, field)
 			case "description":
 				return ec.fieldContext_Order_description(ctx, field)
+			case "images":
+				return ec.fieldContext_Order_images(ctx, field)
 			case "category":
 				return ec.fieldContext_Order_category(ctx, field)
 			case "date":
@@ -995,6 +1009,8 @@ func (ec *executionContext) fieldContext_Mutation_archiveOrder(ctx context.Conte
 				return ec.fieldContext_Order_title(ctx, field)
 			case "description":
 				return ec.fieldContext_Order_description(ctx, field)
+			case "images":
+				return ec.fieldContext_Order_images(ctx, field)
 			case "category":
 				return ec.fieldContext_Order_category(ctx, field)
 			case "date":
@@ -1145,6 +1161,47 @@ func (ec *executionContext) fieldContext_Order_description(ctx context.Context, 
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Order_images(ctx context.Context, field graphql.CollectedField, obj *models.Order) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Order_images(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Order().Images(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	fc.Result = res
+	return ec.marshalOString2ᚕstringᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Order_images(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Order",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
 		},
@@ -1546,6 +1603,8 @@ func (ec *executionContext) fieldContext_Query_orders(ctx context.Context, field
 				return ec.fieldContext_Order_title(ctx, field)
 			case "description":
 				return ec.fieldContext_Order_description(ctx, field)
+			case "images":
+				return ec.fieldContext_Order_images(ctx, field)
 			case "category":
 				return ec.fieldContext_Order_category(ctx, field)
 			case "date":
@@ -1608,6 +1667,8 @@ func (ec *executionContext) fieldContext_Query_order(ctx context.Context, field 
 				return ec.fieldContext_Order_title(ctx, field)
 			case "description":
 				return ec.fieldContext_Order_description(ctx, field)
+			case "images":
+				return ec.fieldContext_Order_images(ctx, field)
 			case "category":
 				return ec.fieldContext_Order_category(ctx, field)
 			case "date":
@@ -2103,6 +2164,8 @@ func (ec *executionContext) fieldContext_User_orders(ctx context.Context, field 
 				return ec.fieldContext_Order_title(ctx, field)
 			case "description":
 				return ec.fieldContext_Order_description(ctx, field)
+			case "images":
+				return ec.fieldContext_Order_images(ctx, field)
 			case "category":
 				return ec.fieldContext_Order_category(ctx, field)
 			case "date":
@@ -3900,7 +3963,7 @@ func (ec *executionContext) unmarshalInputCreateOrderInput(ctx context.Context, 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"title", "description", "category"}
+	fieldsInOrder := [...]string{"title", "description", "category", "images"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -3928,6 +3991,13 @@ func (ec *executionContext) unmarshalInputCreateOrderInput(ctx context.Context, 
 				return it, err
 			}
 			it.Category = data
+		case "images":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("images"))
+			data, err := ec.unmarshalOUpload2ᚕᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUploadᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Images = data
 		}
 	}
 
@@ -4148,6 +4218,39 @@ func (ec *executionContext) _Order(ctx context.Context, sel ast.SelectionSet, ob
 			}
 		case "description":
 			out.Values[i] = ec._Order_description(ctx, field, obj)
+		case "images":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Order_images(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "category":
 			field := field
 
@@ -5001,6 +5104,27 @@ func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel as
 	return res
 }
 
+func (ec *executionContext) unmarshalNUpload2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx context.Context, v interface{}) (*graphql.Upload, error) {
+	res, err := graphql.UnmarshalUpload(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNUpload2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx context.Context, sel ast.SelectionSet, v *graphql.Upload) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	res := graphql.MarshalUpload(*v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
 func (ec *executionContext) marshalNUser2serverᚗgoᚋmodelsᚐUser(ctx context.Context, sel ast.SelectionSet, v models.User) graphql.Marshaler {
 	return ec._User(ctx, sel, &v)
 }
@@ -5420,6 +5544,44 @@ func (ec *executionContext) marshalOString2string(ctx context.Context, sel ast.S
 	return res
 }
 
+func (ec *executionContext) unmarshalOString2ᚕstringᚄ(ctx context.Context, v interface{}) ([]string, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]string, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNString2string(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOString2ᚕstringᚄ(ctx context.Context, sel ast.SelectionSet, v []string) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalNString2string(ctx, sel, v[i])
+	}
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
 func (ec *executionContext) unmarshalOString2ᚖstring(ctx context.Context, v interface{}) (*string, error) {
 	if v == nil {
 		return nil, nil
@@ -5434,6 +5596,44 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 	}
 	res := graphql.MarshalString(*v)
 	return res
+}
+
+func (ec *executionContext) unmarshalOUpload2ᚕᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUploadᚄ(ctx context.Context, v interface{}) ([]*graphql.Upload, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]*graphql.Upload, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNUpload2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOUpload2ᚕᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUploadᚄ(ctx context.Context, sel ast.SelectionSet, v []*graphql.Upload) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalNUpload2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, sel, v[i])
+	}
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
 }
 
 func (ec *executionContext) marshalO__EnumValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐEnumValueᚄ(ctx context.Context, sel ast.SelectionSet, v []introspection.EnumValue) graphql.Marshaler {

@@ -7,6 +7,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"server.go/graph/model"
+	"server.go/libs"
 	"server.go/models"
 	"server.go/services"
 )
@@ -58,10 +59,29 @@ func (r *OrderResolver) CreateOrder(ctx context.Context, input model.CreateOrder
 		return nil, fmt.Errorf("category is required")
 	}
 
+	if input.Images == nil {
+		return nil, fmt.Errorf("images are required")
+	}
+
+	compressedImgs := []primitive.Binary{}
+	for _, img := range input.Images {
+		compressedImg, err := libs.CompressImage(*img)
+		if err != nil {
+			return nil, err
+		}
+
+		binImg := primitive.Binary{
+			Data: compressedImg,
+		}
+
+		compressedImgs = append(compressedImgs, binImg)
+	}
+
 	order := &models.Order{
 		Id:          primitive.NewObjectID(),
 		Title:       *input.Title,
 		Description: *input.Description,
+		Images:      compressedImgs,
 		Category:    models.OrderCategory(*input.Category),
 		Date:        time.Now(),
 		Status:      models.Available,
@@ -87,4 +107,13 @@ func (r *OrderResolver) Orders(ctx context.Context) ([]*models.Order, error) {
 	}
 
 	return orderPointers, nil
+}
+
+func (r *OrderResolver) Order(ctx context.Context, id string) (*models.Order, error) {
+	order, err := r.orderService.GetOrderById(id)
+	if err != nil {
+		return nil, fmt.Errorf("server: get order, details: %w", err)
+	}
+
+	return order, nil
 }

@@ -1,6 +1,7 @@
 scalar Time
 scalar Id
 scalar Any
+scalar Upload
 
 type User {
   id: Id!
@@ -17,6 +18,7 @@ type Order {
   id: Id!
   title: String!
   description: String
+  images: [String!]
   category: Int!
   date: Time!
   shippingAddress: String
@@ -39,6 +41,7 @@ input CreateOrderInput {
   title: String
   description: String
   category: Int
+  images: [Upload!]
 }
 
 type Query {

@@ -15,5 +15,7 @@ resolver:
   package: resolvers
   omit_template_comment: true
 
+skip_mod_tidy: true
+
 autobind:
   - server.go/models

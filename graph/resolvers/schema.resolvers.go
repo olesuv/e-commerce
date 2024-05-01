@@ -37,6 +37,10 @@ func (r *orderResolver) ID(ctx context.Context, obj *models.Order) (string, erro
 	return r.OrderResolver.ID(ctx, obj)
 }
 
+func (r *orderResolver) Images(ctx context.Context, obj *models.Order) ([]string, error) {
+	panic(fmt.Errorf("not implemented: Images - images"))
+}
+
 func (r *orderResolver) Category(ctx context.Context, obj *models.Order) (int, error) {
 	return r.OrderResolver.Category(ctx, obj)
 }
@@ -58,7 +62,7 @@ func (r *queryResolver) Orders(ctx context.Context) ([]*models.Order, error) {
 }
 
 func (r *queryResolver) Order(ctx context.Context, id string) (*models.Order, error) {
-	panic(fmt.Errorf("not implemented: Order - order"))
+	return r.OrderResolver.Order(ctx, id)
 }
 
 func (r *userResolver) ID(ctx context.Context, obj *models.User) (string, error) {
