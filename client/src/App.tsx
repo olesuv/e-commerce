@@ -1,7 +1,8 @@
 import "./App.css";
+import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import Header from "./components/landing/Header";
-import { useEffect, useState } from "react";
+import Organizer from "./components/organizer/Organizer";
 
 export default function App() {
   const [authenticated, setAuthenticated] = useState(!!Cookies.get("auth"));
@@ -21,8 +22,8 @@ export default function App() {
         authenticated={authenticated}
         setAuthenticated={setAuthenticated}
       />
-      <h1>wassup ladies</h1>
-      <h6>(i know u got no bitches)</h6>
+
+      <Organizer authenticated={authenticated} />
     </>
   );
 }

@@ -18,11 +18,13 @@ export default function Header(props: IHeaderProps) {
         <div>
           {props.authenticated ? (
             <>
+              {/*FIX: medium screen responsive*/}
               <SettingsButton />
               <LogoutButton setAuthenticated={props.setAuthenticated} />
             </>
           ) : (
             <>
+              {/*FIX: medium screen responsive*/}
               <RegisterButton setAuthenticated={props.setAuthenticated} />
               <LoginButton setAuthenticated={props.setAuthenticated} />
             </>
