@@ -1,9 +1,13 @@
-export default function OrderPrice() {
+interface OrderPriceProps {
+  setOrderPrice: (value: number) => void;
+}
+
+export default function OrderPrice(props: OrderPriceProps) {
   return (
     <div>
       <label
         htmlFor="price"
-        className="block text-sm font-medium leading-6 text-gray-900 after:content-['*'] after:ml-0.5 after:text-red-500"
+        className="block font-medium leading-6 text-gray-900 after:content-['*'] after:ml-0.5 after:text-red-500"
       >
         Price
       </label>
@@ -12,6 +16,10 @@ export default function OrderPrice() {
           <span className="text-gray-500 sm:text-sm">$</span>
         </div>
         <input
+          onChange={(e) => {
+            props.setOrderPrice(Number(e.target.value));
+            console.log(e.target.value);
+          }}
           type="text"
           name="price"
           id="price"

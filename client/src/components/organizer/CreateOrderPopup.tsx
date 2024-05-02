@@ -10,6 +10,11 @@ interface ICreateOrderPopupProps {
 }
 
 export default function CreateOrderPopup(props: ICreateOrderPopupProps) {
+  const [orderName, setOrderName] = useState<string>("");
+  const [orderDescription, setOrderDescription] = useState<string>("");
+  const [orderCategories, setOrderCategories] = useState<number[]>([]);
+  const [orderPrice, setOrderPrice] = useState<number>(0);
+
   const [error, setError] = useState<string>("");
 
   return (
@@ -26,10 +31,10 @@ export default function CreateOrderPopup(props: ICreateOrderPopupProps) {
         )}
 
         <form className="flex flex-col gap-2 mt-4 mb-4">
-          <OrderName />
-          <OrderDescription />
-          <OrderCategories />
-          <OrderPrice />
+          <OrderName setOrderName={setOrderName} />
+          <OrderDescription setOrderDescription={setOrderDescription} />
+          <OrderCategories setOrderCategories={setOrderCategories} />
+          <OrderPrice setOrderPrice={setOrderPrice} />
 
           <div className="grid grid-cols-2 gap-4">
             <button

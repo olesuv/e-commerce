@@ -1,8 +1,12 @@
-export default function OrderCategories() {
+interface OrderCategoriesProps {
+  setOrderCategories: (value: number[]) => void;
+}
+
+export default function OrderCategories(props: OrderCategoriesProps) {
   return (
     <div>
       <p className="inline-block">
-        <span className="after:content-['*'] after:ml-0.5 after:text-red-500">
+        <span className="after:content-['*'] after:ml-0.5 after:text-red-500 font-medium">
           Categories
         </span>
         <span className="pl-1 text-xs text-gray-400">
