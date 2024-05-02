@@ -5,7 +5,8 @@
    - [x] make db singleton
    - [x] service approach for db
    - [x] redis server for saving email verification tokens
-   - [x] smtp server for emailing
+   - [x] smtp server for emailing:
+     - [ ] email check domain
    - [ ] modify `Order` model to add price (with usd / uah / eur types), multiple categories
 
 2. **Frontend**
