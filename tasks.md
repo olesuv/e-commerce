@@ -6,6 +6,7 @@
    - [x] service approach for db
    - [x] redis server for saving email verification tokens
    - [x] smtp server for emailing
+   - [ ] modify `Order` model to add price (with usd / uah / eur types), multiple categories
 
 2. **Frontend**
 
@@ -13,7 +14,10 @@
      - [ ] image carousel
      - [ ] link to full order page
    - [ ] user panel organizer:
-     - [ ] create new sell product popup
+     - [ ] create new sell product popup:
+       - [x] form
+       - [ ] react hooks: inputs, selected categories hover, selected number near `Categories *`
+       - [ ] muatation
      - [ ] my orders (selled / buyed) page??
 
 3. **Controllers / API**
