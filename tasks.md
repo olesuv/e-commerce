@@ -9,9 +9,6 @@
 
 2. **Frontend**
 
-   - [ ] close on `Esc` button or click by mouse out of popup main area:
-     - [ ] tracking mouse and keboard in `main` / `app` component
-     - [ ] state for showing popup and give to props in other components
    - [ ] popular orders:
      - [ ] image carousel
      - [ ] link to full order page
@@ -36,8 +33,14 @@
    - [ ] smtp server tests
 
 5. **Refactoring**
-   - [ ] implement patterns (3/5)
+
+   - [ ] implement patterns (3/5):
+
      - [x] singleton mongodb server connection
      - [x] builder redis server connection
      - [x] service layout for resolvers
      - [ ] dependency injection initialization of all servers (and mutations mb)
+
+   - [ ] close on `Esc` button or click by mouse out of popup main area:
+     - [ ] tracking mouse and keboard in `main` / `app` component
+     - [ ] state for showing popup and give to props in other components
