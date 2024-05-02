@@ -1,7 +1,9 @@
 import { useState } from "react";
+import CreateOrderPopup from "./CreateOrderPopup";
 
 export default function SearchBar() {
   const [search, setSearch] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
 
   return (
     <div className="flex flex-col md:flex-row">
@@ -20,9 +22,13 @@ export default function SearchBar() {
         <button className="p-2 bg-indigo-500 hover:bg-indigo-700 text-white rounded-xl">
           My Orders
         </button>
-        <button className="p-2 bg-indigo-500 hover:bg-indigo-700 text-white rounded-xl">
+        <button
+          onClick={() => setShowPopup(true)}
+          className="p-2 bg-indigo-500 hover:bg-indigo-700 text-white rounded-xl"
+        >
           Sell products
         </button>
+        {showPopup && <CreateOrderPopup setShowPopup={setShowPopup} />}
       </div>
     </div>
   );
