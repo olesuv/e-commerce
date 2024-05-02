@@ -2,29 +2,42 @@
 
 1. **Database**
 
-   - [x] complete all models
    - [x] make db singleton
    - [x] service approach for db
-   - [ ] redis server
+   - [x] redis server for saving email verification tokens
+   - [x] smtp server for emailing
 
-2. **Controllers/API**
+2. **Frontend**
 
-   - [ ] graphql server (milestone)
-   - [ ] user resolver:
-     - [x] user create validation / error handling
-     - [x] email verification link reciever mutation
-     - [ ] login user mutation
-   - [ ] middleware
-     - [ ] login user mutation
-   - [ ] email server:
-     - [ ] email verification
+   - [ ] close on `Esc` button or click by mouse out of popup main area:
+     - [ ] tracking mouse and keboard in `main` / `app` component
+     - [ ] state for showing popup and give to props in other components
+   - [ ] popular orders:
+     - [ ] image carousel
+     - [ ] link to full order page
+   - [ ] user panel organizer:
+     - [ ] create new sell product popup
+     - [ ] my orders (selled / buyed) page??
+
+3. **Controllers / API**
+
+   - [x] middleware
+     - [x] login user mutation
+     - [x] register user mutation
+   - [x] email server:
+     - [x] email verification
      - [x] code generator
-     - [x] code saver
+     - [x] code saver to **redis**
 
-3. **Tests**
+4. **Tests**
 
    - [x] db connect test
-   - [ ] user resolver tests
+   - [ ] auth tests
+   - [ ] smtp server tests
 
-4. **Refactoring**
+5. **Refactoring**
    - [ ] implement patterns (3/5)
+     - [x] singleton mongodb server connection
+     - [x] builder redis server connection
+     - [x] service layout for resolvers
+     - [ ] dependency injection initialization of all servers (and mutations mb)
