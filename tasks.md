@@ -7,7 +7,8 @@
    - [x] redis server for saving email verification tokens
    - [x] smtp server for emailing:
      - [ ] email check domain
-   - [ ] modify `Order` model to add price (with usd / uah / eur types), multiple categories
+   - [ ] modify `Order` model to add price (with usd / uah / eur types)
+   - [x] multiple categories
 
 2. **Frontend**
 
