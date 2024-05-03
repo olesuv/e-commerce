@@ -41,7 +41,7 @@ func (r *orderResolver) Images(ctx context.Context, obj *models.Order) ([]string
 	panic(fmt.Errorf("not implemented: Images - images"))
 }
 
-func (r *orderResolver) Category(ctx context.Context, obj *models.Order) ([]int, error) {
+func (r *orderResolver) Category(ctx context.Context, obj *models.Order) ([]model.Category, error) {
 	return r.OrderResolver.Category(ctx, obj)
 }
 

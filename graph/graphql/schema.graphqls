@@ -3,7 +3,16 @@ scalar Id
 scalar Any
 
 scalar Upload
-scalar Category
+
+enum Category {
+  Electronics
+  Fashion
+  Home
+  Sports
+  Books
+  Automotive
+  Other
+}
 
 type User {
   id: Id!
@@ -21,7 +30,7 @@ type Order {
   title: String!
   description: String
   images: [String!]
-  category: [Int!]!
+  category: [Category!]!
   date: Time!
   shippingAddress: String
   status: Int!
@@ -43,7 +52,7 @@ input LoginUserInput {
 input CreateOrderInput {
   title: String
   description: String
-  category: [Int]
+  category: [Category]
   images: [Upload]
   price: Float
 }

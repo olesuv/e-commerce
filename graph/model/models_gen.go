@@ -3,13 +3,17 @@
 package model
 
 import (
+	"fmt"
+	"io"
+	"strconv"
+
 	"github.com/99designs/gqlgen/graphql"
 )
 
 type CreateOrderInput struct {
 	Title       *string           `json:"title,omitempty"`
 	Description *string           `json:"description,omitempty"`
-	Category    []*int            `json:"category,omitempty"`
+	Category    []*Category       `json:"category,omitempty"`
 	Images      []*graphql.Upload `json:"images,omitempty"`
 	Price       *float64          `json:"price,omitempty"`
 }
@@ -29,4 +33,57 @@ type Mutation struct {
 }
 
 type Query struct {
+}
+
+type Category string
+
+const (
+	CategoryElectronics   Category = "Electronics"
+	CategoryOrderCategory Category = "OrderCategory"
+	CategoryFashion       Category = "Fashion"
+	CategoryHome          Category = "Home"
+	CategorySports        Category = "Sports"
+	CategoryBooks         Category = "Books"
+	CategoryAutomotive    Category = "Automotive"
+	CategoryOther         Category = "Other"
+)
+
+var AllCategory = []Category{
+	CategoryElectronics,
+	CategoryOrderCategory,
+	CategoryFashion,
+	CategoryHome,
+	CategorySports,
+	CategoryBooks,
+	CategoryAutomotive,
+	CategoryOther,
+}
+
+func (e Category) IsValid() bool {
+	switch e {
+	case CategoryElectronics, CategoryOrderCategory, CategoryFashion, CategoryHome, CategorySports, CategoryBooks, CategoryAutomotive, CategoryOther:
+		return true
+	}
+	return false
+}
+
+func (e Category) String() string {
+	return string(e)
+}
+
+func (e *Category) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = Category(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid Category", str)
+	}
+	return nil
+}
+
+func (e Category) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
