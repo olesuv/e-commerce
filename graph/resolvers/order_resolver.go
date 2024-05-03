@@ -8,7 +8,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"server.go/constants"
 	"server.go/graph/model"
-	"server.go/libs"
 	"server.go/models"
 	"server.go/services"
 )
@@ -25,6 +24,19 @@ func NewOrderResolver() *OrderResolver {
 
 func (r *OrderResolver) ID(ctx context.Context, obj *models.Order) (string, error) {
 	return obj.Id.Hex(), nil
+}
+
+func (r *OrderResolver) Currency(ctx context.Context, obj *models.Order) (model.Currency, error) {
+	var currency model.Currency
+	switch obj.Currency {
+	case constants.USD:
+		currency = model.CurrencyUsd
+	case constants.EUR:
+		currency = model.CurrencyEur
+	default:
+		currency = model.CurrencyUah
+	}
+	return currency, nil
 }
 
 func (r *OrderResolver) Category(ctx context.Context, obj *models.Order) ([]model.Category, error) {
@@ -101,9 +113,9 @@ func (r *OrderResolver) CreateOrder(ctx context.Context, input model.CreateOrder
 		}
 	}
 
-	if input.Images == nil {
-		return nil, fmt.Errorf("images are required")
-	}
+	// if input.Images == nil {
+	// 	return nil, fmt.Errorf("images are required")
+	// }
 
 	if input.Price == nil {
 		return nil, fmt.Errorf("price is required")
@@ -121,19 +133,19 @@ func (r *OrderResolver) CreateOrder(ctx context.Context, input model.CreateOrder
 		}
 	}
 
-	compressedImgs := []primitive.Binary{}
-	for _, img := range input.Images {
-		compressedImg, err := libs.CompressImage(*img)
-		if err != nil {
-			return nil, err
-		}
+	// compressedImgs := []primitive.Binary{}
+	// for _, img := range input.Images {
+	// 	compressedImg, err := libs.CompressImage(*img)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
 
-		binImg := primitive.Binary{
-			Data: compressedImg,
-		}
+	// 	binImg := primitive.Binary{
+	// 		Data: compressedImg,
+	// 	}
 
-		compressedImgs = append(compressedImgs, binImg)
-	}
+	// 	compressedImgs = append(compressedImgs, binImg)
+	// }
 
 	order := &models.Order{
 		Id:          primitive.NewObjectID(),
