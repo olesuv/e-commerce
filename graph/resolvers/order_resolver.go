@@ -74,11 +74,11 @@ func (r *OrderResolver) CreateOrder(ctx context.Context, input model.CreateOrder
 		return nil, fmt.Errorf("maximum length of description is 1000 characters")
 	}
 
-	orderCategories := make(constants.OrderCategories, len(input.Category))
+	orderCategories := make(constants.OrderCategories, 0)
 	if input.Category == nil || len(input.Category) == 0 {
 		orderCategories = append(orderCategories, constants.Other)
 	}
-	if len(input.Category) > 1 {
+	if len(input.Category) >= 1 {
 		for _, category := range input.Category {
 			switch *category {
 			case model.CategoryElectronics:
@@ -139,7 +139,7 @@ func (r *OrderResolver) CreateOrder(ctx context.Context, input model.CreateOrder
 		Id:          primitive.NewObjectID(),
 		Title:       *input.Title,
 		Description: *input.Description,
-		Images:      compressedImgs,
+		Images:      nil,
 		Category:    orderCategories,
 		Date:        time.Now(),
 		Status:      constants.Available,

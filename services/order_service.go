@@ -60,7 +60,12 @@ func (os *OrderService) GetOrders() ([]models.Order, error) {
 	}
 
 	defer cursor.Close(context.Background())
-	cursor.All(context.Background(), &orders)
+
+	for cursor.Next(context.Background()) {
+		var order models.Order
+		cursor.Decode(&order)
+		orders = append(orders, order)
+	}
 
 	return orders, nil
 }
