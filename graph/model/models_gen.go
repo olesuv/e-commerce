@@ -16,6 +16,7 @@ type CreateOrderInput struct {
 	Category    []*Category       `json:"category,omitempty"`
 	Images      []*graphql.Upload `json:"images,omitempty"`
 	Price       *float64          `json:"price,omitempty"`
+	Currency    *Currency         `json:"currency,omitempty"`
 }
 
 type CreateUserInput struct {
@@ -38,19 +39,17 @@ type Query struct {
 type Category string
 
 const (
-	CategoryElectronics   Category = "Electronics"
-	CategoryOrderCategory Category = "OrderCategory"
-	CategoryFashion       Category = "Fashion"
-	CategoryHome          Category = "Home"
-	CategorySports        Category = "Sports"
-	CategoryBooks         Category = "Books"
-	CategoryAutomotive    Category = "Automotive"
-	CategoryOther         Category = "Other"
+	CategoryElectronics Category = "Electronics"
+	CategoryFashion     Category = "Fashion"
+	CategoryHome        Category = "Home"
+	CategorySports      Category = "Sports"
+	CategoryBooks       Category = "Books"
+	CategoryAutomotive  Category = "Automotive"
+	CategoryOther       Category = "Other"
 )
 
 var AllCategory = []Category{
 	CategoryElectronics,
-	CategoryOrderCategory,
 	CategoryFashion,
 	CategoryHome,
 	CategorySports,
@@ -61,7 +60,7 @@ var AllCategory = []Category{
 
 func (e Category) IsValid() bool {
 	switch e {
-	case CategoryElectronics, CategoryOrderCategory, CategoryFashion, CategoryHome, CategorySports, CategoryBooks, CategoryAutomotive, CategoryOther:
+	case CategoryElectronics, CategoryFashion, CategoryHome, CategorySports, CategoryBooks, CategoryAutomotive, CategoryOther:
 		return true
 	}
 	return false
@@ -85,5 +84,48 @@ func (e *Category) UnmarshalGQL(v interface{}) error {
 }
 
 func (e Category) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+type Currency string
+
+const (
+	CurrencyUah Currency = "UAH"
+	CurrencyUsd Currency = "USD"
+	CurrencyEur Currency = "EUR"
+)
+
+var AllCurrency = []Currency{
+	CurrencyUah,
+	CurrencyUsd,
+	CurrencyEur,
+}
+
+func (e Currency) IsValid() bool {
+	switch e {
+	case CurrencyUah, CurrencyUsd, CurrencyEur:
+		return true
+	}
+	return false
+}
+
+func (e Currency) String() string {
+	return string(e)
+}
+
+func (e *Currency) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = Currency(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid Currency", str)
+	}
+	return nil
+}
+
+func (e Currency) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }

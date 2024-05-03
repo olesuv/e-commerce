@@ -60,6 +60,7 @@ type ComplexityRoot struct {
 
 	Order struct {
 		Category        func(childComplexity int) int
+		Currency        func(childComplexity int) int
 		CustomerEmail   func(childComplexity int) int
 		Date            func(childComplexity int) int
 		Description     func(childComplexity int) int
@@ -104,6 +105,8 @@ type OrderResolver interface {
 	Category(ctx context.Context, obj *models.Order) ([]model.Category, error)
 
 	Status(ctx context.Context, obj *models.Order) (int, error)
+
+	Currency(ctx context.Context, obj *models.Order) (model.Currency, error)
 }
 type QueryResolver interface {
 	Users(ctx context.Context) ([]*models.User, error)
@@ -202,6 +205,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Order.Category(childComplexity), true
+
+	case "Order.currency":
+		if e.complexity.Order.Currency == nil {
+			break
+		}
+
+		return e.complexity.Order.Currency(childComplexity), true
 
 	case "Order.customerEmail":
 		if e.complexity.Order.CustomerEmail == nil {
@@ -476,13 +486,18 @@ scalar Upload
 
 enum Category {
   Electronics
-  OrderCategory
   Fashion
   Home
   Sports
   Books
   Automotive
   Other
+}
+
+enum Currency {
+  UAH
+  USD
+  EUR
 }
 
 type User {
@@ -507,6 +522,7 @@ type Order {
   status: Int!
   customerEmail: String
   price: Float!
+  currency: Currency!
 }
 
 input CreateUserInput {
@@ -526,6 +542,7 @@ input CreateOrderInput {
   category: [Category]
   images: [Upload]
   price: Float
+  currency: Currency
 }
 
 type Query {
@@ -970,6 +987,8 @@ func (ec *executionContext) fieldContext_Mutation_createOrder(ctx context.Contex
 				return ec.fieldContext_Order_customerEmail(ctx, field)
 			case "price":
 				return ec.fieldContext_Order_price(ctx, field)
+			case "currency":
+				return ec.fieldContext_Order_currency(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Order", field.Name)
 		},
@@ -1047,6 +1066,8 @@ func (ec *executionContext) fieldContext_Mutation_archiveOrder(ctx context.Conte
 				return ec.fieldContext_Order_customerEmail(ctx, field)
 			case "price":
 				return ec.fieldContext_Order_price(ctx, field)
+			case "currency":
+				return ec.fieldContext_Order_currency(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Order", field.Name)
 		},
@@ -1493,6 +1514,50 @@ func (ec *executionContext) fieldContext_Order_price(ctx context.Context, field 
 	return fc, nil
 }
 
+func (ec *executionContext) _Order_currency(ctx context.Context, field graphql.CollectedField, obj *models.Order) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Order_currency(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Order().Currency(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(model.Currency)
+	fc.Result = res
+	return ec.marshalNCurrency2serverᚗgoᚋgraphᚋmodelᚐCurrency(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Order_currency(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Order",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Currency does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_users(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_users(ctx, field)
 	if err != nil {
@@ -1687,6 +1752,8 @@ func (ec *executionContext) fieldContext_Query_orders(ctx context.Context, field
 				return ec.fieldContext_Order_customerEmail(ctx, field)
 			case "price":
 				return ec.fieldContext_Order_price(ctx, field)
+			case "currency":
+				return ec.fieldContext_Order_currency(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Order", field.Name)
 		},
@@ -1753,6 +1820,8 @@ func (ec *executionContext) fieldContext_Query_order(ctx context.Context, field 
 				return ec.fieldContext_Order_customerEmail(ctx, field)
 			case "price":
 				return ec.fieldContext_Order_price(ctx, field)
+			case "currency":
+				return ec.fieldContext_Order_currency(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Order", field.Name)
 		},
@@ -2252,6 +2321,8 @@ func (ec *executionContext) fieldContext_User_orders(ctx context.Context, field 
 				return ec.fieldContext_Order_customerEmail(ctx, field)
 			case "price":
 				return ec.fieldContext_Order_price(ctx, field)
+			case "currency":
+				return ec.fieldContext_Order_currency(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Order", field.Name)
 		},
@@ -4039,7 +4110,7 @@ func (ec *executionContext) unmarshalInputCreateOrderInput(ctx context.Context, 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"title", "description", "category", "images", "price"}
+	fieldsInOrder := [...]string{"title", "description", "category", "images", "price", "currency"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -4081,6 +4152,13 @@ func (ec *executionContext) unmarshalInputCreateOrderInput(ctx context.Context, 
 				return it, err
 			}
 			it.Price = data
+		case "currency":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("currency"))
+			data, err := ec.unmarshalOCurrency2ᚖserverᚗgoᚋgraphᚋmodelᚐCurrency(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Currency = data
 		}
 	}
 
@@ -4420,6 +4498,42 @@ func (ec *executionContext) _Order(ctx context.Context, sel ast.SelectionSet, ob
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
+		case "currency":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Order_currency(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -5140,6 +5254,16 @@ func (ec *executionContext) unmarshalNCreateUserInput2serverᚗgoᚋgraphᚋmode
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalNCurrency2serverᚗgoᚋgraphᚋmodelᚐCurrency(ctx context.Context, v interface{}) (model.Currency, error) {
+	var res model.Currency
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNCurrency2serverᚗgoᚋgraphᚋmodelᚐCurrency(ctx context.Context, sel ast.SelectionSet, v model.Currency) graphql.Marshaler {
+	return v
+}
+
 func (ec *executionContext) unmarshalNFloat2float64(ctx context.Context, v interface{}) (float64, error) {
 	res, err := graphql.UnmarshalFloatContext(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -5698,6 +5822,22 @@ func (ec *executionContext) unmarshalOCreateOrderInput2ᚖserverᚗgoᚋgraphᚋ
 	}
 	res, err := ec.unmarshalInputCreateOrderInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOCurrency2ᚖserverᚗgoᚋgraphᚋmodelᚐCurrency(ctx context.Context, v interface{}) (*model.Currency, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(model.Currency)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOCurrency2ᚖserverᚗgoᚋgraphᚋmodelᚐCurrency(ctx context.Context, sel ast.SelectionSet, v *model.Currency) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
 }
 
 func (ec *executionContext) unmarshalOFloat2ᚖfloat64(ctx context.Context, v interface{}) (*float64, error) {

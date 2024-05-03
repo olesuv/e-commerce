@@ -109,6 +109,18 @@ func (r *OrderResolver) CreateOrder(ctx context.Context, input model.CreateOrder
 		return nil, fmt.Errorf("price is required")
 	}
 
+	var orderCurrency constants.OrderCurrency = constants.UAH
+	if input.Currency != nil {
+		switch *input.Currency {
+		case model.CurrencyUsd:
+			orderCurrency = constants.USD
+		case model.CurrencyEur:
+			orderCurrency = constants.EUR
+		default:
+			orderCurrency = constants.UAH
+		}
+	}
+
 	compressedImgs := []primitive.Binary{}
 	for _, img := range input.Images {
 		compressedImg, err := libs.CompressImage(*img)
@@ -132,6 +144,7 @@ func (r *OrderResolver) CreateOrder(ctx context.Context, input model.CreateOrder
 		Date:        time.Now(),
 		Status:      constants.Available,
 		Price:       *input.Price,
+		Currency:    orderCurrency,
 	}
 
 	order, err := r.orderService.CreateOrder(order)

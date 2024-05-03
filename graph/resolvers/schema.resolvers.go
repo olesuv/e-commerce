@@ -49,6 +49,10 @@ func (r *orderResolver) Status(ctx context.Context, obj *models.Order) (int, err
 	return r.OrderResolver.Status(ctx, obj)
 }
 
+func (r *orderResolver) Currency(ctx context.Context, obj *models.Order) (model.Currency, error) {
+	panic(fmt.Errorf("not implemented: Currency - currency"))
+}
+
 func (r *queryResolver) Users(ctx context.Context) ([]*models.User, error) {
 	return r.UserResolver.Users(ctx)
 }

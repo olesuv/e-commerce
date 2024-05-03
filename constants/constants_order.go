@@ -5,6 +5,8 @@ type OrderCategory int
 
 type OrderCategories []OrderCategory
 
+type OrderCurrency int
+
 const (
 	Available OrderStatus = iota
 	Buyed
@@ -18,4 +20,10 @@ const (
 	Books
 	Automotive
 	Other
+)
+
+const (
+	UAH OrderCurrency = iota
+	USD
+	EUR
 )

@@ -18,4 +18,5 @@ type Order struct {
 	Status          constants.OrderStatus     `bson:"status,omitempty"`
 	CustomerEmail   string                    `bson:"email,omitempty"`
 	Price           float64                   `bson:"price,omitempty" validate:"required"`
+	Currency        constants.OrderCurrency   `bson:"currency,omitempty" validate:"required"`
 }
