@@ -9,8 +9,9 @@ import (
 type CreateOrderInput struct {
 	Title       *string           `json:"title,omitempty"`
 	Description *string           `json:"description,omitempty"`
-	Category    *int              `json:"category,omitempty"`
+	Category    []*int            `json:"category,omitempty"`
 	Images      []*graphql.Upload `json:"images,omitempty"`
+	Price       *float64          `json:"price,omitempty"`
 }
 
 type CreateUserInput struct {

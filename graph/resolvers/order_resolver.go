@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"server.go/constants"
 	"server.go/graph/model"
 	"server.go/libs"
 	"server.go/models"
@@ -26,8 +27,12 @@ func (r *OrderResolver) ID(ctx context.Context, obj *models.Order) (string, erro
 	return obj.Id.Hex(), nil
 }
 
-func (r *OrderResolver) Category(ctx context.Context, obj *models.Order) (int, error) {
-	return int(obj.Category), nil
+func (r *OrderResolver) Category(ctx context.Context, obj *models.Order) ([]int, error) {
+	categories := make([]int, len(obj.Category))
+	for i, category := range obj.Category {
+		categories[i] = int(category)
+	}
+	return categories, nil
 }
 
 func (r *OrderResolver) Status(ctx context.Context, obj *models.Order) (int, error) {
@@ -55,12 +60,26 @@ func (r *OrderResolver) CreateOrder(ctx context.Context, input model.CreateOrder
 		return nil, fmt.Errorf("maximum length of description is 1000 characters")
 	}
 
-	if input.Category == nil {
-		return nil, fmt.Errorf("category is required")
+	if input.Category == nil || len(input.Category) == 0 {
+		otherCategory := constants.OrderCategory(constants.Other)
+		input.Category = make([]*int, 0)
+		input.Category = append(input.Category, (*int)(&otherCategory))
+	}
+	orderCategories := make(constants.OrderCategories, 0)
+	for _, category := range input.Category {
+		if category == nil || *category < int(constants.OrderCategory(constants.Electronics)) || *category > int(constants.OrderCategory(constants.Other)) {
+			return nil, fmt.Errorf("category is invalid")
+		}
+
+		orderCategories = append(orderCategories, constants.OrderCategory(*category))
 	}
 
 	if input.Images == nil {
 		return nil, fmt.Errorf("images are required")
+	}
+
+	if input.Price == nil {
+		return nil, fmt.Errorf("price is required")
 	}
 
 	compressedImgs := []primitive.Binary{}
@@ -82,9 +101,10 @@ func (r *OrderResolver) CreateOrder(ctx context.Context, input model.CreateOrder
 		Title:       *input.Title,
 		Description: *input.Description,
 		Images:      compressedImgs,
-		Category:    models.OrderCategory(*input.Category),
+		Category:    orderCategories,
 		Date:        time.Now(),
-		Status:      models.Available,
+		Status:      constants.Available,
+		Price:       *input.Price,
 	}
 
 	order, err := r.orderService.CreateOrder(order)
