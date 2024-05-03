@@ -7,7 +7,7 @@
    - [x] redis server for saving email verification tokens
    - [x] smtp server for emailing:
      - [ ] email check domain
-   - [ ] modify `Order` model to add price (with usd / uah / eur types)
+   - [x] modify `Order` model to add price (with usd / uah / eur types)
    - [x] multiple categories
 
 2. **Frontend**
@@ -19,7 +19,7 @@
      - [ ] create new sell product popup:
        - [x] form
        - [ ] react hooks: inputs, selected categories hover, selected number near `Categories *`
-       - [ ] muatation
+       - [x] muatation
      - [ ] my orders (selled / buyed) page??
 
 3. **Controllers / API**
