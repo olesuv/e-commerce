@@ -62,9 +62,19 @@ func (r *OrderResolver) Category(ctx context.Context, obj *models.Order) ([]mode
 	return categories, nil
 }
 
-func (r *OrderResolver) Status(ctx context.Context, obj *models.Order) (int, error) {
-	return int(obj.Status), nil
+func (r *OrderResolver) Status(ctx context.Context, obj *models.Order) (model.Status, error) {
+	var status model.Status
+	switch obj.Status {
+	case constants.Available:
+		status = model.StatusAvailable
+	case constants.Buyed:
+		status = model.StatusArchived
+	default:
+		status = model.StatusAvailable
+	}
+	return status, nil
 }
+
 func (r *OrderResolver) CreateOrder(ctx context.Context, input model.CreateOrderInput) (*models.Order, error) {
 	if input.Title == nil || *input.Title == "" {
 		return nil, fmt.Errorf("title is required")

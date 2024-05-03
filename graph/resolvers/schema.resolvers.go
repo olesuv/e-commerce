@@ -45,7 +45,7 @@ func (r *orderResolver) Category(ctx context.Context, obj *models.Order) ([]mode
 	return r.OrderResolver.Category(ctx, obj)
 }
 
-func (r *orderResolver) Status(ctx context.Context, obj *models.Order) (int, error) {
+func (r *orderResolver) Status(ctx context.Context, obj *models.Order) (model.Status, error) {
 	return r.OrderResolver.Status(ctx, obj)
 }
 

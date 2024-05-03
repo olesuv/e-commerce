@@ -104,7 +104,7 @@ type OrderResolver interface {
 	Images(ctx context.Context, obj *models.Order) ([]string, error)
 	Category(ctx context.Context, obj *models.Order) ([]model.Category, error)
 
-	Status(ctx context.Context, obj *models.Order) (int, error)
+	Status(ctx context.Context, obj *models.Order) (model.Status, error)
 
 	Currency(ctx context.Context, obj *models.Order) (model.Currency, error)
 }
@@ -500,6 +500,11 @@ enum Currency {
   EUR
 }
 
+enum Status {
+  Available
+  Archived
+}
+
 type User {
   id: Id!
   name: String
@@ -519,7 +524,7 @@ type Order {
   category: [Category!]!
   date: Time!
   shippingAddress: String
-  status: Int!
+  status: Status!
   customerEmail: String
   price: Float!
   currency: Currency!
@@ -1411,9 +1416,9 @@ func (ec *executionContext) _Order_status(ctx context.Context, field graphql.Col
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(model.Status)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNStatus2serverᚗgoᚋgraphᚋmodelᚐStatus(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Order_status(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1423,7 +1428,7 @@ func (ec *executionContext) fieldContext_Order_status(ctx context.Context, field
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type Status does not have child fields")
 		},
 	}
 	return fc, nil
@@ -5294,21 +5299,6 @@ func (ec *executionContext) marshalNId2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
-	res, err := graphql.UnmarshalInt(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
-	res := graphql.MarshalInt(v)
-	if res == graphql.Null {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-	}
-	return res
-}
-
 func (ec *executionContext) unmarshalNLoginUserInput2serverᚗgoᚋgraphᚋmodelᚐLoginUserInput(ctx context.Context, v interface{}) (model.LoginUserInput, error) {
 	res, err := ec.unmarshalInputLoginUserInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -5370,6 +5360,16 @@ func (ec *executionContext) marshalNOrder2ᚖserverᚗgoᚋmodelsᚐOrder(ctx co
 		return graphql.Null
 	}
 	return ec._Order(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNStatus2serverᚗgoᚋgraphᚋmodelᚐStatus(ctx context.Context, v interface{}) (model.Status, error) {
+	var res model.Status
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNStatus2serverᚗgoᚋgraphᚋmodelᚐStatus(ctx context.Context, sel ast.SelectionSet, v model.Status) graphql.Marshaler {
+	return v
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {

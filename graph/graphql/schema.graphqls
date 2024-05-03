@@ -20,6 +20,11 @@ enum Currency {
   EUR
 }
 
+enum Status {
+  Available
+  Archived
+}
+
 type User {
   id: Id!
   name: String
@@ -39,7 +44,7 @@ type Order {
   category: [Category!]!
   date: Time!
   shippingAddress: String
-  status: Int!
+  status: Status!
   customerEmail: String
   price: Float!
   currency: Currency!

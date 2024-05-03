@@ -129,3 +129,44 @@ func (e *Currency) UnmarshalGQL(v interface{}) error {
 func (e Currency) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
+
+type Status string
+
+const (
+	StatusAvailable Status = "Available"
+	StatusArchived  Status = "Archived"
+)
+
+var AllStatus = []Status{
+	StatusAvailable,
+	StatusArchived,
+}
+
+func (e Status) IsValid() bool {
+	switch e {
+	case StatusAvailable, StatusArchived:
+		return true
+	}
+	return false
+}
+
+func (e Status) String() string {
+	return string(e)
+}
+
+func (e *Status) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = Status(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid Status", str)
+	}
+	return nil
+}
+
+func (e Status) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
