@@ -31,7 +31,6 @@ export default function OrderCategories(props: OrderCategoriesProps) {
             props.setOrderCategories(
               addCategory(OrderCategory.Electronics, props.orderCategories)
             );
-            console.log(props.orderCategories);
           }}
           className="border-sky-100 bg-sky-50 text-sky-500 hover:border-sky-200 hover:bg-sky-100 cursor-pointer"
         >
