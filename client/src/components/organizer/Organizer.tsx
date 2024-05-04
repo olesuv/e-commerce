@@ -9,7 +9,7 @@ export default function Organizer(props: IOrganizerProps) {
     <div className="md:grid md:grid-cols-3 p-4 text-black">
       <div className="hidden md:block"></div>
 
-      <>{props.authenticated ? <SearchBar /> : <div>unauthenticated</div>}</>
+      <>{props.authenticated ? <SearchBar /> : <SearchBar />}</>
 
       <div className="hidden md:block"></div>
     </div>
