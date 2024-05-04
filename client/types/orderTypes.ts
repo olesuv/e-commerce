@@ -1,20 +1,15 @@
 export enum OrderCategory {
-  Electronics,
-  Fashion,
-  Home,
-  Sports,
-  Books,
-  Automotive,
-  Other,
+  Electronics = "Electronics",
+  Fashion = "Fashion",
+  Home = "Home",
+  Sports = "Sports",
+  Books = "Books",
+  Automotive = "Automotive",
+  Other = "Other",
 }
 
 export enum OrderCurrency {
-  UAH,
-  USD,
-  EUR,
-}
-
-export enum OrderStatus {
-  Available,
-  Archived,
+  UAH = "UAH",
+  USD = "USD",
+  EUR = "EUR",
 }
