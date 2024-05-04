@@ -19,10 +19,7 @@ export default function OrderPrice(props: OrderPriceProps) {
           <span className="text-gray-500 sm:text-sm">$</span>
         </div>
         <input
-          onChange={(e) => {
-            props.setOrderPrice(Number(e.target.value));
-            console.log(e.target.value);
-          }}
+          onChange={(e) => props.setOrderPrice(Number(e.target.value))}
           type="text"
           name="price"
           id="price"
@@ -37,10 +34,13 @@ export default function OrderPrice(props: OrderPriceProps) {
             id="currency"
             name="currency"
             className="h-full rounded-md border-0 bg-transparent py-0 pl-2 pr-7 text-gray-500 sm:text-sm sm:leading-6 outline-indigo-300"
+            onChange={(e) =>
+              props.setOrderCurrency(e.target.value as OrderCurrency)
+            }
           >
-            <option>UAH</option>
-            <option>USD</option>
-            <option>EUR</option>
+            <option value={OrderCurrency.UAH}>UAH</option>
+            <option value={OrderCurrency.USD}>USD</option>
+            <option value={OrderCurrency.EUR}>EUR</option>
           </select>
         </div>
       </div>
