@@ -27,11 +27,11 @@ export default function OrderCategories(props: OrderCategoriesProps) {
 
       <ul className="flex flex-wrap *:rounded-full *:border *:px-2 *:py-0.5 *:mr-1 *:mt-1">
         <li
-          onClick={() => {
+          onClick={() =>
             props.setOrderCategories(
               addCategory(OrderCategory.Electronics, props.orderCategories)
-            );
-          }}
+            )
+          }
           className="border-sky-100 bg-sky-50 text-sky-500 hover:border-sky-200 hover:bg-sky-100 cursor-pointer"
         >
           Electronics
