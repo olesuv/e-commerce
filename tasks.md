@@ -16,9 +16,9 @@
      - [ ] image carousel
      - [ ] link to full order page
    - [ ] user panel organizer:
-     - [ ] create new sell product popup:
+     - [x] create new sell product popup:
        - [x] form
-       - [ ] react hooks: inputs, selected categories hover, selected number near `Categories *`
+       - [x] react hooks: inputs, selected categories hover, selected number near `Categories *`
        - [x] muatation
      - [ ] my orders (selled / buyed) page??
 
