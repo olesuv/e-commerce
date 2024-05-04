@@ -79,20 +79,20 @@ func (r *OrderResolver) CreateOrder(ctx context.Context, input model.CreateOrder
 	if input.Title == nil || *input.Title == "" {
 		return nil, fmt.Errorf("title is required")
 	}
-	if len(*input.Title) <= 3 {
+	if len(*input.Title) < 3 {
 		return nil, fmt.Errorf("minimum length of title is 3 characters")
 	}
-	if len(*input.Title) >= 100 {
+	if len(*input.Title) > 100 {
 		return nil, fmt.Errorf("maximum length of title is 100 characters")
 	}
 
 	if input.Description == nil || *input.Description == "" {
 		return nil, fmt.Errorf("description is required")
 	}
-	if len(*input.Description) <= 3 {
+	if len(*input.Description) < 10 {
 		return nil, fmt.Errorf("minimum length of description is 10 characters")
 	}
-	if len(*input.Description) >= 1000 {
+	if len(*input.Description) > 1000 {
 		return nil, fmt.Errorf("maximum length of description is 1000 characters")
 	}
 
