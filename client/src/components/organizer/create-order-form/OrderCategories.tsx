@@ -1,7 +1,16 @@
 import { OrderCategory } from "../../../../types/orderTypes";
 
 interface OrderCategoriesProps {
+  orderCategories: OrderCategory[];
   setOrderCategories: (value: OrderCategory[]) => void;
+}
+
+function addCategory(category: OrderCategory, categories: OrderCategory[]) {
+  if (categories.includes(category)) {
+    return categories.filter((cat) => cat !== category);
+  } else {
+    return [...categories, category];
+  }
 }
 
 export default function OrderCategories(props: OrderCategoriesProps) {
@@ -17,7 +26,15 @@ export default function OrderCategories(props: OrderCategoriesProps) {
       </p>
 
       <ul className="flex flex-wrap *:rounded-full *:border *:px-2 *:py-0.5 *:mr-1 *:mt-1">
-        <li className="border-sky-100 bg-sky-50 text-sky-500 hover:border-sky-200 hover:bg-sky-100 cursor-pointer">
+        <li
+          onClick={() => {
+            props.setOrderCategories(
+              addCategory(OrderCategory.Electronics, props.orderCategories)
+            );
+            console.log(props.orderCategories);
+          }}
+          className="border-sky-100 bg-sky-50 text-sky-500 hover:border-sky-200 hover:bg-sky-100 cursor-pointer"
+        >
           Electronics
         </li>
         <li className="border-pink-100 bg-pink-50 text-pink-500 hover:border-pink-200 hover:bg-pink-100 cursor-pointer">

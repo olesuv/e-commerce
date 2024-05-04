@@ -37,7 +37,10 @@ export default function CreateOrderPopup(props: ICreateOrderPopupProps) {
         <form className="flex flex-col gap-2 mt-4 mb-4">
           <OrderName setOrderName={setOrderName} />
           <OrderDescription setOrderDescription={setOrderDescription} />
-          <OrderCategories setOrderCategories={setOrderCategories} />
+          <OrderCategories
+            orderCategories={orderCategories}
+            setOrderCategories={setOrderCategories}
+          />
           <OrderPrice
             setOrderPrice={setOrderPrice}
             setOrderCurrency={setOrderCurrency}
