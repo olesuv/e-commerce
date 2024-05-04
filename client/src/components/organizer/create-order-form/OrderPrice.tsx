@@ -1,5 +1,8 @@
+import { OrderCurrency } from "../../../../types/orderTypes";
+
 interface OrderPriceProps {
   setOrderPrice: (value: number) => void;
+  setOrderCurrency: (value: OrderCurrency) => void;
 }
 
 export default function OrderPrice(props: OrderPriceProps) {

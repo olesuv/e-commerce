@@ -4,6 +4,7 @@ import OrderDescription from "./create-order-form/OrderDescription";
 import OrderCategories from "./create-order-form/OrderCategories";
 import OrderPrice from "./create-order-form/OrderPrice";
 import OrderHeader from "./create-order-form/OrderHeader";
+import { OrderCategory, OrderCurrency } from "../../../types/orderTypes";
 
 interface ICreateOrderPopupProps {
   setShowPopup: (value: boolean) => void;
@@ -12,8 +13,11 @@ interface ICreateOrderPopupProps {
 export default function CreateOrderPopup(props: ICreateOrderPopupProps) {
   const [orderName, setOrderName] = useState<string>("");
   const [orderDescription, setOrderDescription] = useState<string>("");
-  const [orderCategories, setOrderCategories] = useState<number[]>([]);
+  const [orderCategories, setOrderCategories] = useState<OrderCategory[]>([]);
   const [orderPrice, setOrderPrice] = useState<number>(0);
+  const [orderCurrency, setOrderCurrency] = useState<OrderCurrency>(
+    OrderCurrency.UAH
+  );
 
   const [error, setError] = useState<string>("");
 
@@ -34,7 +38,10 @@ export default function CreateOrderPopup(props: ICreateOrderPopupProps) {
           <OrderName setOrderName={setOrderName} />
           <OrderDescription setOrderDescription={setOrderDescription} />
           <OrderCategories setOrderCategories={setOrderCategories} />
-          <OrderPrice setOrderPrice={setOrderPrice} />
+          <OrderPrice
+            setOrderPrice={setOrderPrice}
+            setOrderCurrency={setOrderCurrency}
+          />
 
           <div className="grid grid-cols-2 gap-4">
             <button

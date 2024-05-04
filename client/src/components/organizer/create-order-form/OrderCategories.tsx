@@ -1,5 +1,7 @@
+import { OrderCategory } from "../../../../types/orderTypes";
+
 interface OrderCategoriesProps {
-  setOrderCategories: (value: number[]) => void;
+  setOrderCategories: (value: OrderCategory[]) => void;
 }
 
 export default function OrderCategories(props: OrderCategoriesProps) {
