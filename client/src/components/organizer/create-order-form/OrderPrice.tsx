@@ -6,6 +6,18 @@ interface OrderPriceProps {
 }
 
 export default function OrderPrice(props: OrderPriceProps) {
+  const handleCurrencyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedCurrencyString = e.target.value; // Get the string value from the select element
+    const selectedCurrency =
+      selectedCurrencyString as keyof typeof OrderCurrency; // Type assertion to enum key
+    const currencyValue = OrderCurrency[selectedCurrency]; // Get the enum value from the key
+
+    if (currencyValue !== undefined) {
+      // Ensure that the enum value is valid
+      props.setOrderCurrency(currencyValue);
+    }
+  };
+
   return (
     <div>
       <label
@@ -34,9 +46,7 @@ export default function OrderPrice(props: OrderPriceProps) {
             id="currency"
             name="currency"
             className="h-full rounded-md border-0 bg-transparent py-0 pl-2 pr-7 text-gray-500 sm:text-sm sm:leading-6 outline-indigo-300"
-            onChange={(e) =>
-              props.setOrderCurrency(e.target.value as OrderCurrency)
-            }
+            onChange={handleCurrencyChange}
           >
             <option value={OrderCurrency.UAH}>UAH</option>
             <option value={OrderCurrency.USD}>USD</option>
