@@ -25,7 +25,7 @@ export default function CreateOrderPopup(props: ICreateOrderPopupProps) {
   const [orderName, setOrderName] = useState<string>("");
   const [orderDescription, setOrderDescription] = useState<string>("");
   const [orderCategories, setOrderCategories] = useState<OrderCategory[]>([]);
-  const [orderPrice, setOrderPrice] = useState<number>(0);
+  const [orderPrice, setOrderPrice] = useState<number>();
   const [orderCurrency, setOrderCurrency] = useState<OrderCurrency>(
     OrderCurrency.UAH
   );
