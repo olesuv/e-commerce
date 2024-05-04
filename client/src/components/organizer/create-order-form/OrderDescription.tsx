@@ -5,7 +5,9 @@ interface OrderDescriptionProps {
 export default function OrderDescription(props: OrderDescriptionProps) {
   return (
     <div>
-      <p className="font-medium">Description</p>
+      <p className="font-medium after:content-['*'] after:ml-0.5 after:text-red-500">
+        Description
+      </p>
       <textarea
         onChange={(e) => props.setOrderDescription(e.target.value)}
         placeholder="Example: Brand new Samsung Galaxy S21 Ultra, 256GB, 12GB RAM, Phantom Black"
