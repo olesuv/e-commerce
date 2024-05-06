@@ -50,3 +50,14 @@
    - [ ] close on `Esc` button or click by mouse out of popup main area:
      - [ ] tracking mouse and keboard in `main` / `app` component
      - [ ] state for showing popup and give to props in other components
+
+- [ ] 5 code smells:
+  - Bloaters:
+    - [ ] distribute lage methods in class
+    - [ ] distribute classes for feature
+    - [x] custom types (instead of `1`, `0`)
+  - Object-Orientation Abusers:
+    - [x] Temporary Field (used in resolvers inputs)
+  - Dispensables:
+    - [ ] check for dead code
+  - [ ] tests
