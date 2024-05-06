@@ -10,10 +10,14 @@ import (
 	"server.go/graph/model"
 	"server.go/models"
 	"server.go/services"
+	errors "server.go/utils/errors"
+	typesConverters "server.go/utils/types_converters"
 )
 
 type OrderResolver struct {
-	orderService *services.OrderService
+	orderService       *services.OrderService
+	orderErrors        errors.OrderErrors
+	orderTypeConverter typesConverters.OrderTypesConverter
 }
 
 func NewOrderResolver() *OrderResolver {
@@ -76,72 +80,17 @@ func (r *OrderResolver) Status(ctx context.Context, obj *models.Order) (model.St
 }
 
 func (r *OrderResolver) CreateOrder(ctx context.Context, input model.CreateOrderInput) (*models.Order, error) {
-	if input.Title == nil || *input.Title == "" {
-		return nil, fmt.Errorf("title is required")
-	}
-	if len(*input.Title) < 3 {
-		return nil, fmt.Errorf("minimum length of title is 3 characters")
-	}
-	if len(*input.Title) > 100 {
-		return nil, fmt.Errorf("maximum length of title is 100 characters")
+	err := r.orderErrors.CheckCreateOrderInput(input)
+	if err != nil {
+		return nil, err
 	}
 
-	if input.Description == nil || *input.Description == "" {
-		return nil, fmt.Errorf("description is required")
-	}
-	if len(*input.Description) < 10 {
-		return nil, fmt.Errorf("minimum length of description is 10 characters")
-	}
-	if len(*input.Description) > 1000 {
-		return nil, fmt.Errorf("maximum length of description is 1000 characters")
-	}
-
-	orderCategories := make(constants.OrderCategories, 0)
-	if input.Category == nil || len(input.Category) == 0 {
-		orderCategories = append(orderCategories, constants.Other)
-	}
-	if len(input.Category) >= 1 {
-		for _, category := range input.Category {
-			switch *category {
-			case model.CategoryElectronics:
-				orderCategories = append(orderCategories, constants.Electronics)
-			case model.CategoryFashion:
-				orderCategories = append(orderCategories, constants.Fashion)
-			case model.CategoryHome:
-				orderCategories = append(orderCategories, constants.Home)
-			case model.CategorySports:
-				orderCategories = append(orderCategories, constants.Sports)
-			case model.CategoryBooks:
-				orderCategories = append(orderCategories, constants.Books)
-			case model.CategoryAutomotive:
-				orderCategories = append(orderCategories, constants.Automotive)
-			case model.CategoryOther:
-				orderCategories = append(orderCategories, constants.Other)
-			default:
-				orderCategories = append(orderCategories, constants.Other)
-			}
-		}
-	}
+	orderCategories := r.orderTypeConverter.ConvertCategoryTypes(input)
+	orderCurrency := r.orderTypeConverter.ConvertCurrencyTypes(input)
 
 	// if input.Images == nil {
 	// 	return nil, fmt.Errorf("images are required")
 	// }
-
-	if input.Price == nil {
-		return nil, fmt.Errorf("price is required")
-	}
-
-	var orderCurrency constants.OrderCurrency = constants.UAH
-	if input.Currency != nil {
-		switch *input.Currency {
-		case model.CurrencyUsd:
-			orderCurrency = constants.USD
-		case model.CurrencyEur:
-			orderCurrency = constants.EUR
-		default:
-			orderCurrency = constants.UAH
-		}
-	}
 
 	// compressedImgs := []primitive.Binary{}
 	// for _, img := range input.Images {
@@ -169,7 +118,7 @@ func (r *OrderResolver) CreateOrder(ctx context.Context, input model.CreateOrder
 		Currency:    orderCurrency,
 	}
 
-	order, err := r.orderService.CreateOrder(order)
+	order, err = r.orderService.CreateOrder(order)
 	if err != nil {
 		return nil, fmt.Errorf("server: create order, details: %w", err)
 	}

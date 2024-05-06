@@ -51,13 +51,11 @@
      - [ ] tracking mouse and keboard in `main` / `app` component
      - [ ] state for showing popup and give to props in other components
 
-- [ ] 5 code smells:
+- [x] 5 code smells:
   - Bloaters:
-    - [ ] distribute lage methods in class
-    - [ ] distribute classes for feature
-    - [x] custom types (instead of `1`, `0`)
-  - Object-Orientation Abusers:
-    - [x] Temporary Field (used in resolvers inputs)
+    - [x] distribute lage methods in classes (dir `graph/resolvers` => `order_resolver`)
+    - [x] distribute classes for feature (dir `libs` and `utils`)
+    - [x] custom types (dir `constants` => `constants_order.go`)
   - Dispensables:
-    - [ ] check for dead code
-  - [ ] tests
+    - [x] check for dead code (deleted: dir `models` => `session_model`, dir `services` => `auth_service`)
+  - [x] tests

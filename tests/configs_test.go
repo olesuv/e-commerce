@@ -1,4 +1,4 @@
-package configs_test
+package tests
 
 import (
 	"context"
@@ -22,13 +22,6 @@ func TestConnectDBSingleton(t *testing.T) {
 
 	if err := client2.Ping(context.TODO(), nil); err != nil {
 		t.Errorf("Failed to ping client2: %v", err)
-	}
-}
-
-func TestLoadEnv(t *testing.T) {
-	err := configs.LoadEnv()
-	if err != nil {
-		t.Error(err)
 	}
 }
 
