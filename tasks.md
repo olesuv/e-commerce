@@ -20,6 +20,7 @@
        - [x] form
        - [x] react hooks: inputs, selected categories hover, selected number near `Categories *`
        - [x] muatation
+       - [ ] photos
      - [ ] my orders (selled / buyed) page??
 
 3. **Controllers / API**
@@ -35,7 +36,6 @@
 4. **Tests**
 
    - [x] db connect test
-   - [ ] auth tests
    - [ ] smtp server tests
 
 5. **Refactoring**
@@ -48,14 +48,17 @@
      - [ ] dependency injection initialization of all servers (and mutations mb)
 
    - [ ] close on `Esc` button or click by mouse out of popup main area:
+
      - [ ] tracking mouse and keboard in `main` / `app` component
      - [ ] state for showing popup and give to props in other components
 
-- [x] 5 code smells:
-  - Bloaters:
-    - [x] distribute lage methods in classes (dir `graph/resolvers` => `order_resolver`)
-    - [x] distribute classes for feature (dir `libs` and `utils`)
-    - [x] custom types (dir `constants` => `constants_order.go`)
-  - Dispensables:
-    - [x] check for dead code (deleted: dir `models` => `session_model`, dir `services` => `auth_service`)
-  - [x] tests
+   - [ ] remove `libs` dir
+
+   - [x] 5 code smells:
+     - Bloaters:
+       - [x] distribute lage methods in classes (dir `graph/resolvers` => `order_resolver`)
+       - [x] distribute classes for feature (dir `libs` and `utils`)
+       - [x] custom types (dir `constants` => `constants_order.go`)
+     - Dispensables:
+       - [x] check for dead code (deleted: dir `models` => `session_model`, dir `services` => `auth_service`)
+     - [x] tests
