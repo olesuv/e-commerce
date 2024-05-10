@@ -38,23 +38,25 @@
    - [x] db connect test
    - [ ] smtp server tests
 
-5. **Refactoring**
-
-   - [ ] implement patterns (3/5):
-
-     - [x] singleton mongodb server connection
-     - [x] builder redis server connection
-     - [x] service layout for resolvers
-     - [ ] dependency injection initialization of all servers (and mutations mb)
+5. **Features**
 
    - [ ] close on `Esc` button or click by mouse out of popup main area:
 
      - [ ] tracking mouse and keboard in `main` / `app` component
      - [ ] state for showing popup and give to props in other components
 
-   - [ ] remove `libs` dir
+6. **Refactoring**
 
-   - [x] 5 code smells:
+   - Patterns (3/5):
+
+     - [x] singleton mongodb server connection
+     - [x] builder redis server connection
+     - [x] service layout for resolvers
+     - [x] dependency injection in some services
+     - [ ] dependency injection initialization of all servers (and mutations mb)
+
+   - [x] 5 code smells (lab):
+
      - Bloaters:
        - [x] distribute lage methods in classes (dir `graph/resolvers` => `order_resolver`)
        - [x] distribute classes for feature (dir `libs` and `utils`)
@@ -62,3 +64,9 @@
      - Dispensables:
        - [x] check for dead code (deleted: dir `models` => `session_model`, dir `services` => `auth_service`)
      - [x] tests
+
+   - Refactoring (project):
+
+     - [ ] `libs` move to `utils` dir
+     - Dispensables:
+       - [x] dead code: image creation [link commit]()
