@@ -6,6 +6,7 @@ import OrderPrice from "./create-order-form/OrderPrice";
 import OrderHeader from "./create-order-form/OrderHeader";
 import { OrderCategory, OrderCurrency } from "../../../types/orderTypes";
 import { gql, useMutation } from "@apollo/client";
+import { useHistory } from "react-router-dom";
 
 const CREATE_ORDER = gql`
   mutation createOrder($input: CreateOrderInput!) {
@@ -32,13 +33,17 @@ export default function CreateOrderPopup(props: ICreateOrderPopupProps) {
   );
 
   const [error, setError] = useState<string>("");
+  const history = useHistory();
 
   const [createOrderMutation, { loading }] = useMutation(CREATE_ORDER, {
     onError: (error) => {
       setError(error.message);
     },
     onCompleted: (data) => {
-      console.log(data);
+      const orderId = data?.createOrder?.id;
+      if (orderId) {
+        history.push(`/order/${orderId}`);
+      }
       props.setShowPopup(false);
     },
   });
