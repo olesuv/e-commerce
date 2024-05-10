@@ -12,6 +12,7 @@ const CREATE_ORDER = gql`
     createOrder(input: $input) {
       id
       title
+      description
       price
     }
   }
@@ -27,7 +28,7 @@ export default function CreateOrderPopup(props: ICreateOrderPopupProps) {
   const [orderCategories, setOrderCategories] = useState<OrderCategory[]>([]);
   const [orderPrice, setOrderPrice] = useState<number>();
   const [orderCurrency, setOrderCurrency] = useState<OrderCurrency>(
-    OrderCurrency.UAH
+    OrderCurrency.UAH,
   );
 
   const [error, setError] = useState<string>("");
@@ -59,19 +60,19 @@ export default function CreateOrderPopup(props: ICreateOrderPopupProps) {
   };
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-60 flex justify-center items-center">
-      <div className="bg-white p-8 rounded-lg">
+    <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center bg-gray-800 bg-opacity-60">
+      <div className="rounded-lg bg-white p-8">
         <OrderHeader />
 
         {error && (
-          <label className="flex flex-col bg-rose-500 w-full rounded-md my-2">
-            <p className="text-xl text-white text-center font-semibold p-5">
+          <label className="my-2 flex w-full flex-col rounded-md bg-rose-500">
+            <p className="p-5 text-center text-xl font-semibold text-white">
               Oops, {error}
             </p>
           </label>
         )}
 
-        <form className="flex flex-col gap-2 mt-4 mb-4" onSubmit={handleSubmit}>
+        <form className="mb-4 mt-4 flex flex-col gap-2" onSubmit={handleSubmit}>
           <OrderName setOrderName={setOrderName} />
           <OrderDescription setOrderDescription={setOrderDescription} />
           <OrderCategories
@@ -86,21 +87,21 @@ export default function CreateOrderPopup(props: ICreateOrderPopupProps) {
           <div className="grid grid-cols-2 gap-4">
             <button
               onClick={() => props.setShowPopup(false)}
-              className="mt-2 p-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-md"
+              className="mt-2 rounded-md bg-gray-200 p-2 text-gray-700 hover:bg-gray-300"
             >
               Cancel
             </button>
             {loading ? (
               <button
                 type="submit"
-                className="mt-2 p-2 bg-indigo-300 hover:bg-indigo-400 cursor-wait rounded-md"
+                className="mt-2 cursor-wait rounded-md bg-indigo-300 p-2 hover:bg-indigo-400"
               >
                 Selling...
               </button>
             ) : (
               <button
                 type="submit"
-                className="mt-2 p-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-md cursor-pointer"
+                className="mt-2 cursor-pointer rounded-md bg-indigo-500 p-2 text-white hover:bg-indigo-600"
               >
                 Sell
               </button>

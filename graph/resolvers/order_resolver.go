@@ -88,24 +88,6 @@ func (r *OrderResolver) CreateOrder(ctx context.Context, input model.CreateOrder
 	orderCategories := r.orderTypeConverter.ConvertCategoryTypes(input)
 	orderCurrency := r.orderTypeConverter.ConvertCurrencyTypes(input)
 
-	// if input.Images == nil {
-	// 	return nil, fmt.Errorf("images are required")
-	// }
-
-	// compressedImgs := []primitive.Binary{}
-	// for _, img := range input.Images {
-	// 	compressedImg, err := libs.CompressImage(*img)
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-
-	// 	binImg := primitive.Binary{
-	// 		Data: compressedImg,
-	// 	}
-
-	// 	compressedImgs = append(compressedImgs, binImg)
-	// }
-
 	order := &models.Order{
 		Id:          primitive.NewObjectID(),
 		Title:       *input.Title,

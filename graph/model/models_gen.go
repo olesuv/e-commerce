@@ -6,17 +6,14 @@ import (
 	"fmt"
 	"io"
 	"strconv"
-
-	"github.com/99designs/gqlgen/graphql"
 )
 
 type CreateOrderInput struct {
-	Title       *string           `json:"title,omitempty"`
-	Description *string           `json:"description,omitempty"`
-	Category    []*Category       `json:"category,omitempty"`
-	Images      []*graphql.Upload `json:"images,omitempty"`
-	Price       *float64          `json:"price,omitempty"`
-	Currency    *Currency         `json:"currency,omitempty"`
+	Title       *string     `json:"title,omitempty"`
+	Description *string     `json:"description,omitempty"`
+	Category    []*Category `json:"category,omitempty"`
+	Price       *float64    `json:"price,omitempty"`
+	Currency    *Currency   `json:"currency,omitempty"`
 }
 
 type CreateUserInput struct {

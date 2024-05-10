@@ -40,7 +40,6 @@ type Order {
   id: Id!
   title: String!
   description: String
-  images: [String!]
   category: [Category!]!
   date: Time!
   shippingAddress: String
@@ -65,7 +64,6 @@ input CreateOrderInput {
   title: String
   description: String
   category: [Category]
-  images: [Upload]
   price: Float
   currency: Currency
 }
