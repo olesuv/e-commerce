@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"server.go/configs"
 	"server.go/models"
@@ -29,11 +30,17 @@ func (os *OrderService) CreateOrder(order *models.Order) (*models.Order, error) 
 }
 
 func (os *OrderService) GetOrderById(id string) (*models.Order, error) {
-	var order models.Order
-	err := os.collection.FindOne(context.Background(), bson.M{"_id": id}).Decode(&order)
+	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
 	}
+
+	var order models.Order
+	err = os.collection.FindOne(context.Background(), bson.M{"_id": objectID}).Decode(&order)
+	if err != nil {
+		return nil, err
+	}
+
 	return &order, nil
 }
 
