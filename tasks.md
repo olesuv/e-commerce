@@ -69,4 +69,4 @@
 
      - [ ] `libs` move to `utils` dir
      - Dispensables:
-       - [x] dead code: image creation [link commit]()
+       - [x] dead code: image creation [link commit](https://github.com/plxgwalker/e-commerce/commit/691be520bccf5c0374979bce5fc8d68f6126051e)
