@@ -1,6 +1,5 @@
-import { useState } from "react";
-import { LoaderFunctionArgs, useLoaderData } from "react-router-dom";
-import { gql, useMutation } from "@apollo/client";
+import { useParams } from "react-router-dom";
+import { gql, useQuery } from "@apollo/client";
 
 const GET_ORDER = gql`
   query getOrder($id: ID!) {
@@ -15,27 +14,31 @@ const GET_ORDER = gql`
   }
 `;
 
-const [error, setError] = useState<string>("");
-
-const [getOrderMutation, { loading }] = useMutation(GET_ORDER, {
-  onError: (error) => {
-    setError(error.message);
-  },
-  onCompleted: (data) => {
-    return data;
-  },
-});
-
-export async function loader(args: LoaderFunctionArgs<{ orderId: string }>) {
-  return await getOrderMutation({
-    variables: {
-      id: args.params.orderId,
-    },
-  });
-}
-
 export default function OrderDetails() {
-  const orderData = useLoaderData();
+  const { id } = useParams<{ id: string }>(); // Get the orderId from route params
 
-  return <h1>{orderData as React.ReactNode}</h1>;
+  const { loading, error, data } = useQuery(GET_ORDER, {
+    variables: { id },
+  });
+
+  if (loading) {
+    return <p>Loading...</p>; // Render loading state while fetching data
+  }
+
+  if (error || !data?.order) {
+    return <p>Order not found</p>; // Render error message if order is not found
+  }
+
+  const order = data.order;
+
+  return (
+    <div>
+      <h1>{order.title}</h1>
+      <p>{order.description}</p>
+      <p>Category: {order.category}</p>
+      <p>
+        Price: {order.price} {order.currency}
+      </p>
+    </div>
+  );
 }

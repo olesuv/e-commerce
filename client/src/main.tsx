@@ -7,7 +7,6 @@ import OrderDetails from "./components/order/OrderDetails.tsx";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { loader as OrderDetailsLoader } from "./components/order/OrderDetails.tsx";
 
 const client = new ApolloClient({
   uri: "http://localhost:8080/query",
@@ -27,8 +26,8 @@ const router = createBrowserRouter([
   {
     path: "/order/:id",
     element: <OrderDetails />,
-    loader: OrderDetailsLoader,
-    // errorElement: <h1>Order not found</h1>,
+    // TODO: error page
+    errorElement: <h1>Order not found</h1>,
   },
 ]);
 
