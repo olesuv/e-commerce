@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { gql, useQuery } from "@apollo/client";
 
 const GET_ORDER = gql`
-  query getOrder($id: ID!) {
+  query getOrder($id: String!) {
     order(id: $id) {
       id
       title
@@ -15,18 +15,14 @@ const GET_ORDER = gql`
 `;
 
 export default function OrderDetails() {
-  const { id } = useParams<{ id: string }>(); // Get the orderId from route params
+  const { id } = useParams<{ id: string }>();
 
-  const { loading, error, data } = useQuery(GET_ORDER, {
+  const { loading, data } = useQuery(GET_ORDER, {
     variables: { id },
   });
 
   if (loading) {
-    return <p>Loading...</p>; // Render loading state while fetching data
-  }
-
-  if (error || !data?.order) {
-    return <p>Order not found</p>; // Render error message if order is not found
+    return <p>Loading...</p>;
   }
 
   const order = data.order;
