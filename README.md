@@ -4,22 +4,34 @@ Web app for buying goods
 
 ## Architecture
 
-```bash
+```console
+george@hotz$ tree -L 1 --dirsfirst
 ├── client
+|   # all client code
 ├── configs
+|   # main configs (for backend)
 ├── constants
+|   # constants (for backend)
+├── graph
+|   # graphql API
+├── handlers
+|   # http handlers
+├── middleware
+├── models
+|   # mongodb models
+├── services
+|   # mongodb models
+├── tests
+├── utils
+|   # helpers
 ├── Dockerfile
 ├── go.mod
 ├── go.sum
 ├── gqlgen.yml
-├── graph
-├── handlers
-├── middleware
-├── models
+|   # yml file to generate gql schema
 ├── README.md
 ├── server.go
-├── services
-├── tasks.md
-├── tests
-└── utils
+|   # server init
+└── tasks.md
+    # dev notes/tasks
 ```
