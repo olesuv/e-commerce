@@ -77,7 +77,11 @@
 
      4. 10 code smells (explained):
 
-        - [x] 5 code smells from [previous](<https://github.com/plxgwalker/e-commerce/blob/main/tasks.md#:~:text=5%20code%20smells%20(lab)%3A>) laboratory work
+        - [x] 5 code smells from previous laboratory work ([commit link](<https://github.com/plxgwalker/e-commerce/blob/main/tasks.md#:~:text=5%20code%20smells%20(lab)%3A>))
+        - Bloaters:
+
+          - [ ] distribute one large component into few components ([commit link]())
+
         - Dispensables:
           - [x] dead code: image creation ([commit link](https://github.com/plxgwalker/e-commerce/commit/691be520bccf5c0374979bce5fc8d68f6126051e))
           - [x] naming: files from `libs` move to `utils` because of same idea between folders ([commit link](https://github.com/plxgwalker/e-commerce/commit/66df879ac5a835f47e34632f8805bb89437a0f22))
