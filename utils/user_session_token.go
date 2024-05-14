@@ -1,4 +1,4 @@
-package libs
+package utils
 
 import (
 	"context"
@@ -19,12 +19,12 @@ func GenearteJwtToken(ctx context.Context, email string) (string, error) {
 
 	jwtSecret := os.Getenv("JWT_SECRET")
 	if jwtSecret == "" {
-		return "", fmt.Errorf("libs: jwt secret is required")
+		return "", fmt.Errorf("utils: jwt secret is required")
 	}
 
 	tokenString, err := token.SignedString([]byte(jwtSecret))
 	if err != nil {
-		return "", fmt.Errorf("libs: signed string, details: %w", err)
+		return "", fmt.Errorf("utils: signed string, details: %w", err)
 	}
 
 	return tokenString, nil
@@ -34,23 +34,23 @@ func ValidateJwtToken(ctx context.Context, tokenString string) (string, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		jwtSecret := os.Getenv("JWT_SECRET")
 		if jwtSecret == "" {
-			return nil, fmt.Errorf("libs: jwt secret is required")
+			return nil, fmt.Errorf("utils: jwt secret is required")
 		}
 		return []byte(jwtSecret), nil
 	})
 	if err != nil {
-		return "", fmt.Errorf("libs: parse token, details: %w", err)
+		return "", fmt.Errorf("utils: parse token, details: %w", err)
 	}
 	if !token.Valid {
-		return "", fmt.Errorf("libs: invalid token")
+		return "", fmt.Errorf("utils: invalid token")
 	}
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		return "", fmt.Errorf("libs: invalid claims")
+		return "", fmt.Errorf("utils: invalid claims")
 	}
 	email, ok := claims["email"].(string)
 	if !ok {
-		return "", fmt.Errorf("libs: invalid email claim")
+		return "", fmt.Errorf("utils: invalid email claim")
 	}
 
 	return email, nil

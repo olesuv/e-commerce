@@ -6,7 +6,7 @@ import (
 
 	"server.go/configs"
 	"server.go/constants"
-	"server.go/libs"
+	"server.go/utils"
 )
 
 // TODO: Add user session token generation and validation tests (after docker + redis init)
@@ -15,7 +15,7 @@ func TestGenearteJwtToken(t *testing.T) {
 	configs.LoadEnv()
 	ctx := context.Background()
 
-	token, err := libs.GenearteJwtToken(ctx, constants.EMAIL)
+	token, err := utils.GenearteJwtToken(ctx, constants.EMAIL)
 	if err != nil {
 		t.Errorf("Failed to generate JWT token: %v", err)
 	}
@@ -28,12 +28,12 @@ func TestValidateJwtToken(t *testing.T) {
 	configs.LoadEnv()
 	ctx := context.Background()
 
-	tokenString, err := libs.GenearteJwtToken(ctx, constants.EMAIL)
+	tokenString, err := utils.GenearteJwtToken(ctx, constants.EMAIL)
 	if err != nil {
 		t.Errorf(err.Error())
 	}
 
-	userEmail, err := libs.ValidateJwtToken(ctx, tokenString)
+	userEmail, err := utils.ValidateJwtToken(ctx, tokenString)
 
 	if err != nil {
 		t.Errorf(err.Error())
@@ -47,22 +47,22 @@ func TestValidateJwtToken(t *testing.T) {
 }
 
 func TestHashPassword(t *testing.T) {
-	hashedPassword := libs.HashPassword(constants.PASSWORD)
+	hashedPassword := utils.HashPassword(constants.PASSWORD)
 
-	if !libs.VerifyPassword(constants.PASSWORD, hashedPassword) {
+	if !utils.VerifyPassword(constants.PASSWORD, hashedPassword) {
 		t.Error("Failed to verify hashed password")
 	}
 }
 
 func TestVerifyPassword(t *testing.T) {
-	hashedPassword := libs.HashPassword(constants.PASSWORD)
+	hashedPassword := utils.HashPassword(constants.PASSWORD)
 
-	if !libs.VerifyPassword(constants.PASSWORD, hashedPassword) {
+	if !utils.VerifyPassword(constants.PASSWORD, hashedPassword) {
 		t.Error("Failed to verify hashed password")
 	}
 
 	invalidPassword := "wrongpassword"
-	if libs.VerifyPassword(invalidPassword, hashedPassword) {
+	if utils.VerifyPassword(invalidPassword, hashedPassword) {
 		t.Error("Incorrectly verified invalid password")
 	}
 }

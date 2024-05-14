@@ -8,9 +8,9 @@ import (
 	"github.com/redis/go-redis/v9"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"server.go/graph/model"
-	"server.go/libs"
 	"server.go/models"
 	"server.go/services"
+	"server.go/utils"
 )
 
 type UserResolver struct {
@@ -56,7 +56,7 @@ func (r *UserResolver) CreateUser(ctx context.Context, input model.CreateUserInp
 			input.Name = &defaultName
 		}
 
-		hashedPassword := libs.HashPassword(*input.Password)
+		hashedPassword := utils.HashPassword(*input.Password)
 
 		user, err = r.userService.CreateUser(&models.User{
 			Id:       primitive.NewObjectID(),
@@ -68,7 +68,7 @@ func (r *UserResolver) CreateUser(ctx context.Context, input model.CreateUserInp
 			return nil, fmt.Errorf("server: create user, details: %w", err)
 		}
 
-		verificationToken, err := libs.GenerateVerificationToken(ctx, *input.Email, r.rdb)
+		verificationToken, err := utils.GenerateVerificationToken(ctx, *input.Email, r.rdb)
 		if err != nil {
 			_, err = r.userService.DeleteUserByEmail(*input.Email)
 			if err != nil {
@@ -78,7 +78,7 @@ func (r *UserResolver) CreateUser(ctx context.Context, input model.CreateUserInp
 			return nil, fmt.Errorf("server: generate verification token, details: %w", err)
 		}
 
-		err = libs.SendVerificationEmail(*input.Email, verificationToken)
+		err = utils.SendVerificationEmail(*input.Email, verificationToken)
 		if err != nil {
 			_, err := r.userService.DeleteUserByEmail(*input.Email)
 			if err != nil {
@@ -156,13 +156,13 @@ func (r *UserResolver) LoginUser(ctx context.Context, input model.LoginUserInput
 	}
 
 	userHash := user.Password
-	comapre := libs.VerifyPassword(*input.Password, userHash)
+	comapre := utils.VerifyPassword(*input.Password, userHash)
 
 	if !comapre {
 		return "", fmt.Errorf("invalid password")
 	}
 
-	token, err := libs.GenearteJwtToken(ctx, *input.Email)
+	token, err := utils.GenearteJwtToken(ctx, *input.Email)
 	if err != nil {
 		return "", err
 	}

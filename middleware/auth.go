@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"server.go/libs"
+	"server.go/utils"
 )
 
 var userCtxKey = &contextKey{"user"}
@@ -22,7 +22,7 @@ func Middleware() func(http.Handler) http.Handler {
 				return
 			}
 
-			userEmail, err := libs.ValidateJwtToken(context.Background(), c.Value)
+			userEmail, err := utils.ValidateJwtToken(context.Background(), c.Value)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusUnauthorized)
 				return
