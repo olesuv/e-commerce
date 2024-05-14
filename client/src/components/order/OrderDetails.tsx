@@ -1,7 +1,9 @@
 import { useParams } from "react-router-dom";
-import { gql, useLazyQuery, useQuery } from "@apollo/client";
+import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { mapCurrencySymbol } from "../../../utils/mapCurrency";
 import { useEffect, useState } from "react";
+import { decodeEmailFromToken } from "../../../utils/getEmailFromJWT";
+import { useNavigate } from "react-router";
 
 import convertDate from "../../../utils/convertDate";
 
@@ -14,6 +16,7 @@ const GET_ORDER = gql`
       category
       price
       currency
+      customerEmail
       authorEmail
       date
       status
@@ -30,14 +33,37 @@ const GET_USER = gql`
   }
 `;
 
-export default function OrderDetails() {
-  const [showMore, setShowMore] = useState(false);
+const BUY_ORDER = gql`
+  mutation buy($orderId: String!, $customerEmail: String!) {
+    buyOrder(orderId: $orderId, customerEmail: $customerEmail) {
+      status
+      customerEmail
+      authorEmail
+    }
+  }
+`;
 
+export default function OrderDetails() {
+  const { id } = useParams<{ id: string }>();
+
+  const navigate = useNavigate();
+
+  const [showMore, setShowMore] = useState(false);
   const toggleShowMore = () => {
     setShowMore(!showMore);
   };
 
-  const { id } = useParams<{ id: string }>();
+  const [buyOrder, { loading: buyOrderLoading }] = useMutation(BUY_ORDER);
+
+  function handleBuyOrder() {
+    console.log("Buying order...");
+    buyOrder({
+      variables: {
+        orderId: order?.id,
+        customerEmail: decodeEmailFromToken(),
+      },
+    }).then(() => navigate(0));
+  }
 
   const { loading: orderLoading, data: orderData } = useQuery(GET_ORDER, {
     variables: { id },
@@ -70,9 +96,12 @@ export default function OrderDetails() {
           {order?.title}{" "}
           <span className="text-sm font-normal text-neutral-500">
             {order?.status === "Available" ? (
-              <span className="text-green-500">{order?.status} ✓</span>
+              <span className="text-green-500">✓ {order?.status}</span>
             ) : (
-              <span className="text-neutral-500">{order?.status} ✗</span>
+              <span className="text-neutral-500">
+                ✗ {order?.status} (by{" "}
+                <span className="text-indigo-500">{order?.customerEmail}</span>)
+              </span>
             )}
           </span>
         </div>
@@ -192,13 +221,21 @@ export default function OrderDetails() {
           </div>
 
           <div className="flex flex-wrap justify-center pt-2">
-            <button
-              type="button"
-              className="w-2/3 rounded-full  border bg-indigo-500 p-2 text-center text-white shadow-2xl hover:bg-indigo-700"
-              onClick={() => alert("Not implemented yet")}
-            >
-              Buy
-            </button>
+            {buyOrderLoading ? (
+              <button
+                type="submit"
+                className="w-2/3 cursor-not-allowed rounded-full bg-indigo-300 p-2 text-center text-white shadow-2xl"
+              >
+                Loading...
+              </button>
+            ) : (
+              <button
+                className="w-2/3 cursor-pointer rounded-full bg-indigo-500 p-2 text-center text-white shadow-2xl hover:bg-indigo-700"
+                onClick={handleBuyOrder}
+              >
+                Buy
+              </button>
+            )}
           </div>
         </div>
       </div>
