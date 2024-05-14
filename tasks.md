@@ -65,8 +65,22 @@
        - [x] check for dead code (deleted: dir `models` => `session_model`, dir `services` => `auth_service`)
      - [x] tests
 
-   - Refactoring (project):
+   - 10 code smells / 10 techniques (project):
 
-     - [ ] `libs` move to `utils` dir
-     - Dispensables:
-       - [x] dead code: image creation [link commit](https://github.com/plxgwalker/e-commerce/commit/691be520bccf5c0374979bce5fc8d68f6126051e)
+     2. (1-2) 10 techniques (explained):
+
+        - [] some shit
+
+     3. tests:
+
+        - [x] dir `~/tests`
+
+     4. 10 code smells (explained):
+
+        - [x] 5 code smells from [previous](<https://github.com/plxgwalker/e-commerce/blob/main/tasks.md#:~:text=5%20code%20smells%20(lab)%3A>) laboratory work
+        - Dispensables:
+          - [x] dead code: image creation [link commit](https://github.com/plxgwalker/e-commerce/commit/691be520bccf5c0374979bce5fc8d68f6126051e)
+          - [ ] `libs` move to `utils` dir
+
+     5. structure and docs:
+        - [x] project architecture ([`README.md`](https://github.com/plxgwalker/e-commerce/blob/main/README.md))
