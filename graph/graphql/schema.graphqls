@@ -83,5 +83,5 @@ type Mutation {
   loginUser(input: LoginUserInput!): Any!
 
   createOrder(input: CreateOrderInput): Order!
-  archiveOrder(id: String): Order!
+  buyOrder(orderId: String, customerEmail: String): Order!
 }

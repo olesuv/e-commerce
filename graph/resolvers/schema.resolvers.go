@@ -29,8 +29,8 @@ func (r *mutationResolver) CreateOrder(ctx context.Context, input *model.CreateO
 	return r.OrderResolver.CreateOrder(ctx, *input)
 }
 
-func (r *mutationResolver) ArchiveOrder(ctx context.Context, id *string) (*models.Order, error) {
-	panic(fmt.Errorf("not implemented: ArchiveOrder - archiveOrder"))
+func (r *mutationResolver) BuyOrder(ctx context.Context, orderID *string, customerEmail *string) (*models.Order, error) {
+	return r.OrderResolver.BuyOrder(ctx, *orderID, *customerEmail)
 }
 
 func (r *orderResolver) ID(ctx context.Context, obj *models.Order) (string, error) {

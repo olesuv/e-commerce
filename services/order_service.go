@@ -76,3 +76,11 @@ func (os *OrderService) GetOrders() ([]models.Order, error) {
 
 	return orders, nil
 }
+
+func (os *OrderService) UpdateOrder(order *models.Order) (*models.Order, error) {
+	_, err := os.collection.UpdateOne(context.Background(), bson.M{"_id": order.Id}, bson.M{"$set": order})
+	if err != nil {
+		return nil, err
+	}
+	return order, nil
+}

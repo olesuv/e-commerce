@@ -51,11 +51,11 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Mutation struct {
-		ArchiveOrder func(childComplexity int, id *string) int
-		CreateOrder  func(childComplexity int, input *model.CreateOrderInput) int
-		CreateUser   func(childComplexity int, input model.CreateUserInput) int
-		DeleteUser   func(childComplexity int, email string) int
-		LoginUser    func(childComplexity int, input model.LoginUserInput) int
+		BuyOrder    func(childComplexity int, orderID *string, customerEmail *string) int
+		CreateOrder func(childComplexity int, input *model.CreateOrderInput) int
+		CreateUser  func(childComplexity int, input model.CreateUserInput) int
+		DeleteUser  func(childComplexity int, email string) int
+		LoginUser   func(childComplexity int, input model.LoginUserInput) int
 	}
 
 	Order struct {
@@ -96,7 +96,7 @@ type MutationResolver interface {
 	DeleteUser(ctx context.Context, email string) (*models.User, error)
 	LoginUser(ctx context.Context, input model.LoginUserInput) (interface{}, error)
 	CreateOrder(ctx context.Context, input *model.CreateOrderInput) (*models.Order, error)
-	ArchiveOrder(ctx context.Context, id *string) (*models.Order, error)
+	BuyOrder(ctx context.Context, orderID *string, customerEmail *string) (*models.Order, error)
 }
 type OrderResolver interface {
 	ID(ctx context.Context, obj *models.Order) (string, error)
@@ -138,17 +138,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	_ = ec
 	switch typeName + "." + field {
 
-	case "Mutation.archiveOrder":
-		if e.complexity.Mutation.ArchiveOrder == nil {
+	case "Mutation.buyOrder":
+		if e.complexity.Mutation.BuyOrder == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_archiveOrder_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_buyOrder_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.ArchiveOrder(childComplexity, args["id"].(*string)), true
+		return e.complexity.Mutation.BuyOrder(childComplexity, args["orderId"].(*string), args["customerEmail"].(*string)), true
 
 	case "Mutation.createOrder":
 		if e.complexity.Mutation.CreateOrder == nil {
@@ -562,7 +562,7 @@ type Mutation {
   loginUser(input: LoginUserInput!): Any!
 
   createOrder(input: CreateOrderInput): Order!
-  archiveOrder(id: String): Order!
+  buyOrder(orderId: String, customerEmail: String): Order!
 }
 `, BuiltIn: false},
 }
@@ -572,18 +572,27 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
 // region    ***************************** args.gotpl *****************************
 
-func (ec *executionContext) field_Mutation_archiveOrder_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_buyOrder_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 *string
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+	if tmp, ok := rawArgs["orderId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orderId"))
 		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["id"] = arg0
+	args["orderId"] = arg0
+	var arg1 *string
+	if tmp, ok := rawArgs["customerEmail"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customerEmail"))
+		arg1, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["customerEmail"] = arg1
 	return args, nil
 }
 
@@ -1010,8 +1019,8 @@ func (ec *executionContext) fieldContext_Mutation_createOrder(ctx context.Contex
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_archiveOrder(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_archiveOrder(ctx, field)
+func (ec *executionContext) _Mutation_buyOrder(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_buyOrder(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -1024,7 +1033,7 @@ func (ec *executionContext) _Mutation_archiveOrder(ctx context.Context, field gr
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ArchiveOrder(rctx, fc.Args["id"].(*string))
+		return ec.resolvers.Mutation().BuyOrder(rctx, fc.Args["orderId"].(*string), fc.Args["customerEmail"].(*string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1041,7 +1050,7 @@ func (ec *executionContext) _Mutation_archiveOrder(ctx context.Context, field gr
 	return ec.marshalNOrder2ᚖserverᚗgoᚋmodelsᚐOrder(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_archiveOrder(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_buyOrder(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -1082,7 +1091,7 @@ func (ec *executionContext) fieldContext_Mutation_archiveOrder(ctx context.Conte
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_archiveOrder_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_buyOrder_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -4291,9 +4300,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "archiveOrder":
+		case "buyOrder":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_archiveOrder(ctx, field)
+				return ec._Mutation_buyOrder(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++

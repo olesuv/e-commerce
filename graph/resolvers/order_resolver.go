@@ -19,11 +19,13 @@ type OrderResolver struct {
 	orderService       *services.OrderService
 	orderErrors        errors.OrderErrors
 	orderTypeConverter typesConverters.OrderTypesConverter
+	userService        *services.UserService
 }
 
 func NewOrderResolver() *OrderResolver {
 	return &OrderResolver{
 		orderService: services.NewOrderService(),
+		userService:  services.NewUserService(),
 	}
 }
 
@@ -109,6 +111,32 @@ func (r *OrderResolver) CreateOrder(ctx context.Context, input model.CreateOrder
 	order, err = r.orderService.CreateOrder(order)
 	if err != nil {
 		return nil, fmt.Errorf("server: create order, details: %w", err)
+	}
+
+	return order, nil
+}
+
+func (r *OrderResolver) BuyOrder(ctx context.Context, orderID string, customerEmail string) (*models.Order, error) {
+	if userEmail := middleware.CtxValue(ctx); userEmail == "" {
+		return nil, fmt.Errorf("login first")
+	}
+
+	_, err := r.userService.GetUserByEmail(customerEmail)
+	if err != nil {
+		return nil, fmt.Errorf("server: get user, details: %w", err)
+	}
+
+	order, err := r.orderService.GetOrderById(orderID)
+	if err != nil {
+		return nil, fmt.Errorf("server: get order, details: %w", err)
+	}
+
+	order.Status = constants.Buyed
+	order.CustomerEmail = customerEmail
+
+	order, err = r.orderService.UpdateOrder(order)
+	if err != nil {
+		return nil, fmt.Errorf("server: update order, details: %w", err)
 	}
 
 	return order, nil
