@@ -65,7 +65,7 @@
        - [x] check for dead code (deleted: dir `models` => `session_model`, dir `services` => `auth_service`)
      - [x] tests
 
-   - 10 code smells / 10 techniques (project):
+   - [ ] 10 code smells / 10 techniques (project):
 
      2. (1-2) 10 techniques (explained):
 
