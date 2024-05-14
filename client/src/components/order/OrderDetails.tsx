@@ -3,6 +3,8 @@ import { gql, useLazyQuery, useQuery } from "@apollo/client";
 import { mapCurrencySymbol } from "../../../utils/mapCurrency";
 import { useEffect, useState } from "react";
 
+import convertDate from "../../../utils/convertDate";
+
 const GET_ORDER = gql`
   query getOrder($id: String!) {
     order(id: $id) {
@@ -13,6 +15,8 @@ const GET_ORDER = gql`
       price
       currency
       authorEmail
+      date
+      status
     }
   }
 `;
@@ -62,7 +66,17 @@ export default function OrderDetails() {
       </div>
 
       <div>
-        <div className="my-2 text-2xl font-semibold">{order?.title}</div>
+        <div className="my-2 text-2xl font-semibold">
+          {order?.title}{" "}
+          <span className="text-sm font-normal text-neutral-500">
+            {order?.status === "Available" ? (
+              <span className="text-green-500">{order?.status} ✓</span>
+            ) : (
+              <span className="text-neutral-500">{order?.status} ✗</span>
+            )}
+          </span>
+        </div>
+
         <ul className="flex flex-wrap *:my-1 *:mr-1 *:rounded-full *:border *:px-2 *:py-0.5 *:text-sm">
           {order?.category.map((category: string) => {
             switch (category) {
@@ -123,6 +137,7 @@ export default function OrderDetails() {
             }
           })}
         </ul>
+
         <div className="my-2 text-sm text-neutral-500">
           {order?.rating ? (
             <span>
@@ -132,9 +147,11 @@ export default function OrderDetails() {
             <span>Here would be rating (not available for now)</span>
           )}
         </div>
+
         <div className="my-2 text-2xl font-semibold">
           {mapCurrencySymbol(order?.currency)} {order?.price}
         </div>
+
         <div className="my-2">
           <p className="text-md font-medium">Description</p>
           <p className="text-sm text-neutral-500">
@@ -153,9 +170,25 @@ export default function OrderDetails() {
             )}
             {showMore}
           </p>
-          <div className="my-2">
+
+          <div className="mt-2">
             <p className="text-ms font-medium">Author</p>
-            <p className="text-sm text-neutral-500">{author?.name}</p>
+            <p className="text-sm text-neutral-500">
+              <span className="text-indigo-500 underline">{author?.name}</span>{" "}
+              with contact{" "}
+              <a
+                href={`mailto:${author?.email}`}
+                className="text-indigo-500 underline"
+              >
+                {author?.email}
+              </a>
+            </p>
+          </div>
+
+          <div>
+            <p className="text-xs text-neutral-500">
+              Published on {convertDate(order?.date)}
+            </p>
           </div>
         </div>
       </div>
