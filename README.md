@@ -5,7 +5,7 @@ Web app for buying goods
 ## Architecture
 
 ```console
-george@hotz$ tree -L 1 --dirsfirst
+george@hotz:e-commerce$ tree -L 1 --dirsfirst
 ├── client
 |   # all client code
 ├── configs
