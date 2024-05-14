@@ -190,6 +190,16 @@ export default function OrderDetails() {
               Published on {convertDate(order?.date)}
             </p>
           </div>
+
+          <div className="flex flex-wrap justify-center pt-2">
+            <button
+              type="button"
+              className="w-2/3 rounded-full  border bg-indigo-500 p-2 text-center text-white shadow-2xl hover:bg-indigo-700"
+              onClick={() => alert("Not implemented yet")}
+            >
+              Buy
+            </button>
+          </div>
         </div>
       </div>
     </div>
