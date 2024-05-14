@@ -80,7 +80,7 @@
         - [x] 5 code smells from [previous](<https://github.com/plxgwalker/e-commerce/blob/main/tasks.md#:~:text=5%20code%20smells%20(lab)%3A>) laboratory work
         - Dispensables:
           - [x] dead code: image creation ([commit link](https://github.com/plxgwalker/e-commerce/commit/691be520bccf5c0374979bce5fc8d68f6126051e))
-          - [ ] naming: files from `libs` move to `utils` because of same idea between folders ([commit link](https://github.com/plxgwalker/e-commerce/commit/66df879ac5a835f47e34632f8805bb89437a0f22))
+          - [x] naming: files from `libs` move to `utils` because of same idea between folders ([commit link](https://github.com/plxgwalker/e-commerce/commit/66df879ac5a835f47e34632f8805bb89437a0f22))
 
      5. structure and docs:
         - [x] project architecture ([`README.md`](https://github.com/plxgwalker/e-commerce/blob/main/README.md))
