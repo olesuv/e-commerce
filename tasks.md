@@ -80,7 +80,7 @@
         - [x] 5 code smells from previous laboratory work ([commit link](<https://github.com/plxgwalker/e-commerce/blob/main/tasks.md#:~:text=5%20code%20smells%20(lab)%3A>))
         - Bloaters:
 
-          - [ ] distribute one large component into few components ([commit link]())
+          - [ ] distribute one large component into few components ([commit link](https://github.com/plxgwalker/e-commerce/commit/30a1858e71d30ca8d78d55aac9684c35de8ed2fa))
 
         - Dispensables:
           - [x] dead code: image creation ([commit link](https://github.com/plxgwalker/e-commerce/commit/691be520bccf5c0374979bce5fc8d68f6126051e))
