@@ -59,6 +59,7 @@ type ComplexityRoot struct {
 	}
 
 	Order struct {
+		AuthorEmail     func(childComplexity int) int
 		Category        func(childComplexity int) int
 		Currency        func(childComplexity int) int
 		CustomerEmail   func(childComplexity int) int
@@ -196,6 +197,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.LoginUser(childComplexity, args["input"].(model.LoginUserInput)), true
+
+	case "Order.authorEmail":
+		if e.complexity.Order.AuthorEmail == nil {
+			break
+		}
+
+		return e.complexity.Order.AuthorEmail(childComplexity), true
 
 	case "Order.category":
 		if e.complexity.Order.Category == nil {
@@ -516,6 +524,7 @@ type Order {
   shippingAddress: String
   status: Status!
   customerEmail: String
+  authorEmail: String
   price: Float!
   currency: Currency!
 }
@@ -977,6 +986,8 @@ func (ec *executionContext) fieldContext_Mutation_createOrder(ctx context.Contex
 				return ec.fieldContext_Order_status(ctx, field)
 			case "customerEmail":
 				return ec.fieldContext_Order_customerEmail(ctx, field)
+			case "authorEmail":
+				return ec.fieldContext_Order_authorEmail(ctx, field)
 			case "price":
 				return ec.fieldContext_Order_price(ctx, field)
 			case "currency":
@@ -1054,6 +1065,8 @@ func (ec *executionContext) fieldContext_Mutation_archiveOrder(ctx context.Conte
 				return ec.fieldContext_Order_status(ctx, field)
 			case "customerEmail":
 				return ec.fieldContext_Order_customerEmail(ctx, field)
+			case "authorEmail":
+				return ec.fieldContext_Order_authorEmail(ctx, field)
 			case "price":
 				return ec.fieldContext_Order_price(ctx, field)
 			case "currency":
@@ -1419,6 +1432,47 @@ func (ec *executionContext) fieldContext_Order_customerEmail(ctx context.Context
 	return fc, nil
 }
 
+func (ec *executionContext) _Order_authorEmail(ctx context.Context, field graphql.CollectedField, obj *models.Order) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Order_authorEmail(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AuthorEmail, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Order_authorEmail(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Order",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Order_price(ctx context.Context, field graphql.CollectedField, obj *models.Order) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Order_price(ctx, field)
 	if err != nil {
@@ -1697,6 +1751,8 @@ func (ec *executionContext) fieldContext_Query_orders(ctx context.Context, field
 				return ec.fieldContext_Order_status(ctx, field)
 			case "customerEmail":
 				return ec.fieldContext_Order_customerEmail(ctx, field)
+			case "authorEmail":
+				return ec.fieldContext_Order_authorEmail(ctx, field)
 			case "price":
 				return ec.fieldContext_Order_price(ctx, field)
 			case "currency":
@@ -1763,6 +1819,8 @@ func (ec *executionContext) fieldContext_Query_order(ctx context.Context, field 
 				return ec.fieldContext_Order_status(ctx, field)
 			case "customerEmail":
 				return ec.fieldContext_Order_customerEmail(ctx, field)
+			case "authorEmail":
+				return ec.fieldContext_Order_authorEmail(ctx, field)
 			case "price":
 				return ec.fieldContext_Order_price(ctx, field)
 			case "currency":
@@ -2262,6 +2320,8 @@ func (ec *executionContext) fieldContext_User_orders(ctx context.Context, field 
 				return ec.fieldContext_Order_status(ctx, field)
 			case "customerEmail":
 				return ec.fieldContext_Order_customerEmail(ctx, field)
+			case "authorEmail":
+				return ec.fieldContext_Order_authorEmail(ctx, field)
 			case "price":
 				return ec.fieldContext_Order_price(ctx, field)
 			case "currency":
@@ -4396,6 +4456,8 @@ func (ec *executionContext) _Order(ctx context.Context, sel ast.SelectionSet, ob
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "customerEmail":
 			out.Values[i] = ec._Order_customerEmail(ctx, field, obj)
+		case "authorEmail":
+			out.Values[i] = ec._Order_authorEmail(ctx, field, obj)
 		case "price":
 			out.Values[i] = ec._Order_price(ctx, field, obj)
 			if out.Values[i] == graphql.Null {

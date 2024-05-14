@@ -45,6 +45,7 @@ type Order {
   shippingAddress: String
   status: Status!
   customerEmail: String
+  authorEmail: String
   price: Float!
   currency: Currency!
 }

@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useLazyQuery, useQuery } from "@apollo/client";
 import { mapCurrencySymbol } from "../../../utils/mapCurrency";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const GET_ORDER = gql`
   query getOrder($id: String!) {
@@ -12,6 +12,16 @@ const GET_ORDER = gql`
       category
       price
       currency
+      authorEmail
+    }
+  }
+`;
+
+const GET_USER = gql`
+  query getUserByEmail($email: String!) {
+    user(email: $email) {
+      email
+      name
     }
   }
 `;
@@ -25,15 +35,25 @@ export default function OrderDetails() {
 
   const { id } = useParams<{ id: string }>();
 
-  const { loading, data } = useQuery(GET_ORDER, {
+  const { loading: orderLoading, data: orderData } = useQuery(GET_ORDER, {
     variables: { id },
   });
 
-  if (loading) {
+  const [getUserByEmail, { loading: userLoading, data: userData }] =
+    useLazyQuery(GET_USER);
+
+  useEffect(() => {
+    if (orderData?.order?.authorEmail) {
+      getUserByEmail({ variables: { email: orderData.order.authorEmail } });
+    }
+  }, [orderData, getUserByEmail]);
+
+  if (orderLoading || userLoading) {
     return <p>Loading...</p>;
   }
 
-  const order = data.order;
+  const order = orderData?.order;
+  const author = userData?.user;
 
   return (
     <div className="m-3 grid grid-rows-2 gap-4">
@@ -133,6 +153,10 @@ export default function OrderDetails() {
             )}
             {showMore}
           </p>
+          <div className="my-2">
+            <p className="text-ms font-medium">Author</p>
+            <p className="text-sm text-neutral-500">{author?.name}</p>
+          </div>
         </div>
       </div>
     </div>

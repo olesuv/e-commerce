@@ -12,6 +12,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 const client = new ApolloClient({
   uri: "http://localhost:8080/query",
   cache: new InMemoryCache(),
+  credentials: "include",
 });
 
 if (process.env.NODE_ENV === "development") {

@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"server.go/constants"
 	"server.go/graph/model"
+	"server.go/middleware"
 	"server.go/models"
 	"server.go/services"
 	errors "server.go/utils/errors"
@@ -80,6 +81,10 @@ func (r *OrderResolver) Status(ctx context.Context, obj *models.Order) (model.St
 }
 
 func (r *OrderResolver) CreateOrder(ctx context.Context, input model.CreateOrderInput) (*models.Order, error) {
+	if userEmail := middleware.CtxValue(ctx); userEmail == "" {
+		return nil, fmt.Errorf("login first")
+	}
+
 	err := r.orderErrors.CheckCreateOrderInput(input)
 	if err != nil {
 		return nil, err
@@ -98,6 +103,7 @@ func (r *OrderResolver) CreateOrder(ctx context.Context, input model.CreateOrder
 		Status:      constants.Available,
 		Price:       *input.Price,
 		Currency:    orderCurrency,
+		AuthorEmail: middleware.CtxValue(ctx),
 	}
 
 	order, err = r.orderService.CreateOrder(order)
