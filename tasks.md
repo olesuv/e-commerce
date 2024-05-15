@@ -71,7 +71,7 @@
 
        - composing methods:
 
-         - [ ] extract method for smtp server config ()
+         - [x] extract method for smtp server config ([commit link](https://github.com/plxgwalker/e-commerce/commit/fa1b89e05d0cdee69b3a6e34dc1b4e423049647c))
 
      - [ ] tests:
 
@@ -82,8 +82,8 @@
        - [x] 5 code smells from previous laboratory work ([commit link](<https://github.com/plxgwalker/e-commerce/blob/main/tasks.md#:~:text=5%20code%20smells%20(lab)%3A>))
        - Bloaters:
 
-         - [ ] distribute one large component into few components ([commit link](https://github.com/plxgwalker/e-commerce/commit/30a1858e71d30ca8d78d55aac9684c35de8ed2fa))
-         - [ ] distribute large method smtp server config for error handling ()
+         - [x] distribute one large component into few components ([commit link](https://github.com/plxgwalker/e-commerce/commit/30a1858e71d30ca8d78d55aac9684c35de8ed2fa))
+         - [x] distribute one large method for smtp server config and error handling ([commit link](https://github.com/plxgwalker/e-commerce/commit/fa1b89e05d0cdee69b3a6e34dc1b4e423049647c))
 
        - Dispensables:
          - [x] dead code: image creation ([commit link](https://github.com/plxgwalker/e-commerce/commit/691be520bccf5c0374979bce5fc8d68f6126051e))
