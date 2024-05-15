@@ -9,7 +9,7 @@ import (
 	"server.go/graph/model"
 	"server.go/models"
 	"server.go/services"
-	"server.go/utils"
+	authHelpers "server.go/utils/auth"
 	emailing "server.go/utils/emailing"
 	errors "server.go/utils/errors"
 )
@@ -40,7 +40,7 @@ func (r *UserResolver) CreateUser(ctx context.Context, input model.CreateUserInp
 		userName = *input.Name
 	}
 
-	hashedPassword := utils.HashPassword(*input.Password)
+	hashedPassword := authHelpers.HashPassword(*input.Password)
 	newUser := &models.User{
 		Id:       primitive.NewObjectID(),
 		Name:     userName,
@@ -130,13 +130,13 @@ func (r *UserResolver) LoginUser(ctx context.Context, input model.LoginUserInput
 	}
 
 	userHash := user.Password
-	comapre := utils.VerifyPassword(*input.Password, userHash)
+	comapre := authHelpers.VerifyPassword(*input.Password, userHash)
 
 	if !comapre {
 		return "", fmt.Errorf("invalid password")
 	}
 
-	token, err := utils.GenearteJwtToken(ctx, *input.Email)
+	token, err := authHelpers.GenearteJwtToken(ctx, *input.Email)
 	if err != nil {
 		return "", err
 	}
