@@ -11,6 +11,7 @@ import (
 	"server.go/models"
 	"server.go/services"
 	"server.go/utils"
+	emailing "server.go/utils/emailing"
 )
 
 type UserResolver struct {
@@ -68,7 +69,7 @@ func (r *UserResolver) CreateUser(ctx context.Context, input model.CreateUserInp
 			return nil, fmt.Errorf("server: create user, details: %w", err)
 		}
 
-		verificationToken, err := utils.GenerateVerificationToken(ctx, *input.Email, r.rdb)
+		verificationToken, err := emailing.GenerateVerificationToken(ctx, *input.Email, r.rdb)
 		if err != nil {
 			_, err = r.userService.DeleteUserByEmail(*input.Email)
 			if err != nil {
@@ -78,7 +79,7 @@ func (r *UserResolver) CreateUser(ctx context.Context, input model.CreateUserInp
 			return nil, fmt.Errorf("server: generate verification token, details: %w", err)
 		}
 
-		err = utils.SendVerificationEmail(*input.Email, verificationToken)
+		err = emailing.SendVerificationEmail(*input.Email, verificationToken)
 		if err != nil {
 			_, err := r.userService.DeleteUserByEmail(*input.Email)
 			if err != nil {
