@@ -29,7 +29,7 @@ export default function OrderButton(props: IOrderDetailsProps) {
   }
 
   return (
-    <div className="flex flex-wrap justify-center pt-2">
+    <div className="flex flex-wrap justify-center pt-2 md:justify-start">
       {buyOrderLoading ? (
         <button
           type="submit"

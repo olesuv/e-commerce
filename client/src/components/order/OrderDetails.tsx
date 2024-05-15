@@ -14,6 +14,7 @@ import OrderAuthor from "./OrderAuthor";
 import OrderDate from "./OrderDate";
 import OrderPrice from "./OrderPrice";
 import OrderButton from "./OrderButton";
+import Header from "../landing/Header";
 
 const GET_ORDER = gql`
   query getOrder($id: String!) {
@@ -65,20 +66,24 @@ export default function OrderDetails() {
   const author = userData?.user;
 
   return (
-    <div className="m-3 grid grid-rows-2 gap-4">
-      <div className="rounded-xl border border-neutral-300 bg-neutral-100 text-center text-neutral-500">
-        <p className="my-64">Images are not available (for now)</p>
-      </div>
+    <div className="m-3 grid grid-rows-2 gap-4 md:grid-cols-5">
+      <div className="md:col-span-3 md:col-start-2">
+        <div className="md:grid md:grid-cols-2 md:gap-4">
+          <div className="rounded-xl border border-neutral-300 bg-neutral-100 text-center text-neutral-500">
+            <p className="my-64">Images are not available (for now)</p>
+          </div>
 
-      <div>
-        <OrderStatus orderData={order} />
-        <OrderCategory orderData={order} />
-        <OrderRating orderData={order} />
-        <OrderPrice orderData={order} />
-        <OrderDescription orderData={order} />
-        <OrderAuthor authorData={author} />
-        <OrderDate orderData={order} />
-        <OrderButton orderData={order} />
+          <div>
+            <OrderStatus orderData={order} />
+            <OrderCategory orderData={order} />
+            <OrderRating orderData={order} />
+            <OrderPrice orderData={order} />
+            <OrderDescription orderData={order} />
+            <OrderAuthor authorData={author} />
+            <OrderDate orderData={order} />
+            <OrderButton orderData={order} />
+          </div>
+        </div>
       </div>
     </div>
   );
