@@ -86,11 +86,6 @@ func (r *UserResolver) DeleteUser(ctx context.Context, email string) (*models.Us
 }
 
 func (r *UserResolver) Users(ctx context.Context) ([]*models.User, error) {
-	// example of how to get cookie from context
-	// if userEmail := middleware.CtxValue(ctx); userEmail == "" {
-	// 	return nil, fmt.Errorf("login first")
-	// }
-
 	users, err := r.userService.GetUsers()
 	if err != nil {
 		return nil, fmt.Errorf("server: get users, details: %w", err)
@@ -142,8 +137,4 @@ func (r *UserResolver) LoginUser(ctx context.Context, input model.LoginUserInput
 	}
 
 	return token, nil
-}
-
-func (r *UserResolver) Orders(ctx context.Context, obj *models.User) ([]*models.Order, error) {
-	panic(fmt.Errorf("not implemented: Orders - orders"))
 }
