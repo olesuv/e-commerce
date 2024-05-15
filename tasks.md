@@ -73,6 +73,7 @@
 
          - [x] extract method for smtp server config ([commit link](https://github.com/plxgwalker/e-commerce/commit/fa1b89e05d0cdee69b3a6e34dc1b4e423049647c))
          - [x] merged to emailing methods in one to make `CreateUser` resolver more clear ([commit link](https://github.com/plxgwalker/e-commerce/commit/5239f1c8d3a0c0d7079d06e405c02f79e1d0a37f))
+         - [x] replace temp with query (`setName`) and error handling on `login` resolver ([commit link](https://github.com/plxgwalker/e-commerce/commit/f88643a67fb44981f8adf2b467c554e237085538))
 
        - simplifying method calls:
          - [x] correct file naming for auth helpers ([commit link](https://github.com/plxgwalker/e-commerce/commit/547479e026a0225e72d9f3dfaeea51fbd82e530e))
