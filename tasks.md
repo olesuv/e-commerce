@@ -76,7 +76,13 @@
          - [x] replace temp with query (`setName`) and error handling on `login` resolver ([commit link](https://github.com/plxgwalker/e-commerce/commit/f88643a67fb44981f8adf2b467c554e237085538))
 
        - simplifying method calls:
+
          - [x] correct file naming for auth helpers ([commit link](https://github.com/plxgwalker/e-commerce/commit/547479e026a0225e72d9f3dfaeea51fbd82e530e))
+
+       - organazing data:
+
+         - [x] enums for `OrderCategory` and `OrderStatus` ([commit link](https://github.com/plxgwalker/e-commerce/commit/9efd1bea00fa5adec70b12392e491815e5e5417f))
+         - [x] enums for `OrderCurrency` ([commit link](https://github.com/plxgwalker/e-commerce/commit/f4bffc7fcc19a38d3299e1f0558b8395772b9ef0))
 
      - [ ] tests:
 
@@ -86,6 +92,7 @@
      - [x] 10 code smells (explained):
 
        - [x] 5 code smells from previous laboratory work ([commit link](<https://github.com/plxgwalker/e-commerce/blob/main/tasks.md#:~:text=5%20code%20smells%20(lab)%3A>))
+
        - Bloaters:
 
          - [x] distribute one large component into few components ([commit link](https://github.com/plxgwalker/e-commerce/commit/30a1858e71d30ca8d78d55aac9684c35de8ed2fa))
