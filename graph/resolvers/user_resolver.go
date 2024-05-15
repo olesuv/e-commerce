@@ -3,7 +3,6 @@ package resolvers
 import (
 	"context"
 	"fmt"
-	"net/mail"
 
 	"github.com/redis/go-redis/v9"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -12,83 +11,57 @@ import (
 	"server.go/services"
 	"server.go/utils"
 	emailing "server.go/utils/emailing"
+	errors "server.go/utils/errors"
 )
 
 type UserResolver struct {
 	userService *services.UserService
 	rdb         *redis.Client
+	userErrors  *errors.UserErrors
 }
 
 func NewUserResolver(rdb *redis.Client) *UserResolver {
 	return &UserResolver{
 		userService: services.NewUserService(),
+		userErrors:  errors.NewUserErrors(),
 		rdb:         rdb,
 	}
 }
 
 func (r *UserResolver) CreateUser(ctx context.Context, input model.CreateUserInput) (*models.User, error) {
-	if input.Email == nil || *input.Email == "" {
-		return nil, fmt.Errorf("email is required")
+	if err := r.userErrors.CheckCreateUserInput(input); err != nil {
+		return nil, err
 	}
 
-	if input.Password == nil || *input.Password == "" {
-		return nil, fmt.Errorf("password is required")
+	var userName string
+	if input.Name == nil || *input.Name == "" {
+		userName = "New User"
+	} else {
+		userName = *input.Name
 	}
 
-	email := *input.Email
+	hashedPassword := utils.HashPassword(*input.Password)
+	newUser := &models.User{
+		Id:       primitive.NewObjectID(),
+		Name:     userName,
+		Email:    *input.Email,
+		Password: hashedPassword,
+	}
 
-	_, err := mail.ParseAddress(email)
+	user, err := r.userService.CreateUser(newUser)
 	if err != nil {
-		return nil, fmt.Errorf("invalid email address")
+		return nil, fmt.Errorf("server: create user, details: %w", err)
 	}
 
-	user, err := r.userService.GetUserByEmail(*input.Email)
-
-	if err == nil && user != nil {
-		return nil, fmt.Errorf("user with this email already exists")
-	}
-	if err != nil && err.Error() != "mongo: no documents in result" {
-		return nil, fmt.Errorf("server: get user by email, details: %w", err)
-	}
-
-	if err != nil && err.Error() == "mongo: no documents in result" {
-		defaultName := "New User"
-		if input.Name == nil || *input.Name == "" {
-			input.Name = &defaultName
-		}
-
-		hashedPassword := utils.HashPassword(*input.Password)
-
-		user, err = r.userService.CreateUser(&models.User{
-			Id:       primitive.NewObjectID(),
-			Name:     *input.Name,
-			Email:    *input.Email,
-			Password: hashedPassword,
-		})
+	err = emailing.SendVerificationEmail(ctx, *input.Email, r.rdb)
+	if err != nil {
+		_, err := r.userService.DeleteUserByEmail(*input.Email)
 		if err != nil {
-			return nil, fmt.Errorf("server: create user, details: %w", err)
+			return nil, fmt.Errorf("server: delete user by email, details: %w", err)
 		}
 
-		verificationToken, err := emailing.GenerateVerificationToken(ctx, *input.Email, r.rdb)
-		if err != nil {
-			_, err = r.userService.DeleteUserByEmail(*input.Email)
-			if err != nil {
-				return nil, fmt.Errorf("server: delete user by email, details: %w", err)
-			}
-
-			return nil, fmt.Errorf("server: generate verification token, details: %w", err)
-		}
-
-		err = emailing.SendVerificationEmail(*input.Email, verificationToken)
-		if err != nil {
-			_, err := r.userService.DeleteUserByEmail(*input.Email)
-			if err != nil {
-				return nil, fmt.Errorf("server: delete user by email, details: %w", err)
-			}
-
-			// FIX: Google email sending error
-			return nil, fmt.Errorf("server: send verification email, details: %w", err)
-		}
+		// FIX: Google email sending error
+		return nil, fmt.Errorf("server: send verification email, details: %w", err)
 	}
 
 	return user, nil

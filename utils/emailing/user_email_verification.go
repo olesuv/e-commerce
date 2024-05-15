@@ -13,7 +13,7 @@ import (
 	"server.go/constants"
 )
 
-func SendVerificationEmail(emailUser string, token string) error {
+func SendVerificationEmail(ctx context.Context, emailUser string, rdb *redis.Client) error {
 	emailSender := os.Getenv("EMAIL_SENDER")
 	if emailSender == "" {
 		panic("server: email sender is required")
@@ -28,6 +28,11 @@ func SendVerificationEmail(emailUser string, token string) error {
 		smtpConfig.SMTPPassword,
 	)
 
+	token, err := insertVerificationToken(context.Background(), emailUser, rdb)
+	if err != nil {
+		return err
+	}
+
 	m := createVerificationEmailMessage(emailSender, emailUser, token)
 
 	if err := d.DialAndSend(m); err != nil {
@@ -38,7 +43,7 @@ func SendVerificationEmail(emailUser string, token string) error {
 	return nil
 }
 
-func GenerateVerificationToken(ctx context.Context, email string, rdb *redis.Client) (string, error) {
+func insertVerificationToken(ctx context.Context, email string, rdb *redis.Client) (string, error) {
 	token := uuid.New().String()
 
 	err := rdb.Set(ctx, token, email, 0).Err()
