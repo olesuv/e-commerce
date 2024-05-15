@@ -14,7 +14,17 @@ func HashPassword(password string) string {
 	return string(hashedPassword)
 }
 
-func VerifyPassword(password, hash string) bool {
+func unhashPassword(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
+}
+
+func VerifyPassword(userPassword string, userHash string) (bool, error) {
+	comapre := unhashPassword(userPassword, userHash)
+
+	if !comapre {
+		return false, fmt.Errorf("invalid password")
+	}
+
+	return true, nil
 }

@@ -33,14 +33,9 @@ func (r *UserResolver) CreateUser(ctx context.Context, input model.CreateUserInp
 		return nil, err
 	}
 
-	var userName string
-	if input.Name == nil || *input.Name == "" {
-		userName = "New User"
-	} else {
-		userName = *input.Name
-	}
-
+	userName := r.userErrors.SetName(&input)
 	hashedPassword := authHelpers.HashPassword(*input.Password)
+
 	newUser := &models.User{
 		Id:       primitive.NewObjectID(),
 		Name:     userName,
@@ -112,23 +107,14 @@ func (r *UserResolver) User(ctx context.Context, email string) (*models.User, er
 }
 
 func (r *UserResolver) LoginUser(ctx context.Context, input model.LoginUserInput) (string, error) {
-	if *input.Email == "" || *input.Password == "" {
-		return "", fmt.Errorf("email and password are required")
-	}
-
-	user, err := r.userService.GetUserByEmail(*input.Email)
-	if err != nil && err.Error() == "mongo: no documents in result" {
-		return "", fmt.Errorf("user not found")
-	}
+	user, err := r.userErrors.CheckLoginUserInput(input)
 	if err != nil {
-		return "", fmt.Errorf("server: get user by email, details: %w", err)
+		return "", err
 	}
 
-	userHash := user.Password
-	comapre := authHelpers.VerifyPassword(*input.Password, userHash)
-
-	if !comapre {
-		return "", fmt.Errorf("invalid password")
+	comparePasswords, err := authHelpers.VerifyPassword(*input.Password, user.Password)
+	if err != nil && !comparePasswords {
+		return "", err
 	}
 
 	token, err := authHelpers.GenearteJwtToken(ctx, *input.Email)

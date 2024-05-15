@@ -5,6 +5,7 @@ import (
 	"net/mail"
 
 	"server.go/graph/model"
+	"server.go/models"
 	"server.go/services"
 )
 
@@ -46,4 +47,32 @@ func (ue *UserErrors) CheckCreateUserInput(input model.CreateUserInput) error {
 	}
 
 	return nil
+}
+
+func (ue *UserErrors) CheckLoginUserInput(input model.LoginUserInput) (models.User, error) {
+	if *input.Email == "" || *input.Password == "" {
+		return models.User{}, fmt.Errorf("email and password are required")
+	}
+
+	user, err := ue.userService.GetUserByEmail(*input.Email)
+	if err != nil && err.Error() == "mongo: no documents in result" {
+		return models.User{}, fmt.Errorf("user not found")
+	}
+	if err != nil {
+		return models.User{}, fmt.Errorf("server: get user by email, details: %w", err)
+	}
+
+	return *user, nil
+}
+
+func (ue *UserErrors) SetName(input *model.CreateUserInput) string {
+	var userName string
+
+	if input.Name == nil || *input.Name == "" {
+		userName = "New User"
+	} else {
+		userName = *input.Name
+	}
+
+	return userName
 }
