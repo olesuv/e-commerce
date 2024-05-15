@@ -72,6 +72,7 @@
        - composing methods:
 
          - [x] extract method for smtp server config ([commit link](https://github.com/plxgwalker/e-commerce/commit/fa1b89e05d0cdee69b3a6e34dc1b4e423049647c))
+         - [x] merged to emailing methods in one to make `CreateUser` resolver more clear ([commit link](https://github.com/plxgwalker/e-commerce/commit/5239f1c8d3a0c0d7079d06e405c02f79e1d0a37f))
 
      - [ ] tests:
 
@@ -84,6 +85,7 @@
 
          - [x] distribute one large component into few components ([commit link](https://github.com/plxgwalker/e-commerce/commit/30a1858e71d30ca8d78d55aac9684c35de8ed2fa))
          - [x] distribute one large method for smtp server config and error handling ([commit link](https://github.com/plxgwalker/e-commerce/commit/fa1b89e05d0cdee69b3a6e34dc1b4e423049647c))
+         - [x] distribute `CreateUser` user resolver with separated error handling ([commit link](https://github.com/plxgwalker/e-commerce/commit/5239f1c8d3a0c0d7079d06e405c02f79e1d0a37f))
 
        - Dispensables:
          - [x] dead code: image creation ([commit link](https://github.com/plxgwalker/e-commerce/commit/691be520bccf5c0374979bce5fc8d68f6126051e))
