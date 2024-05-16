@@ -1,8 +1,8 @@
-import LoginButton from "./LoginButton";
-import RegisterButton from "./RegisterButton";
-import SettingsButton from "./SettingsButton";
-import LogoutButton from "./LogoutButton";
-import Logo from "./Logo";
+import LoginButton from "./header/LoginButton";
+import RegisterButton from "./header/RegisterButton";
+import SettingsButton from "./header/SettingsButton";
+import LogoutButton from "./header/LogoutButton";
+import Logo from "./header/Logo";
 
 interface IHeaderProps {
   authenticated: boolean;
@@ -11,7 +11,7 @@ interface IHeaderProps {
 
 export default function Header(props: IHeaderProps) {
   return (
-    <div className="md:grid md:grid-cols-3 p-4 bg-gray-200 text-black">
+    <div className="bg-gray-200 p-4 text-black md:grid md:grid-cols-3">
       <div className="hidden md:block"></div>
       <div className="flex justify-between md:items-center">
         <Logo />

@@ -1,4 +1,4 @@
-import RegisterPopup from "../register/RegisterPopup";
+import RegisterPopup from "../../register/RegisterPopup";
 import { useState } from "react";
 
 interface RegisterButtonProps {
@@ -12,7 +12,7 @@ export default function RegisterButton(props: RegisterButtonProps) {
     <>
       <button
         onClick={() => setShowPopup(true)}
-        className="text-white font-semibold rounded-lg bg-indigo-500 hover:bg-indigo-700 px-3 py-1"
+        className="rounded-lg bg-indigo-500 px-3 py-1 font-semibold text-white hover:bg-indigo-700"
       >
         Sign Up
       </button>
