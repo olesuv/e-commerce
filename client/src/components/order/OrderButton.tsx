@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { decodeEmailFromToken } from "../../../utils/getEmailFromJWT";
+import { decodeEmailFromToken } from "../../../utils/JWTHelpers";
 import { gql, useMutation } from "@apollo/client";
 import { IOrderDetailsProps } from "../../../types/orderDetailsProps";
+import { verifyEmailFromCookie } from "../../../utils/cookieHelpers";
 
 const BUY_ORDER = gql`
   mutation buy($orderId: String!, $customerEmail: String!) {
@@ -28,7 +29,7 @@ export default function OrderButton(props: IOrderDetailsProps) {
     }).then(() => navigate(0));
   }
 
-  return (
+  return verifyEmailFromCookie() ? (
     <div className="flex flex-wrap justify-center pt-2 md:justify-start">
       {buyOrderLoading ? (
         <button
@@ -46,5 +47,7 @@ export default function OrderButton(props: IOrderDetailsProps) {
         </button>
       )}
     </div>
+  ) : (
+    <></>
   );
 }
