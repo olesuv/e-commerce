@@ -6,7 +6,6 @@ import OrderPrice from "./create-order-form/OrderPrice";
 import OrderHeader from "./create-order-form/OrderHeader";
 import { OrderCategory, OrderCurrency } from "../../../types/orderTypes";
 import { gql, useMutation } from "@apollo/client";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router";
 
 const CREATE_ORDER = gql`

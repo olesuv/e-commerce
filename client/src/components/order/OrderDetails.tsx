@@ -1,11 +1,7 @@
 import { useParams } from "react-router-dom";
-import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { mapCurrencySymbol } from "../../../utils/mapCurrency";
-import { useEffect, useState } from "react";
-import { decodeEmailFromToken } from "../../../utils/getEmailFromJWT";
-import { useNavigate } from "react-router";
+import { gql, useLazyQuery, useQuery } from "@apollo/client";
+import { useEffect } from "react";
 
-import convertDate from "../../../utils/convertDate";
 import OrderStatus from "./OrderStatus";
 import OrderRating from "./OrderRating";
 import OrderDescription from "./OrderDescription";
@@ -14,7 +10,6 @@ import OrderAuthor from "./OrderAuthor";
 import OrderDate from "./OrderDate";
 import OrderPrice from "./OrderPrice";
 import OrderButton from "./OrderButton";
-import Header from "../landing/Header";
 
 const GET_ORDER = gql`
   query getOrder($id: String!) {
