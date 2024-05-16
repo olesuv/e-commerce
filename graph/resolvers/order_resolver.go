@@ -164,3 +164,17 @@ func (r *OrderResolver) Order(ctx context.Context, id string) (*models.Order, er
 
 	return order, nil
 }
+
+func (r *OrderResolver) LatestOrders(ctx context.Context) ([]*models.Order, error) {
+	orders, err := r.orderService.Last5Orders()
+	if err != nil {
+		return nil, err
+	}
+
+	var orderPointers []*models.Order
+	for _, order := range orders {
+		orderPointers = append(orderPointers, &order)
+	}
+
+	return orderPointers, nil
+}

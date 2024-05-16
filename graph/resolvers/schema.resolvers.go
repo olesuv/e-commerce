@@ -65,6 +65,10 @@ func (r *queryResolver) Order(ctx context.Context, id string) (*models.Order, er
 	return r.OrderResolver.Order(ctx, id)
 }
 
+func (r *queryResolver) LatestOrders(ctx context.Context) ([]*models.Order, error) {
+	return r.OrderResolver.LatestOrders(ctx)
+}
+
 func (r *userResolver) ID(ctx context.Context, obj *models.User) (string, error) {
 	return r.UserResolver.ID(ctx, obj)
 }

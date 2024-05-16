@@ -73,10 +73,11 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Order  func(childComplexity int, id string) int
-		Orders func(childComplexity int) int
-		User   func(childComplexity int, email string) int
-		Users  func(childComplexity int) int
+		LatestOrders func(childComplexity int) int
+		Order        func(childComplexity int, id string) int
+		Orders       func(childComplexity int) int
+		User         func(childComplexity int, email string) int
+		Users        func(childComplexity int) int
 	}
 
 	User struct {
@@ -112,6 +113,7 @@ type QueryResolver interface {
 	User(ctx context.Context, email string) (*models.User, error)
 	Orders(ctx context.Context) ([]*models.Order, error)
 	Order(ctx context.Context, id string) (*models.Order, error)
+	LatestOrders(ctx context.Context) ([]*models.Order, error)
 }
 type UserResolver interface {
 	ID(ctx context.Context, obj *models.User) (string, error)
@@ -274,6 +276,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Order.Title(childComplexity), true
+
+	case "Query.latestOrders":
+		if e.complexity.Query.LatestOrders == nil {
+			break
+		}
+
+		return e.complexity.Query.LatestOrders(childComplexity), true
 
 	case "Query.order":
 		if e.complexity.Query.Order == nil {
@@ -554,6 +563,7 @@ type Query {
 
   orders: [Order!]!
   order(id: String!): Order!
+  latestOrders: [Order!]!
 }
 
 type Mutation {
@@ -1848,6 +1858,74 @@ func (ec *executionContext) fieldContext_Query_order(ctx context.Context, field 
 	if fc.Args, err = ec.field_Query_order_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_latestOrders(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_latestOrders(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().LatestOrders(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*models.Order)
+	fc.Result = res
+	return ec.marshalNOrder2ᚕᚖserverᚗgoᚋmodelsᚐOrderᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_latestOrders(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Order_id(ctx, field)
+			case "title":
+				return ec.fieldContext_Order_title(ctx, field)
+			case "description":
+				return ec.fieldContext_Order_description(ctx, field)
+			case "category":
+				return ec.fieldContext_Order_category(ctx, field)
+			case "date":
+				return ec.fieldContext_Order_date(ctx, field)
+			case "shippingAddress":
+				return ec.fieldContext_Order_shippingAddress(ctx, field)
+			case "status":
+				return ec.fieldContext_Order_status(ctx, field)
+			case "customerEmail":
+				return ec.fieldContext_Order_customerEmail(ctx, field)
+			case "authorEmail":
+				return ec.fieldContext_Order_authorEmail(ctx, field)
+			case "price":
+				return ec.fieldContext_Order_price(ctx, field)
+			case "currency":
+				return ec.fieldContext_Order_currency(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Order", field.Name)
+		},
 	}
 	return fc, nil
 }
@@ -4626,6 +4704,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_order(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "latestOrders":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_latestOrders(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}

@@ -15,7 +15,7 @@ type Order struct {
 	Category        constants.OrderCategories `bson:"category,omitempty"`
 	Date            time.Time                 `bson:"order_date,omitempty" validate:"required"`
 	ShippingAddress string                    `bson:"shipping_address,omitempty"`
-	Status          constants.OrderStatus     `bson:"status,omitempty"`
+	Status          constants.OrderStatus     `bson:"status"`
 	AuthorEmail     string                    `bson:"author_email" validate:"required"`
 	CustomerEmail   string                    `bson:"customer_email,omitempty"`
 	Price           float64                   `bson:"price,omitempty" validate:"required"`

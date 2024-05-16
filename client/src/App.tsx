@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import Header from "./components/landing/Header";
 import Organizer from "./components/organizer/Organizer";
+import LatestOrders from "./components/landing/LatestOrders";
 
 export default function App() {
   const [authenticated, setAuthenticated] = useState(!!Cookies.get("auth"));
@@ -22,8 +23,8 @@ export default function App() {
         authenticated={authenticated}
         setAuthenticated={setAuthenticated}
       />
-
       <Organizer authenticated={authenticated} />
+      <LatestOrders />
     </>
   );
 }

@@ -2,11 +2,14 @@ package services
 
 import (
 	"context"
+	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"server.go/configs"
+	"server.go/constants"
 	"server.go/models"
 )
 
@@ -83,4 +86,28 @@ func (os *OrderService) UpdateOrder(order *models.Order) (*models.Order, error) 
 		return nil, err
 	}
 	return order, nil
+}
+
+func (os *OrderService) Last5Orders() ([]models.Order, error) {
+	var orders []models.Order
+
+	filter := bson.M{"status": constants.Available}
+
+	findOptions := options.Find()
+	findOptions.SetSort(map[string]int{"order_date": -1})
+	findOptions.SetLimit(5)
+
+	cursor, err := os.collection.Find(context.Background(), filter, findOptions)
+	if err != nil {
+		return nil, fmt.Errorf("server: get latest orders, details: %w", err)
+	}
+	defer cursor.Close(context.Background())
+
+	for cursor.Next(context.Background()) {
+		var order models.Order
+		cursor.Decode(&order)
+		orders = append(orders, order)
+	}
+
+	return orders, nil
 }
