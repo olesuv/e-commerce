@@ -1,6 +1,8 @@
 import { useState } from "react";
 import CreateOrderPopup from "./CreateOrderPopup";
-import { gql, useLazyQuery, useQuery } from "@apollo/client";
+import { gql, useLazyQuery } from "@apollo/client";
+
+import OrderSearchDetails from "./searchBar/OrderSearchDetails";
 
 const ORDER_SEARCH = gql`
   query orderSearch($search: String!) {
@@ -9,6 +11,7 @@ const ORDER_SEARCH = gql`
       title
       price
       currency
+      date
     }
   }
 `;
@@ -28,8 +31,6 @@ export default function SearchBar() {
         placeholder="Search for products..."
         onChange={(e) => {
           setSearch(e.target.value);
-
-          console.log("searching");
           searchOrders();
         }}
         className="rounded-xl border border-gray-200 bg-gray-100 p-2 outline-indigo-300 md:mr-2 md:basis-2/3"
@@ -37,16 +38,10 @@ export default function SearchBar() {
       {loading && <p>Loading...</p>}
       {error && <p>Error: {error.message}</p>}
       {data && (
-        <div className="">
+        <div className="mt-2 divide-y divide-indigo-100 rounded-lg border border-indigo-200">
           {data.searchOrder.map((order: any) => (
-            <div
-              key={order.id}
-              className="flex items-center justify-between rounded-xl bg-gray-100 p-2"
-            >
-              <p>{order.title}</p>
-              <p>
-                {order.price} {order.currency}
-              </p>
+            <div key={order.id}>
+              <OrderSearchDetails order={order} />
             </div>
           ))}
         </div>
