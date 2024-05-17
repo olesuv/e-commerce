@@ -111,3 +111,28 @@ func (os *OrderService) Last5Orders() ([]models.Order, error) {
 
 	return orders, nil
 }
+
+func (os *OrderService) SearchByString(searchString string) ([]models.Order, error) {
+	var orders []models.Order
+
+	filter := bson.M{
+		"$or": []bson.M{
+			{"order_title": primitive.Regex{Pattern: searchString, Options: "i"}},
+			{"order_description": primitive.Regex{Pattern: searchString, Options: "i"}},
+		},
+	}
+
+	cursor, err := os.collection.Find(context.Background(), filter)
+	if err != nil {
+		return nil, fmt.Errorf("server: search orders, details: %w", err)
+	}
+	defer cursor.Close(context.Background())
+
+	for cursor.Next(context.Background()) {
+		var order models.Order
+		cursor.Decode(&order)
+		orders = append(orders, order)
+	}
+
+	return orders, nil
+}

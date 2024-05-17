@@ -69,6 +69,10 @@ func (r *queryResolver) LatestOrders(ctx context.Context) ([]*models.Order, erro
 	return r.OrderResolver.LatestOrders(ctx)
 }
 
+func (r *queryResolver) SearchOrder(ctx context.Context, userInput string) ([]*models.Order, error) {
+	return r.OrderResolver.SearchOrder(ctx, userInput)
+}
+
 func (r *userResolver) ID(ctx context.Context, obj *models.User) (string, error) {
 	return r.UserResolver.ID(ctx, obj)
 }

@@ -75,7 +75,9 @@ type Query {
 
   orders: [Order!]!
   order(id: String!): Order!
+
   latestOrders: [Order!]!
+  searchOrder(userInput: String!): [Order!]!
 }
 
 type Mutation {

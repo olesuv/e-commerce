@@ -178,3 +178,17 @@ func (r *OrderResolver) LatestOrders(ctx context.Context) ([]*models.Order, erro
 
 	return orderPointers, nil
 }
+
+func (r *OrderResolver) SearchOrder(ctx context.Context, userInput string) ([]*models.Order, error) {
+	orders, err := r.orderService.SearchByString(userInput)
+	if err != nil {
+		return nil, err
+	}
+
+	var orderPointers []*models.Order
+	for _, order := range orders {
+		orderPointers = append(orderPointers, &order)
+	}
+
+	return orderPointers, nil
+}
