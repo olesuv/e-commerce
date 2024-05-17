@@ -180,6 +180,10 @@ func (r *OrderResolver) LatestOrders(ctx context.Context) ([]*models.Order, erro
 }
 
 func (r *OrderResolver) SearchOrder(ctx context.Context, userInput string) ([]*models.Order, error) {
+	if userInput == "" {
+		return nil, nil
+	}
+
 	orders, err := r.orderService.SearchByString(userInput)
 	if err != nil {
 		return nil, err
