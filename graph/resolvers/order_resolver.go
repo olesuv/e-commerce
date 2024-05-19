@@ -131,7 +131,7 @@ func (r *OrderResolver) BuyOrder(ctx context.Context, orderID string, customerEm
 		return nil, fmt.Errorf("server: get order, details: %w", err)
 	}
 	if order.Status == constants.Buyed {
-		return nil, fmt.Errorf("order already buyed, by %s", order.CustomerEmail)
+		return nil, fmt.Errorf("order already buyed")
 	}
 
 	order.Status = constants.Buyed

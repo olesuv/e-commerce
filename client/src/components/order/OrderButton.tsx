@@ -17,10 +17,10 @@ const BUY_ORDER = gql`
 export default function OrderButton(props: IOrderDetailsProps) {
   const navigate = useNavigate();
 
-  const [buyOrder, { loading: buyOrderLoading }] = useMutation(BUY_ORDER);
+  const [buyOrder, { loading: buyOrderLoading, error: buyOrderError }] =
+    useMutation(BUY_ORDER);
 
   function handleBuyOrder() {
-    console.log("Buying order...");
     buyOrder({
       variables: {
         orderId: props?.orderData?.id,
@@ -37,6 +37,13 @@ export default function OrderButton(props: IOrderDetailsProps) {
           className="w-2/3 cursor-not-allowed rounded-full bg-indigo-300 p-2 text-center text-white shadow-2xl"
         >
           Loading...
+        </button>
+      ) : buyOrderError?.message === "order already buyed" ? (
+        <button
+          type="submit"
+          className="w-2/3 cursor-not-allowed rounded-full bg-indigo-300 p-2 text-center text-white shadow-2xl"
+        >
+          Already bought by someone
         </button>
       ) : (
         <button
