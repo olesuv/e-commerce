@@ -6,16 +6,14 @@ import (
 
 	"server.go/configs"
 	"server.go/constants"
-	"server.go/utils"
+	auth_utils "server.go/utils/auth"
 )
-
-// TODO: Add user session token generation and validation tests (after docker + redis init)
 
 func TestGenearteJwtToken(t *testing.T) {
 	configs.LoadEnv()
 	ctx := context.Background()
 
-	token, err := utils.GenearteJwtToken(ctx, constants.EMAIL)
+	token, err := auth_utils.GenearteJwtToken(ctx, constants.EMAIL)
 	if err != nil {
 		t.Errorf("Failed to generate JWT token: %v", err)
 	}
@@ -28,12 +26,12 @@ func TestValidateJwtToken(t *testing.T) {
 	configs.LoadEnv()
 	ctx := context.Background()
 
-	tokenString, err := utils.GenearteJwtToken(ctx, constants.EMAIL)
+	tokenString, err := auth_utils.GenearteJwtToken(ctx, constants.EMAIL)
 	if err != nil {
 		t.Errorf(err.Error())
 	}
 
-	userEmail, err := utils.ValidateJwtToken(ctx, tokenString)
+	userEmail, err := auth_utils.ValidateJwtToken(ctx, tokenString)
 
 	if err != nil {
 		t.Errorf(err.Error())
@@ -47,22 +45,26 @@ func TestValidateJwtToken(t *testing.T) {
 }
 
 func TestHashPassword(t *testing.T) {
-	hashedPassword := utils.HashPassword(constants.PASSWORD)
+	hashedPassword := auth_utils.HashPassword(constants.PASSWORD)
 
-	if !utils.VerifyPassword(constants.PASSWORD, hashedPassword) {
+	compare, _ := auth_utils.VerifyPassword(constants.PASSWORD, hashedPassword)
+	if !compare {
 		t.Error("Failed to verify hashed password")
 	}
 }
 
 func TestVerifyPassword(t *testing.T) {
-	hashedPassword := utils.HashPassword(constants.PASSWORD)
+	hashedPassword := auth_utils.HashPassword(constants.PASSWORD)
 
-	if !utils.VerifyPassword(constants.PASSWORD, hashedPassword) {
+	compare, _ := auth_utils.VerifyPassword(constants.PASSWORD, hashedPassword)
+	if !compare {
 		t.Error("Failed to verify hashed password")
 	}
 
 	invalidPassword := "wrongpassword"
-	if utils.VerifyPassword(invalidPassword, hashedPassword) {
+
+	compare, _ = auth_utils.VerifyPassword(invalidPassword, hashedPassword)
+	if compare {
 		t.Error("Incorrectly verified invalid password")
 	}
 }
