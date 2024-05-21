@@ -20,7 +20,7 @@ george@hotz:e-commerce$ tree -L 1 --dirsfirst
 ├── models
 |   # mongodb models
 ├── services
-|   # mongodb models
+|   # mongodb services
 ├── tests
 ├── utils
 |   # helpers
