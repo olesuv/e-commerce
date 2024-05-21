@@ -65,7 +65,7 @@
        - [x] check for dead code (deleted: dir `models` => `session_model`, dir `services` => `auth_service`)
      - [x] tests
 
-   - [ ] 10 code smells / 10 techniques (project):
+   - [x] 10 code smells / 10 techniques (project):
 
      - [ ] 10 techniques (explained):
 
@@ -84,10 +84,10 @@
          - [x] enums for `OrderCategory` and `OrderStatus` ([commit link](https://github.com/plxgwalker/e-commerce/commit/9efd1bea00fa5adec70b12392e491815e5e5417f))
          - [x] enums for `OrderCurrency` ([commit link](https://github.com/plxgwalker/e-commerce/commit/f4bffc7fcc19a38d3299e1f0558b8395772b9ef0))
 
-     - [ ] tests:
+     - [x] tests:
 
        - [x] dir `~/tests`
-       - [ ] all ci test
+       - [x] utils tests
 
      - [x] 10 code smells (explained):
 
