@@ -41,7 +41,7 @@ func main() {
 	}
 
 	router.Use(cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:5173", "http://localhost:8080"},
+		AllowedOrigins:   []string{"http://localhost:3000", "http://localhost:8080"},
 		AllowCredentials: true,
 		Debug:            debug,
 	}).Handler)
