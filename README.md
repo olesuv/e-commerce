@@ -1,6 +1,28 @@
-# e-commerce
+## e-commerce
 
-Web app for buying goods
+Web app for buying goods used for intro to backend dev in Go.
+
+## Stack
+
+1. Vite + React
+2. GraphQL Server
+
+## Application workflow
+
+![Aplication workflow](workflow-diagram.png)
+
+## Installation
+
+```zsh
+chmod u+rx install.sh; ./install.sh
+```
+
+## Run
+```zsh
+cd client; npm run dev
+
+go run server.go
+```
 
 ## Architecture
 
@@ -35,3 +57,4 @@ george@hotz:e-commerce$ tree -L 1 --dirsfirst
 └── tasks.md
     # dev notes/tasks
 ```
+
